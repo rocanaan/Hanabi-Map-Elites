@@ -14,7 +14,7 @@ import com.fossgalaxy.games.fireworks.annotations.AgentBuilderStatic;
  */
 public class SampleRuleBased {
 
-    @AgentBuilderStatic("SampleRuleBased")
+    @AgentBuilderStatic("RuleBasedInternal")
     public static Agent buildRuleBased() {
         ProductionRuleAgent pra = new ProductionRuleAgent();
 

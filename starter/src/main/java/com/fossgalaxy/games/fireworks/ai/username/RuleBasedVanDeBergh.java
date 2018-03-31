@@ -18,7 +18,8 @@ import com.fossgalaxy.games.fireworks.ai.rule.wrapper.IfRule;
 import com.fossgalaxy.games.fireworks.ai.rule.random.PlayProbablySafeCard;
 
 /**
-Van den Bergh et al used a Genetic Algorithm (GA) to evolve the best options for each section, resulting in the following rules as an implementation:
+ *Van den Bergh et al used a Genetic Algorithm (GA) to evolve the best options
+ *for each section, resulting in the following rules as an implementation:
  */
 public class RuleBasedVanDeBergh {
 

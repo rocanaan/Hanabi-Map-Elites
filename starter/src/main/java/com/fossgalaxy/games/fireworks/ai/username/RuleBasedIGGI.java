@@ -11,7 +11,8 @@ import com.fossgalaxy.games.fireworks.ai.rule.simple.PlayIfCertain;
 import com.fossgalaxy.games.fireworks.annotations.AgentBuilderStatic;
 
 /**
-This agent is a modification of Cautious. The alteration to a deterministic Discard function greatly aids the predictability of this player
+ * This agent is a modification of Cautious. 
+ * The alteration to a deterministic Discard function greatly aids the predictability of this player
  */
 public class RuleBasedIGGI {
 

@@ -18,8 +18,8 @@ import com.fossgalaxy.games.fireworks.ai.rule.wrapper.IfRule;
 import com.fossgalaxy.games.fireworks.ai.rule.random.PlayProbablySafeCard;
 
 /**
-This is an agent designed to use IfRules to
-improve the overall score. Otherwise, it is similar to IGGI.
+ *This is an agent designed to use IfRules to
+ *improve the overall score. Otherwise, it is similar to IGGI.
  */
 public class RuleBasedPiers {
 
