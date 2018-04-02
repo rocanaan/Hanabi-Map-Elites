@@ -27,6 +27,8 @@ public class SampleLegalRandom implements Agent {
 
         //get all legal moves as a list
         List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(playerID, gameState));
+        
+        
 
         //choose a random item from that list and return it
         int moveToMake = random.nextInt(possibleMoves.size());

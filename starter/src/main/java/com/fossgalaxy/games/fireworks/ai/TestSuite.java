@@ -13,10 +13,46 @@ import com.fossgalaxy.stats.StatsSummary;
 public class TestSuite {
 	
 	/* This method performs a number of simulation of a game where
-	* one player is agentName and all other players are otherAgent.
+	* one player is yourAgent and all other players are otherAgent.
 	* The number of players is kept constant
 	*/
-	public static StatsSummary ConstantNumberPlayersTest (int numPlayers, int numGames, String agentName, String otherAgent) {
+//	public static StatsSummary ConstantNumberPlayersTest (int numPlayers, int numGames, AgentPlayer yourAgent, Vector<AgentPlayer> otherAgents) {
+//		Random random = new Random();
+//        StatsSummary statsSummary = new BasicStats();
+//
+//        for (int i=0; i<numGames; i++) {
+//            GameRunner runner = new GameRunner("test-game", numPlayers);
+//            
+//            // Adds your agent to the game
+//            runner.addPlayer(yourAgent);
+//            
+//            //add N-1 copies of other agent to the game
+//            for (int j = 2; j<=numPlayers;j++)
+//            {
+//            		runner.addPlayer(otherAgents.get(j-2));
+//            }
+//            
+////            // Adds your agent to the game
+////            Player player = new AgentPlayer(yourAgentName, AgentUtils.buildAgent(yourAgentName));
+////
+////            //add N-1 other agents to the game
+////            for (int j=0; j<numPlayers; j++) {
+////                // the player class keeps track of our state for us...
+////            		if (otherAgentName != "") {
+////            			player = new AgentPlayer(yourAgentName, AgentUtils.buildAgent(otherAgentName));
+////            		}
+////                runner.addPlayer(player);
+////            }
+//
+//            GameStats stats = runner.playGame(random.nextLong());
+//            statsSummary.add(stats.score);
+//            System.out.println("Game number " + i + " complete");
+//        }
+//
+//        return statsSummary;
+//	}
+	
+	public static StatsSummary ConstantNumberPlayersTest (int numPlayers, int numGames, AgentPlayer yourAgent, AgentPlayer otherAgent) {
 		Random random = new Random();
         StatsSummary statsSummary = new BasicStats();
 
@@ -24,16 +60,25 @@ public class TestSuite {
             GameRunner runner = new GameRunner("test-game", numPlayers);
             
             // Adds your agent to the game
-            Player player = new AgentPlayer(agentName, AgentUtils.buildAgent(agentName));
-
-            //add N-1 other agents to the game
-            for (int j=0; j<numPlayers; j++) {
-                // the player class keeps track of our state for us...
-            		if (otherAgent != "") {
-            			player = new AgentPlayer(agentName, AgentUtils.buildAgent(otherAgent));
-            		}
-                runner.addPlayer(player);
+            runner.addPlayer(yourAgent);
+            
+            //add N-1 copies of other agent to the game
+            for (int j = 2; j<=numPlayers;j++)
+            {
+            		runner.addPlayer(new AgentPlayer(otherAgent.getName(),otherAgent.policy));
             }
+            
+//            // Adds your agent to the game
+//            Player player = new AgentPlayer(yourAgentName, AgentUtils.buildAgent(yourAgentName));
+//
+//            //add N-1 other agents to the game
+//            for (int j=0; j<numPlayers; j++) {
+//                // the player class keeps track of our state for us...
+//            		if (otherAgentName != "") {
+//            			player = new AgentPlayer(yourAgentName, AgentUtils.buildAgent(otherAgentName));
+//            		}
+//                runner.addPlayer(player);
+//            }
 
             GameStats stats = runner.playGame(random.nextLong());
             statsSummary.add(stats.score);
@@ -43,16 +88,71 @@ public class TestSuite {
         return statsSummary;
 	}
 	
-	public static Vector<StatsSummary> VariableNumberPlayersTest (int maxNumPlayers, int numGames, String agentName, String otherAgent) {
-		Vector<StatsSummary> pairingStats = new Vector<StatsSummary>(maxNumPlayers-1);
+//	
+//	public static PairingSummary VariableNumberPlayersTest (AgentPlayer yourAgent, String yourAgentName, Vector<AgentPlayer> otherAgents, String otherAgentName, int maxNumPlayers, int numGames) {
+//		PairingSummary pairingStats = new PairingSummary(yourAgentName, otherAgentName, maxNumPlayers, numGames);
+//		
+//		for (int i = 2; i <= maxNumPlayers; i++)
+//		{
+//			StatsSummary stats = ConstantNumberPlayersTest(i, numGames, yourAgent, otherAgents);
+//			pairingStats.results.add(stats);
+//		}
+//		
+//		return pairingStats;
+//	}
+	
+	public static PairingSummary VariableNumberPlayersTest (AgentPlayer yourAgent, AgentPlayer otherAgent, int maxNumPlayers, int numGames) {
+	PairingSummary pairingStats = new PairingSummary(yourAgent, otherAgent, maxNumPlayers, numGames);
+	
+	for (int i = 2; i <= maxNumPlayers; i++)
+	{
+		StatsSummary stats = ConstantNumberPlayersTest(i, numGames, yourAgent, otherAgent);
+		pairingStats.results.add(stats);
+	}
+	
+	return pairingStats;
+}
+
+	
+	
+	public static PopulationEvaluationSummary mirrorPopulationEvaluation(Vector<AgentPlayer> population, int maxNumPlayers, int numGames) {
+		PopulationEvaluationSummary pes = new PopulationEvaluationSummary(true, population, null);
 		
-		for (int i = 2; i <= maxNumPlayers; i++)
-		{
-			StatsSummary stats = ConstantNumberPlayersTest(i, numGames, agentName, otherAgent);
-			pairingStats.add(stats);
+		for (AgentPlayer agent: population) {
+			PairingSummary summary = VariableNumberPlayersTest(agent, agent, maxNumPlayers, numGames);
+			
+			AgentMultiPairingSummary amps = new AgentMultiPairingSummary(true, agent, null);
+			amps.pairings.addElement(summary);
+			pes.pairings.add(amps);
+
 		}
 		
-		return pairingStats;
+		return pes;
+		
 	}
+	
+	
+	public static PopulationEvaluationSummary mixedPopulationEvaluation(Vector<AgentPlayer> population, Vector<AgentPlayer> testPool, int maxNumPlayers, int numGames) {
+		PopulationEvaluationSummary pes = new PopulationEvaluationSummary(true, population, null);
+		
+		for (AgentPlayer agent: population) {
+			AgentMultiPairingSummary amps = new AgentMultiPairingSummary(false, agent, testPool);
+
+			for (AgentPlayer other: testPool) {
+				PairingSummary summary = VariableNumberPlayersTest(agent, other, maxNumPlayers, numGames);
+				amps.pairings.addElement(summary);
+			}
+			pes.pairings.add(amps);
+
+
+		}
+		
+		return pes;
+		
+	}
+	
+	
+	
+
 
 }
