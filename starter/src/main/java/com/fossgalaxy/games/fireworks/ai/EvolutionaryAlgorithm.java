@@ -25,12 +25,16 @@ public class EvolutionaryAlgorithm {
 		ProductionRuleAgent pra = new ProductionRuleAgent();
 		
         pra.addRule(new PlayIfCertain());
-        pra.addRule(new PlaySafeCard());
-        pra.addRule(new TellAnyoneAboutUsefulCard());
-        pra.addRule(new OsawaDiscard());
-        pra.addRule(new DiscardOldestFirst());
+//        pra.addRule(new PlaySafeCard());
+//        pra.addRule(new TellAnyoneAboutUsefulCard());
+//        pra.addRule(new OsawaDiscard());
+//        pra.addRule(new DiscardOldestFirst());
 
 		AgentPlayer agent = new AgentPlayer("test IGGI", pra);
+		
+		Vector<AgentPlayer> agentList = new Vector<AgentPlayer>();
+		
+		agentList.add(agent);
 		
 	//	Vector<AgentPlayer> otherAgents = new Vector<AgentPlayer>();
 		
@@ -39,9 +43,19 @@ public class EvolutionaryAlgorithm {
 //			otherAgents.add(new AgentPlayer(otherAgentName, AgentUtils.buildAgent(otherAgentName)));
 //		}
 		
-		AgentPlayer otherAgent = new AgentPlayer("other test IGGI", pra);
+		//AgentPlayer otherAgent = new AgentPlayer("other test IGGI", pra);
 		
-		PairingSummary stats = TestSuite.VariableNumberPlayersTest( agent,  otherAgent,  maxNumPlayers,  numGames);
+		Vector<AgentPlayer> testPool = new Vector<AgentPlayer>();
+		
+		
+		String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
+		
+		for(String other: testPoolNames) {
+			AgentPlayer otherAgent = new AgentPlayer(other, AgentUtils.buildAgent(other));
+			testPool.add(otherAgent);
+		}
+		
+		PopulationEvaluationSummary stats = TestSuite.mixedPopulationEvaluation(agentList, testPool, maxNumPlayers, numGames);
 
 		System.out.println(stats);
 				

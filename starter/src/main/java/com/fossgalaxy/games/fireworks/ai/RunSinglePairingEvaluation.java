@@ -15,7 +15,7 @@ public class RunSinglePairingEvaluation {
 		int numGames = 100;
 		
 		String yourAgentName = "RuleBasedIGGI";
-		String otherAgentName = "RuleBasedIGGI";
+		String otherAgentName = "RuleBasedFlawed";
 		
 		
 		

@@ -15,10 +15,10 @@ import java.util.Random;
  *
  * <b>IMPORTANT</b> You should rename this agent to your username
  */
-public class SampleLegalRandom implements Agent {
+public class HumanControlledAgent implements Agent {
     private Random random;
 
-    public SampleLegalRandom() {
+    public HumanControlledAgent() {
         this.random = new Random();
     }
 
