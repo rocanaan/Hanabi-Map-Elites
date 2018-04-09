@@ -29,7 +29,12 @@ public class HumanControlledAgent implements Agent {
         List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(playerID, gameState));
         
         
+        // 1) Print the gamestate
+        // 2) Print available actions
+        // 3) Ask for user input
+        // 4) Implement the chosen action
         
+        // Later on exchange 3 for tree search, neural network, evolutionary action planning, whatever
 
         //choose a random item from that list and return it
         int moveToMake = random.nextInt(possibleMoves.size());
