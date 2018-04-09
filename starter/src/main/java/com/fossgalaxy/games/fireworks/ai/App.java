@@ -20,9 +20,9 @@ public class App
     public static void main( String[] args )
     {
         int numPlayers = 2;
-        int numGames = 100;
+        int numGames = 1;
         //String agentName = "SampleAgent";
-        String agentName = "RuleBasedInternal";
+        String agentName = "HumanControlledAgent";
 
         Random random = new Random();
         StatsSummary statsSummary = new BasicStats();
