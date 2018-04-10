@@ -23,17 +23,21 @@ public class App
         int numGames = 1;
         //String agentName = "SampleAgent";
         String agentName = "HumanControlledAgent";
+        String otherAgentName = "mctsND";
 
         Random random = new Random();
         StatsSummary statsSummary = new BasicStats();
+        
+        GameRunner runner = new GameRunner("test-game", numPlayers);
+        
+        Player player = new AgentPlayer(agentName, AgentUtils.buildAgent(agentName));
+        runner.addPlayer(player);
 
         for (int i=0; i<numGames; i++) {
-            GameRunner runner = new GameRunner("test-game", numPlayers);
-
             //add your agents to the game
-            for (int j=0; j<numPlayers; j++) {
+            for (int j=1; j<numPlayers; j++) {
                 // the player class keeps track of our state for us...
-                Player player = new AgentPlayer(agentName, AgentUtils.buildAgent(agentName));
+                player = new AgentPlayer(otherAgentName, AgentUtils.buildAgent(otherAgentName));
                 runner.addPlayer(player);
             }
 

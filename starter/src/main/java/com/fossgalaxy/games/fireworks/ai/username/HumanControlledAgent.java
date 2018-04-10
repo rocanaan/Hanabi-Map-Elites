@@ -2,6 +2,8 @@ package com.fossgalaxy.games.fireworks.ai.username;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
+import com.fossgalaxy.games.fireworks.ai.rule.PlaySafeCard;
+import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.annotations.AgentConstructor;
 import com.fossgalaxy.games.fireworks.state.*;
 import com.fossgalaxy.games.fireworks.state.actions.*;
@@ -31,7 +33,6 @@ public class HumanControlledAgent implements Agent {
 
         //get all legal moves as a list
         List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(playerID, gameState));
-<<<<<<< HEAD
         
         
         // 1) Print the gamestate
@@ -40,14 +41,21 @@ public class HumanControlledAgent implements Agent {
         // 4) Implement the chosen action
         
         // Later on exchange 3 for tree search, neural network, evolutionary action planning, whatever
-=======
 
         //display all legal moves
         showLegalActions(possibleMoves);
->>>>>>> 2ab989dc20ba99aec56ae3eb8dec2d80e899726e
 
         //choose a random item from that list and return it
         //int moveToMake = random.nextInt(possibleMoves.size());
+     
+        
+        // CHECKING IF A RULE CAN FIRE
+//        Rule r = new PlaySafeCard();
+//        
+//        System.out.println(r.canFire(0, gameState));
+//        System.out.println(r.canFire(1, gameState));
+//        System.out.println(r.couldFire(0, gameState));
+//        System.out.println(r.couldFire(1, gameState));
         
         //get the move to take from human input
         Scanner reader = new Scanner(System.in);
