@@ -19,7 +19,7 @@ public class RunPopulationMixedEvaluation {
 		int numGames = 100;
 		
 		// This is the population of agents we are evaluating
-		String[] agentNames = {"mctsND", "RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
+		String[] agentNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
 		
 		// This is the set of agents we are testing AGAINST
 		// Note: This is the same testing pool used by Walton-Rivers

@@ -55,7 +55,7 @@ public class Rulebase {
 			new PlayProbablySafeCard(0.4),
 			new PlayProbablySafeCard(0.6),
 			new PlayProbablySafeCard(0.8),
-			new PlayProbablySafeCard(1.0),
+			//new PlayProbablySafeCard(1.0),
 			new PlaySafeCard(), 
 			new PlayUniquePossibleCard(),
 
@@ -87,7 +87,7 @@ public class Rulebase {
 			new DiscardProbablyUselessCard(0.4), // Parametrized rule
 			new DiscardProbablyUselessCard(0.6), // Parametrized rule
 			new DiscardProbablyUselessCard(0.8), // Parametrized rule
-			new DiscardProbablyUselessCard(1.0), // Parametrized rule
+			//new DiscardProbablyUselessCard(1.0), // Parametrized rule
 			new DiscardRandomly(),
 			new DiscardSafeCard(),
 			new DiscardUnidentifiedCard(),
