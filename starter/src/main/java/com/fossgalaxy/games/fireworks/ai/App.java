@@ -3,6 +3,7 @@ package com.fossgalaxy.games.fireworks.ai;
 import com.fossgalaxy.games.fireworks.GameRunner;
 import com.fossgalaxy.games.fireworks.GameStats;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
+import com.fossgalaxy.games.fireworks.ai.mcts.MCTSPredictor;
 import com.fossgalaxy.games.fireworks.players.Player;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import com.fossgalaxy.stats.BasicStats;
@@ -22,22 +23,28 @@ public class App
         int numPlayers = 2;
         int numGames = 1;
         //String agentName = "SampleAgent";
-        String agentName = "HumanControlledAgent";
-        String otherAgentName = "mctsND";
+        String agentName = "RuleBasedPiers";
+        String otherAgentName = "pmctsND";
 
         Random random = new Random();
         StatsSummary statsSummary = new BasicStats();
         
         GameRunner runner = new GameRunner("test-game", numPlayers);
         
+        Agent a1 = AgentUtils.buildAgent(agentName);
         Player player = new AgentPlayer(agentName, AgentUtils.buildAgent(agentName));
         runner.addPlayer(player);
 
         for (int i=0; i<numGames; i++) {
             //add your agents to the game
+            Agent[] agents = new Agent[numPlayers];
+            agents[0]=a1;
             for (int j=1; j<numPlayers; j++) {
                 // the player class keeps track of our state for us...
-                player = new AgentPlayer(otherAgentName, AgentUtils.buildAgent(otherAgentName));
+                
+                Agent mctsAgent = new MCTSPredictor(agents);
+                
+                player = new AgentPlayer(otherAgentName, mctsAgent);
                 runner.addPlayer(player);
             }
 
