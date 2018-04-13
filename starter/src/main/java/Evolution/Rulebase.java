@@ -105,6 +105,10 @@ public class Rulebase {
 		return Arrays.copyOf(ruleset, ruleset.length);
 	}
 	
+	public static Rule ruleMapping(int index) {
+		return ruleset[index];
+	}
+	
 	public static AgentPlayer makeAgent (String name, Rule[] agentRules) {
 		ProductionRuleAgent pra = new ProductionRuleAgent();
 		

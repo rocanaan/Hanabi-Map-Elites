@@ -70,5 +70,10 @@ public class PopulationEvaluationSummary {
 		return 0;
 	}
 	
+	public double getScoreIndividualAgent(int index) {
+		double score =  pairings.get(index).getMean();
+		return score;
+	}
+	
 
 }
