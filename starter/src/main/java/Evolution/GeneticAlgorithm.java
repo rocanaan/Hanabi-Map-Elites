@@ -90,6 +90,11 @@ public class GeneticAlgorithm {
         	population.getIndividual(i).setFitness(fitnessOfPopulation[i]);
         }
         
+        for (int i = 0; i<population.getIndividuals().length; i++) {
+        		System.out.println("Individual [" +population.getIndividual(i).toString() + "] fitness = " + fitnessOfPopulation[i]);	
+        }
+
+        
 //        double avgFitness = populationFitness / population.size();
         //population.setPopulationFitness(avgFitness);
     }
