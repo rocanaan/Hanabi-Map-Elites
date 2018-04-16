@@ -7,10 +7,12 @@ import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.annotations.AgentConstructor;
 import com.fossgalaxy.games.fireworks.state.*;
 import com.fossgalaxy.games.fireworks.state.actions.*;
+import com.fossgalaxy.games.fireworks.state.events.GameEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -30,6 +32,8 @@ public class HumanControlledAgent implements Agent {
     public Action doMove(int playerID, GameState gameState) {
         //print current game state
         showGameState(playerID, gameState);
+        
+        showHistory(playerID,gameState);
 
         //get all legal moves as a list
         List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(playerID, gameState));
@@ -127,5 +131,15 @@ public class HumanControlledAgent implements Agent {
                 System.out.println(i + ". Tell player " + ((TellValue) a).player + " about " + ((TellValue) a).value);
             }
         }
+    }
+    
+    public void showHistory(int playerID, GameState gameState) {
+    		System.out.println("Printing history");
+    		LinkedList<GameEvent> history = gameState.getHistory();
+    		
+    		for (GameEvent h : history) {
+    			System.out.println(h);
+    		}
+  
     }
 }

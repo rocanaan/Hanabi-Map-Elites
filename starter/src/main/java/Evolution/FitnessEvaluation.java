@@ -36,7 +36,7 @@ public class FitnessEvaluation {
 			//TODO: 5 (number of players) and 10 (number of games per evaluation) should not be hardcoded. Potentially later take measures so every evaluation uses the sam random seed.
 			PopulationEvaluationSummary pes = null;
 			if (mirrored) {
-				pes = TestSuite.mirrorPopulationEvaluation(agents, 5, 10);
+				pes = TestSuite.mirrorPopulationEvaluation(agents, 5, 100);
 			}
 			//TODO: create a class that returns the testpool
 //			else {

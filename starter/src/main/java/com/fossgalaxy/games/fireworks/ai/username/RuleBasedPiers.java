@@ -23,24 +23,24 @@ import com.fossgalaxy.games.fireworks.ai.rule.random.PlayProbablySafeCard;
  */
 public class RuleBasedPiers {
 
-    private static final BiFunction<Integer, GameState, Boolean> hasMoreThanOneLife =  (i,state) ->{
-    		return state.getLives()>1;
-    };
-    
-    /*
-     * This IfRule is designed as a hail Mary in the endgame: 
-     * if there is nothing left to lose, try to gain a point.
-     * This derives from human play, when typically during the end game we make random plays
-     *  if we know there is a playable card somewhere in our hand. 
-     *  This rule is more accurate, as it uses all the information it has gathered to calculate probabilities.
-     */
-    private static final BiFunction<Integer, GameState, Boolean> hailMary =  (i,state) ->{
-		return (state.getLives()>1 && !state.getDeck().hasCardsLeft());
-    };
-    
-    private static final BiFunction<Integer, GameState, Boolean> informationLessThan4 =  (i,state) ->{
-		return (state.getInfomation() < 4);
-    };
+	    private static final BiFunction<Integer, GameState, Boolean> hasMoreThanOneLife =  (i,state) ->{
+	    		return state.getLives()>1;
+	    };
+	    
+	    /*
+	     * This IfRule is designed as a hail Mary in the endgame: 
+	     * if there is nothing left to lose, try to gain a point.
+	     * This derives from human play, when typically during the end game we make random plays
+	     *  if we know there is a playable card somewhere in our hand. 
+	     *  This rule is more accurate, as it uses all the information it has gathered to calculate probabilities.
+	     */
+	    private static final BiFunction<Integer, GameState, Boolean> hailMary =  (i,state) ->{
+			return (state.getLives()>1 && !state.getDeck().hasCardsLeft());
+	    };
+	    
+	    private static final BiFunction<Integer, GameState, Boolean> informationLessThan4 =  (i,state) ->{
+			return (state.getInfomation() < 4);
+	    };
 
 	@AgentBuilderStatic("RuleBasedPiers")
     public static Agent buildRuleBased(){

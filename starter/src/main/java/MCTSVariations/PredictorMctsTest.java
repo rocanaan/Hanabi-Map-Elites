@@ -1,7 +1,8 @@
-package com.fossgalaxy.games.fireworks.ai;
+package MCTSVariations;
 
 import com.fossgalaxy.games.fireworks.GameRunner;
 import com.fossgalaxy.games.fireworks.GameStats;
+import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.mcts.MCTSPredictor;
 import com.fossgalaxy.games.fireworks.players.Player;
@@ -16,7 +17,7 @@ import java.util.Random;
  *
  * This will run a bunch of games with your agent so you can see how it does.
  */
-public class App 
+public class PredictorMctsTest 
 {
     public static void main( String[] args )
     {

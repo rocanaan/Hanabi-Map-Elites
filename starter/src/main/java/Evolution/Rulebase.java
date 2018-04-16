@@ -1,6 +1,7 @@
 package Evolution;
 
 import java.util.Arrays;
+import java.util.function.BiFunction;
 
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.PairingSummary;
@@ -40,10 +41,23 @@ import com.fossgalaxy.games.fireworks.ai.rule.random.TellPlayableCard;
 import com.fossgalaxy.games.fireworks.ai.rule.random.TellRandomly;
 import com.fossgalaxy.games.fireworks.ai.rule.simple.DiscardIfCertain;
 import com.fossgalaxy.games.fireworks.ai.rule.simple.PlayIfCertain;
-
+import com.fossgalaxy.games.fireworks.ai.rule.wrapper.IfRule;
+import com.fossgalaxy.games.fireworks.state.GameState;
 import com.fossgalaxy.games.fireworks.ai.TestSuite;
 
 public class Rulebase {
+	
+	private static final BiFunction<Integer, GameState, Boolean> hasMoreThanOneLife =  (i,state) ->{
+		return state.getLives()>1;
+	};
+
+	private static final BiFunction<Integer, GameState, Boolean> hailMary =  (i,state) ->{
+		return (state.getLives()>1 && !state.getDeck().hasCardsLeft());
+	};
+
+	private static final BiFunction<Integer, GameState, Boolean> informationLessThan4 =  (i,state) ->{
+		return (state.getInfomation() < 4);
+	};
 
 	private static Rule[] ruleset = {
 			// Play rules
@@ -96,8 +110,12 @@ public class Rulebase {
 			
 			// Other rules
 			new LegalRandom(), // Bad rule
-			new TryToUnBlock()
+			new TryToUnBlock(),
 			
+			
+			// Conditional rules
+			new IfRule(hailMary, new  PlayProbablySafeCard(0.0)), //hail mary
+			new IfRule(hailMary, new  PlayProbablySafeCard(0.1)), // slightly smarter hail mary
 	};
 
 	

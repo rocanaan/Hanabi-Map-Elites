@@ -15,7 +15,7 @@ package Evolution;
  *
  */
 public class TSP {
-	public static int maxGenerations = 5;
+	public static int maxGenerations = 150;
 	public static void main(String[] args) {
 		
 		// Create cities
