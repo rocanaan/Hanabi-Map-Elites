@@ -15,11 +15,18 @@ package Evolution;
  *
  */
 public class TSP {
-	public static int maxGenerations = 150;
+	public static int maxGenerations = 5;
+	public static int populationSize = 5;
+	public static double mutationRate = 0.001;
+	public static double crossoverRate = 0.9;
+    public static int elitismCount = 10;
+	public static  int tournamentSize = 5;
+	public static int numGames = 20;
+	public static boolean mirror = true;
 	public static void main(String[] args) {
 		
 		// Create cities
-		int numRules = 41;
+		int numRules = Rulebase.getRuleset().length;
 //		City cities[] = new City[numRules];
 //		
 //		// Loop to create random cities
@@ -35,13 +42,13 @@ public class TSP {
 		
 		
 		// Initial GA
-		GeneticAlgorithm ga = new GeneticAlgorithm(100, 0.001, 0.9, 2, 5);
+		GeneticAlgorithm ga = new GeneticAlgorithm(populationSize, mutationRate, crossoverRate, elitismCount, tournamentSize);
 
 		// Initialize population
 		Population population = ga.initPopulation(numRules);
 
 		// Evaluate population
-		ga.evalPopulation(population);
+		ga.evalPopulation(population, numGames, mirror);
 
 		//Route startRoute = new Route(population.getFittest(0), cities);
 		//System.out.println("Start Distance: " + startRoute.getDistance());
@@ -62,7 +69,7 @@ public class TSP {
 
 			// Evaluate population
 			System.out.println("Evaluating fitness after generation " + generation);
-			ga.evalPopulation(population);
+			ga.evalPopulation(population, numGames, mirror);
 			
 
 			// Increment the current generation

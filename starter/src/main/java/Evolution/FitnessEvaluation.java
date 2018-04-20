@@ -11,9 +11,9 @@ import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 public class FitnessEvaluation {
 	
 		
-
+		
 	
-		public static double[] calculateFitness(Population population, boolean mirrored)
+		public static double[] calculateFitness(Population population, int numGames, boolean mirrored)
 		
 		{
 			Individual[] individuals = population.getIndividuals();
@@ -37,12 +37,13 @@ public class FitnessEvaluation {
 			//TODO: 5 (number of players) and 10 (number of games per evaluation) should not be hardcoded. Potentially later take measures so every evaluation uses the sam random seed.
 			PopulationEvaluationSummary pes = null;
 			if (mirrored) {
-				pes = TestSuite.mirrorPopulationEvaluation(agents, 5, 100);
+				pes = TestSuite.mirrorPopulationEvaluation(agents, 5, numGames);
 			}
 			//TODO: create a class that returns the testpool
-//			else {
-//				PopulationEvaluationSummary pes = TestSuite.mixedPopulationEvaluation(agents, 5, 10);
-//			}
+			else {
+				Vector<AgentPlayer> baselinePool = Rulebase.GetBaselineAgentPlayers();
+				pes = TestSuite.mixedPopulationEvaluation(agents, baselinePool, 5, numGames);
+			}
 			
 			for (int i = 0; i < individuals.length; i++) {
 				populationFitness[i] = pes.getScoreIndividualAgent(i);

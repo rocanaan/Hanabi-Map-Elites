@@ -9,6 +9,7 @@ public class GeneticAlgorithm {
     private int elitismCount;
 	protected int tournamentSize;
 
+
 	public GeneticAlgorithm(int populationSize, double mutationRate, double crossoverRate, int elitismCount,
 			int tournamentSize) {
 		
@@ -17,6 +18,7 @@ public class GeneticAlgorithm {
         this.crossoverRate = crossoverRate;
         this.elitismCount = elitismCount;
 		this.tournamentSize = tournamentSize;
+
 	}
 
 
@@ -76,7 +78,7 @@ public class GeneticAlgorithm {
      * @param population the population to evaluate
      * @param cities the cities being referenced
      */
-    public void evalPopulation(Population population){
+    public void evalPopulation(Population population, int numGames, boolean mirror ){
         double populationFitness = 0;
         
         // Loop over population evaluating individuals and summing population fitness
@@ -84,7 +86,7 @@ public class GeneticAlgorithm {
 //            populationFitness += this.calcFitness(individual, cities);
 //        }
         
-        double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, true);
+        double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, numGames, mirror);
         
         for (int i = 0; i<fitnessOfPopulation.length; i++) {
         	population.getIndividual(i).setFitness(fitnessOfPopulation[i]);
