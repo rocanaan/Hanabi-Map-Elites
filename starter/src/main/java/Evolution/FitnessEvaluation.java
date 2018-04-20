@@ -3,6 +3,7 @@ package Evolution;
 import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
+import com.fossgalaxy.games.fireworks.ai.HistogramAgent;
 import com.fossgalaxy.games.fireworks.ai.PopulationEvaluationSummary;
 import com.fossgalaxy.games.fireworks.ai.TestSuite;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
@@ -30,8 +31,8 @@ public class FitnessEvaluation {
 				{
 					agentRules[i] = Rulebase.ruleMapping(individual.getGene(i));
 				}
-				AgentPlayer agent = Rulebase.makeAgent(agentRules);
-				agents.add(agent);
+				HistogramAgent agent = Rulebase.makeAgent(agentRules);
+				agents.add(new AgentPlayer("histogramAgent", agent));
 			}
 			//TODO: 5 (number of players) and 10 (number of games per evaluation) should not be hardcoded. Potentially later take measures so every evaluation uses the sam random seed.
 			PopulationEvaluationSummary pes = null;

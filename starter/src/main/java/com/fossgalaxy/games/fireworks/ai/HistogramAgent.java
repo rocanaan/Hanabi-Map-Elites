@@ -14,7 +14,7 @@ public class HistogramAgent extends ProductionRuleAgent{
     int aID;
     protected List<Rule> rules;
     
-    HistogramAgent(ProductionRuleAgent pra){
+    public HistogramAgent(ProductionRuleAgent pra){
         histogram = new ArrayList<Integer>();
         rules = pra.getRules();
         for (Rule rule : rules){

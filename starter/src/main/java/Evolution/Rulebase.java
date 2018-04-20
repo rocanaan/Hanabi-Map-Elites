@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
+import com.fossgalaxy.games.fireworks.ai.HistogramAgent;
 import com.fossgalaxy.games.fireworks.ai.PairingSummary;
 import com.fossgalaxy.games.fireworks.ai.TestSuite;
 import com.fossgalaxy.games.fireworks.ai.iggi.LegalRandom;
@@ -46,6 +47,7 @@ import com.fossgalaxy.games.fireworks.ai.rule.random.TellRandomly;
 import com.fossgalaxy.games.fireworks.ai.rule.simple.DiscardIfCertain;
 import com.fossgalaxy.games.fireworks.ai.rule.simple.PlayIfCertain;
 import com.fossgalaxy.games.fireworks.ai.rule.wrapper.IfRule;
+import com.fossgalaxy.games.fireworks.ai.username.RuleBasedPiers;
 import com.fossgalaxy.games.fireworks.state.GameState;
 import com.fossgalaxy.games.fireworks.ai.TestSuite;
 
@@ -147,21 +149,22 @@ public class Rulebase {
 		for (Rule r: agentRules) {
 			pra.addRule(r);
 		}
+		HistogramAgent hAgent = new HistogramAgent(pra);
+		AgentPlayer agent = new AgentPlayer(name, hAgent);
 		
-		AgentPlayer agent = new AgentPlayer(name, pra);
 		
 		return agent;
 		
 	}
 	
-	public static AgentPlayer makeAgent ( Rule[] agentRules) {
+	public static HistogramAgent makeAgent ( Rule[] agentRules) {
 		ProductionRuleAgent pra = new ProductionRuleAgent();
 		
 		for (Rule r: agentRules) {
 			pra.addRule(r);
 		}
-		
-		AgentPlayer agent = new AgentPlayer("makeAgent", pra);
+		HistogramAgent agent = new HistogramAgent(pra);
+		//AgentPlayer agent = new AgentPlayer("makeAgent", hAgent);
 		
 		return agent;
 		

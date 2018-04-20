@@ -19,7 +19,7 @@ import Evolution.Rulebase;
 public class RunPopulationMirrorEvaluation {
 	public static void main( String[] args ) {
 		int maxNumPlayers = 5; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
-		int numGames = 100;
+		int numGames = 20;
 		
 		String[] agentNames = { "RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
 		
@@ -36,8 +36,8 @@ public class RunPopulationMirrorEvaluation {
 		for (int i = 0; i < chromossome1.length; i++) {
 			rules1[i] = Rulebase.ruleMapping(chromossome1[i]);
 		}
-		AgentPlayer evolvedAgent = Rulebase.makeAgent(rules1);
-		population.add(evolvedAgent);
+		HistogramAgent evolvedHAgent = Rulebase.makeAgent(rules1);
+		population.add(new AgentPlayer("evolvedAgent", evolvedHAgent));
 		
 		// Variation putting Osawa discard (38) before oldestNoInfo (28)
 		int[] chromossome2 = {8,13,38,28,6,33,35,20,37,23,30,26,9,0,14,17,10,21,25,4,15,16,11,31,3,5,29,36,7,27,34,12,2,39,19,40,18,24,1,32,22};
@@ -45,8 +45,8 @@ public class RunPopulationMirrorEvaluation {
 		for (int i = 0; i < chromossome2.length; i++) {
 			rules2[i] = Rulebase.ruleMapping(chromossome2[i]);
 		}
-		AgentPlayer variantAgent = Rulebase.makeAgent(rules2);
-		population.add(variantAgent);
+		HistogramAgent variantHAgent = Rulebase.makeAgent(rules2);
+		population.add(new AgentPlayer("variantAgent", variantHAgent));
 		
 		// Variation putting Osawa discard (38) before oldestNoInfo (28) and add hailMary
 		int[] chromossome3 = {42,8,13,38,28,6,33,35,20,37,23,30,26,9,0,14,17,10,21,25,4,15,16,11,31,3,5,29,36,7,27,34,12,2,39,19,40,18,24,1,32,22};
@@ -54,12 +54,17 @@ public class RunPopulationMirrorEvaluation {
 		for (int i = 0; i < chromossome3.length; i++) {
 			rules3[i] = Rulebase.ruleMapping(chromossome3[i]);
 		}
-		AgentPlayer hailMaryAgent = Rulebase.makeAgent(rules3);
-		population.add(hailMaryAgent);
+		HistogramAgent HailMaryHAgent = Rulebase.makeAgent(rules1);
+		population.add(new AgentPlayer("Hail Mary", HailMaryHAgent));
 		
 		PopulationEvaluationSummary pes = TestSuite.mirrorPopulationEvaluation(population, maxNumPlayers, numGames);
+	
 		
 		System.out.println(pes);
+		
+		evolvedHAgent.printHistogram();
+		variantHAgent.printHistogram();
+		HailMaryHAgent.printHistogram();
 		
 //		PairingSummary stats = TestSuite.VariableNumberPlayersTest(agentName, otherAgent, maxNumPlayers, numGames );
 //		
