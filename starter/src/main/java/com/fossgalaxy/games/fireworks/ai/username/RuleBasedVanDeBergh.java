@@ -28,7 +28,7 @@ public class RuleBasedVanDeBergh {
     };
 
 	@AgentBuilderStatic("RuleBasedVanDeBergh")
-    public static Agent buildRuleBased(){
+    public static ProductionRuleAgent buildRuleBased(){
         ProductionRuleAgent pra = new ProductionRuleAgent();
 
         //you can add rules to your agent here
