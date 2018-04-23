@@ -20,10 +20,10 @@ public class App
 {
     public static void main( String[] args )
     {
-        int numPlayers = 2;
+        int numPlayers = 5;
         int numGames = 1;
         //String agentName = "SampleAgent";
-        String agentName = "HumanControlledAgent";
+        String agentName = "HumanControlledStateEvaluator";
         String otherAgentName = "pmctsND";
         String modelName = "RuleBasedPiers";
 
@@ -43,7 +43,9 @@ public class App
         for (int i=0; i<numGames; i++) {
             //add your agents to the game
             Agent[] agents = new Agent[numPlayers];
-            agents[0]=a2;
+            for (int j = 0; j<numPlayers; j++) {
+            		agents[j]=a2;
+            }
             for (int j=1; j<numPlayers; j++) {
                 // the player class keeps track of our state for us...
                 

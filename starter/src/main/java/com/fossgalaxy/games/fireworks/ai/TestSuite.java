@@ -82,7 +82,7 @@ public class TestSuite {
 
             GameStats stats = runner.playGame(random.nextLong());
             statsSummary.add(stats.score);
-            System.out.println("Game number " + i + " complete");
+           // System.out.println("Game number " + i + " complete");
         }
 
         return statsSummary;
