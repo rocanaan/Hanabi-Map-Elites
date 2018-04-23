@@ -1,5 +1,8 @@
 package Evolution;
 
+import java.util.Collections;
+import java.util.Vector;
+
 public class Individual {
 	
 	/**
@@ -27,8 +30,8 @@ public class Individual {
 	 */
 	public Individual(int chromosomeLength) {
 		// Create random individual
-		int[] individual;
-		individual = new int[chromosomeLength];
+		Vector<Integer> individual = new Vector<Integer>();
+		//individual = new int[chromosomeLength];
 		
 		/**
 		 * In this case, we can no longer simply pick 0s and 1s -- we need to
@@ -37,10 +40,19 @@ public class Individual {
 		 * take care of that for us.
 		 */
 		for (int gene = 0; gene < chromosomeLength; gene++) {
-			individual[gene] = gene;
+			individual.add(gene);
 		}
 		
-		this.chromosome = individual;
+		Collections.shuffle(individual);
+		
+		int size = individual.size();
+		int chromossome[] = new int[size];
+		
+		for (int i=0; i< size; i++) {
+			chromossome[i]=individual.get(i);
+		}
+		
+		this.chromosome = chromossome;
 	}
 
 	/**
