@@ -5,6 +5,7 @@ import com.fossgalaxy.games.fireworks.GameStats;
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.mcts.MCTSPredictor;
+import com.fossgalaxy.games.fireworks.ai.username.*;
 import com.fossgalaxy.games.fireworks.players.Player;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import com.fossgalaxy.stats.BasicStats;
@@ -17,40 +18,37 @@ import java.util.Random;
  *
  * This will run a bunch of games with your agent so you can see how it does.
  */
-public class PredictorMctsTest 
-{
-    public static void main( String[] args )
-    {
+public class PredictorMctsTest {
+
+    public static void main(String[] args) {
         int numPlayers = 2;
-        int numGames = 1;
-        //String agentName = "SampleAgent";
-        String agentName = "HumanControlledAgent";
-        String otherAgentName = "pmctsND";
-        String modelName = "RuleBasedPiers";
+        int numGames = 10;
+
+        String agentName = "pmctsND";
+        String otherAgentName = "RuleBasedPiers";
+
+        // building the ProbabilisticModel agent
+        Agent[] testPool = {RuleBasedIGGI.buildRuleBased(), RuleBasedInternal.buildRuleBased(), RuleBasedOuter.buildRuleBased(),
+                            new SampleLegalRandom(), RuleBasedVanDeBergh.buildRuleBased(),
+                            RuleBasedFlawed.buildRuleBased(), RuleBasedPiers.buildRuleBased()};
+        ProbabilisticModel PMAgent = new ProbabilisticModel(testPool);
+        // building the Predictor MCTS using the ProbabilisticModel
+        Agent[] agents = new Agent[numPlayers];
+        agents[0] = null;
+        for (int j = 1; j < numPlayers; j++) {
+            agents[j] = PMAgent;
+        }
+        Agent mctsAgent = new MCTSPredictor(agents);
+        Player player = new AgentPlayer(agentName, mctsAgent);
 
         Random random = new Random();
         StatsSummary statsSummary = new BasicStats();
-        
-        GameRunner runner = new GameRunner("test-game", numPlayers);
-        
-        
-        
-        Agent a1 = AgentUtils.buildAgent(agentName);
-        Player player = new AgentPlayer(agentName, AgentUtils.buildAgent(agentName));
-        runner.addPlayer(player);
-        
-        Agent a2 = AgentUtils.buildAgent(modelName);
+        for (int i = 0; i < numGames; i++) {
+            GameRunner runner = new GameRunner("test-game", numPlayers);
 
-        for (int i=0; i<numGames; i++) {
-            //add your agents to the game
-            Agent[] agents = new Agent[numPlayers];
-            agents[0]=a2;
-            for (int j=1; j<numPlayers; j++) {
-                // the player class keeps track of our state for us...
-                
-                Agent mctsAgent = new MCTSPredictor(agents);
-                
-                player = new AgentPlayer(otherAgentName, mctsAgent);
+            runner.addPlayer(player);
+            for (int j = 1; j < numPlayers; j++) {
+                player = new AgentPlayer(otherAgentName, AgentUtils.buildAgent(otherAgentName));
                 runner.addPlayer(player);
             }
 
@@ -60,7 +58,7 @@ public class PredictorMctsTest
         }
 
         //print out the stats
-        System.out.println("Stats for agent " +  agentName);
+        System.out.println("Stats for agent " + agentName);
         System.out.println(String.format("Our agent: Avg: %f, min: %f, max: %f",
                 statsSummary.getMean(),
                 statsSummary.getMin(),
