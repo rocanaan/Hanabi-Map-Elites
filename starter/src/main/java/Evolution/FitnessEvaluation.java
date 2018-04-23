@@ -24,6 +24,7 @@ public class FitnessEvaluation {
 			Vector<AgentPlayer> agents = new Vector<AgentPlayer>();
 			
 			// Create an AgentPlayer instance for each chromossome
+			int count = 0;
 			for (Individual individual : individuals)
 			{
 				Rule[] agentRules = new Rule[ruleset.length];
@@ -32,7 +33,8 @@ public class FitnessEvaluation {
 					agentRules[i] = Rulebase.ruleMapping(individual.getGene(i));
 				}
 				HistogramAgent agent = Rulebase.makeAgent(agentRules);
-				agents.add(new AgentPlayer("histogramAgent", agent));
+				agents.add(new AgentPlayer("histogramAgent"+count, agent));
+				count++;
 			}
 			//TODO: 5 (number of players) and 10 (number of games per evaluation) should not be hardcoded. Potentially later take measures so every evaluation uses the sam random seed.
 			PopulationEvaluationSummary pes = null;

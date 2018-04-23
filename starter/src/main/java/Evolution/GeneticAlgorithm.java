@@ -1,5 +1,6 @@
 package Evolution;
 import java.util.Arrays;
+import java.util.Vector;
 
 public class GeneticAlgorithm {
 	
@@ -8,6 +9,8 @@ public class GeneticAlgorithm {
     private double crossoverRate;
     private int elitismCount;
 	protected int tournamentSize;
+	
+	private Vector<Double> fittestPerGeneration = new Vector<Double>();
 
 
 	public GeneticAlgorithm(int populationSize, double mutationRate, double crossoverRate, int elitismCount,
@@ -88,9 +91,17 @@ public class GeneticAlgorithm {
         
         double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, numGames, mirror);
         
+        double bestFitness = 0;
+        
         for (int i = 0; i<fitnessOfPopulation.length; i++) {
-        	population.getIndividual(i).setFitness(fitnessOfPopulation[i]);
+        		double fitness = fitnessOfPopulation[i];
+        		population.getIndividual(i).setFitness(fitnessOfPopulation[i]);
+        		if (fitness > bestFitness) {
+        			bestFitness = fitness;
+        		}
         }
+        
+        fittestPerGeneration.add(bestFitness);
         
         for (int i = 0; i<population.getIndividuals().length; i++) {
         		System.out.println("Individual [" +population.getIndividual(i).toString() + "] fitness = " + fitnessOfPopulation[i]);	
@@ -99,6 +110,14 @@ public class GeneticAlgorithm {
         
 //        double avgFitness = populationFitness / population.size();
         //population.setPopulationFitness(avgFitness);
+    }
+    
+    public void printFittestPerGeneration() {
+    		int i = 0;
+    		for (double score : fittestPerGeneration) {
+    			System.out.println ("Fittest of generation " + i + " has fitness " + score);
+    			i++;
+    		}
     }
  
 	/**

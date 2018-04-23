@@ -70,6 +70,7 @@ public class RunEvolutionMixed {
 			// Evaluate population
 			System.out.println("Evaluating fitness after generation " + generation);
 			ga.evalPopulation(population, numGames, mirror);
+			ga.printFittestPerGeneration();
 			
 
 			// Increment the current generation

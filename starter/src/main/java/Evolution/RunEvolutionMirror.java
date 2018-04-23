@@ -69,6 +69,7 @@ public class RunEvolutionMirror {
 
 			// Evaluate population
 			System.out.println("Evaluating fitness after generation " + generation);
+			ga.printFittestPerGeneration();
 			ga.evalPopulation(population, numGames, mirror);
 			
 
