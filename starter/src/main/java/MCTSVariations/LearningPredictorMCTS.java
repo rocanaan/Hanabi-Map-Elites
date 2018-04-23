@@ -17,7 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by WebPigeon on 09/08/2016.
+ * - Create a variation of PredictorMCTS that uses probabilistic model agent
+ * - Modify the last agent with the ability to look at history and update the probabilities of the model agent
  */
 public class LearningPredictorMCTS  extends MCTS { // or extends PredictorMCTS
     protected Agent[] agents;
