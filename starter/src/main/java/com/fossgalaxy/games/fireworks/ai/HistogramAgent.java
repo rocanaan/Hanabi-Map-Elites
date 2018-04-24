@@ -48,4 +48,41 @@ public class HistogramAgent extends ProductionRuleAgent{
             index++;
         }
     }
+    
+    
+    // Index of last rule fired at least minTimes
+    public int getLastFiredRuleIndex(int minTimes) {
+    		int last = -1;
+    		for (int i = 0; i< histogram.size(); i++) {
+    			int activations = histogram.get(i);
+    			if (activations > minTimes) {
+    				last = i;
+    			}
+    		}
+    		return last;
+    }
+    
+    // Index of last rule fired at least once
+    public int getLastFiredRuleIndex() {
+		return getLastFiredRuleIndex(1);
+    }
+
+    
+    //Number of rules that fired at least minTimes
+    public int getNumberOfFiredRules(int minTimes) {
+    		int fired = 0;
+    		for (Integer i: histogram) {
+    			if (i>=minTimes) {
+    				fired ++;
+    			}
+    		}
+    		return fired;
+    }
+    
+    // Number of rules fired at least once
+    public int getNumberOfFiredRules() {
+    		return getNumberOfFiredRules(1);
+    }
+    
+   
 }

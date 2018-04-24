@@ -201,11 +201,32 @@ public class Rulebase {
 		return baselineChromossomes;
 	}
 	
-	private static int[] randomFillPrefix(int[] prefix) {
+	public static int[] getRandomChromossome() {
+		return getRandomChromossome(getChromossomeLength());
+	}
+	
+	public static int[] getRandomChromossome(int length) {
+		List<Integer> rules = new ArrayList<Integer>();
+		
+		for (int i = 0; i < getChromossomeLength(); i++) {
+			rules.add(i);
+		}
+		Collections.shuffle(rules);
+		int[] chromossome = new int[length];
+		for (int i =0; i<length; i++) {
+			chromossome[i] = rules.get(i);
+		}
+		return chromossome;
+	}
+	
+	private static int[] randomFillPrefix(int[] prefix){
+		return randomFillPrefix(prefix, getChromossomeLength());
+	}
+	
+	private static int[] randomFillPrefix(int[] prefix, int chromossomeLength) {
 		List<Integer> rules = new ArrayList<Integer>();
 		
 		//create a list from 0 to chromossomeLength-1
-		int chromossomeLength = getChromossomeLength();
 		for (int i = 0; i< chromossomeLength; i++) {
 			rules.add(i);
 		}

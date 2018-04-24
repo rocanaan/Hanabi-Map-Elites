@@ -1,5 +1,6 @@
 package com.fossgalaxy.games.fireworks.ai;
 
+import java.util.Random;
 import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.GameRunner;
@@ -28,7 +29,7 @@ public class RunSinglePairingEvaluation {
 		
 		AgentPlayer otherAgent = new AgentPlayer(otherAgentName, AgentUtils.buildAgent(otherAgentName));
 		
-		PairingSummary stats = TestSuite.VariableNumberPlayersTest( yourAgent,  otherAgent,  maxNumPlayers,  numGames);
+		PairingSummary stats = TestSuite.VariableNumberPlayersTest( yourAgent,  otherAgent,  maxNumPlayers,  numGames, new Random());
 
 		System.out.println(stats);
 				

@@ -54,7 +54,7 @@ public class PairingSummary {
 			mean  = mean/(double) n;
 		}
 		
-		return mean;
+		return mean; 
 	}
 	
 	public double getScoreByGameSize(int n) {
