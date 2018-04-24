@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+<!--   <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="Sentry" class="com.getsentry.raven.logback.SentryAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>WARN</level>
+    </filter>
+    <dsn>http://e6162aa6e23f4b2f8af1bebfd8040d0e:a2e5f4a5d98a4c3f9720764252cdc53e@sentry.fossgalaxy.com/6</dsn>
+  </appender>
+
+  warnings should ping sentry
+  <root level="warn">
+    <appender-ref ref="Sentry" />
+  </root>
+
+  we'll log info to both
+  <root level="INFO">
+    <appender-ref ref="Console" />
+    <appender-ref ref="Sentry" />
+  </root> -->
+
+</configuration>
