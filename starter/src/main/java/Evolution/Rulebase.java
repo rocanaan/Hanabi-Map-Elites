@@ -51,6 +51,10 @@ import com.fossgalaxy.games.fireworks.ai.rule.wrapper.IfRule;
 import com.fossgalaxy.games.fireworks.ai.username.RuleBasedPiers;
 import com.fossgalaxy.games.fireworks.state.GameState;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
+
+import newrules.PlayJustHinted;
+import newrules.TellUnambiguous;
+
 import com.fossgalaxy.games.fireworks.ai.TestSuite;
 
 public class Rulebase {
@@ -133,7 +137,30 @@ public class Rulebase {
 			
 			new IfRule(informationLessThan4, new TellDispensable()), //Used by Piers
 			
-			new PlayProbablySafeCard(0.25) // Used by Flawed
+			new PlayProbablySafeCard(0.25), // Used by Flawed
+			
+			
+			// New, more complex rules
+			new PlayJustHinted(),
+			new PlayJustHinted(true, true, 2, 0),
+			new PlayJustHinted(true, false, 2, 0),
+			new PlayJustHinted(false, true, 2, 0),
+			new PlayJustHinted(false, false, 2, 0),
+			new PlayJustHinted(true, true, 2, 0.6),
+			new PlayJustHinted(true, false, 2, 0.6),
+			new PlayJustHinted(false, true, 2, 0.6),
+			new PlayJustHinted(false, false, 2, 0.6),
+			new PlayJustHinted(true, true, 2, 0.8),
+			new PlayJustHinted(true, false, 2, 0.8),
+			new PlayJustHinted(false, true, 2, 0.8),
+			new PlayJustHinted(false, false, 2, 0.8),
+			new PlayJustHinted(true, true, 2, 1),
+			new PlayJustHinted(true, false, 2, 1),
+			new PlayJustHinted(false, true, 2, 1),
+			new PlayJustHinted(false, false, 2, 1),
+			
+			new TellUnambiguous(true),
+			new TellUnambiguous(false)
 	};
 
 	
@@ -205,7 +232,7 @@ public class Rulebase {
 		return getRandomChromossome(getChromossomeLength());
 	}
 	
-	public static int[] getRandomChromossome(int length) {
+	public	 static int[] getRandomChromossome(int length) {
 		List<Integer> rules = new ArrayList<Integer>();
 		
 		for (int i = 0; i < getChromossomeLength(); i++) {
