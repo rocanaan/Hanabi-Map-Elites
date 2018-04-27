@@ -122,9 +122,9 @@ public class HumanControlledAgent implements Agent {
         for (int i = 0; i < possibleMoves.size(); i++) {
             Action a = possibleMoves.get(i);
             if (a instanceof DiscardCard) {
-                System.out.println(i + ". Discard card " + (((DiscardCard) a).slot + 1));
+                System.out.println(i + ". Discard card " + (((DiscardCard) a).slot));
             } else if (a instanceof PlayCard) {
-                System.out.println(i + ". Play card " + (((PlayCard) a).slot + 1));
+                System.out.println(i + ". Play card " + (((PlayCard) a).slot));
             } else if (a instanceof TellColour) {
                 System.out.println(i + ". Tell player " + ((TellColour) a).player + " about " + ((TellColour) a).colour);
             } else if (a instanceof TellValue) {

@@ -33,7 +33,7 @@ public class StandardDeviationEstimation
         
         int numGames = 1;
         int repetitions = 200;
-        boolean mirror = true;
+        boolean mirror = false;
         Vector<AgentPlayer> population = new Vector<AgentPlayer>();
         Vector<HistogramAgent> agents = new Vector<HistogramAgent>();
         
@@ -85,16 +85,16 @@ public class StandardDeviationEstimation
  		agents.add(evolvedMixed2);
  		population.add(new AgentPlayer("Evolved Mixed 2", evolvedMixed2));
  		
- 		int[] chromossome6 = {6,40,8,10,13,28,37,22,18,49,2,5,24,33,31,35,26,14,38,34,21,44,25,9,15,19,36,32,45,39,47,20,3,4,29,7,16,48,42,17,43,1,27,46,0,41,12,30,23,11};
+ 		int[] chromossome6 = {57,61,7,10,68,64,60,32,37,36,43,34,13,39,27,21,44,23,20,55,31,9,41,65,0,40,24,52,22,17,45,28,2,59,48,25,67,62,26,53,8,16,63,56,5,30,66,49,6,3,1,29,51,58,54,14,15,47,50,42,35,11,33,18,4,12,46,38,19};
  		Rule[] rules6 = new Rule[chromossome6.length+1];
  		for (int i = 0; i < chromossome6.length; i++) {
  			rules6[i] = Rulebase.ruleMapping(chromossome6[i]);
  		}
- 		HistogramAgent evolvedMixed3 = Rulebase.makeAgent(rules6);
- 		agents.add(evolvedMixed3);
- 		population.add(new AgentPlayer("Evolved Mixed 3", evolvedMixed3));
+ 		HistogramAgent evolvedMixed5 = Rulebase.makeAgent(rules6);
+ 		agents.add(evolvedMixed5);
+ 		population.add(new AgentPlayer("Evolved Mixed 3", evolvedMixed5));
  		
- 		int[] chromossome7 = {8,1,10,13,28,22,18,41,38,35,9,34,0,30,33,43,2,15,25,40,21,17,11,19,32,31,46,20,42,47,6,29,23,24,37,3,7,5,14,49,48,36,12,27,39,16,44,4,45,26};
+ 		int[] chromossome7 = {41,7,68,35,45,65,28,34,36,13,61,25,37,19,59,46,31,30,15,49,6,3,1,29,51,58,54,48,47,66,50,42,56,18,33,0,4,12,53,2,39,57,14,24,8,44,16,55,64,67,26,27,52,32,23,21,40,10,22,17,62,63,60,43,11,9,38,5,20};
  		Rule[] rules7 = new Rule[chromossome7.length+1];
  		for (int i = 0; i < chromossome7.length; i++) {
  			rules7[i] = Rulebase.ruleMapping(chromossome7[i]);
@@ -103,7 +103,7 @@ public class StandardDeviationEstimation
  		agents.add(evolvedMixed4);
  		population.add(new AgentPlayer("Evolved Mixed 4", evolvedMixed4));
  		
- 		int[] chromossome8 = {7,35,2,41,46,47,13,36,23,16,17,48,49,44,30,6,8,27,22,29,37,40,12,42,25,5,38,28,20,34,9,45,31,33,39,3,43,32,24,21,26,18,15,4,14,0,11,1,10,19};
+ 		int[] chromossome8 = {7,10,21,35,56,13,60,68,36,26,27,2,19,65,32,66,53,8,44,16,55,17,24,12,15,64,38,50,37,62,45,46,41,34,47,29,3,51,58,54,14,9,31,40,42,63,33,0,5,39,4,23,61,43,22,11,57,48,25,1,20,28,52,6,18,67,59,49,30};
  		Rule[] rules8 = new Rule[chromossome8.length+1];
  		for (int i = 0; i < chromossome8.length; i++) {
  			rules8[i] = Rulebase.ruleMapping(chromossome8[i]);
@@ -112,7 +112,7 @@ public class StandardDeviationEstimation
  		agents.add(evolvedMirror2);
  		population.add(new AgentPlayer("Evolved Mirror 2", evolvedMirror2));
  		
- 		int[] chromossome9 = {7,35,2,41,46,47,13,36,23,16,17,48,49,44,30,6,8,27,22,29,37,40,12,42,25,5,38,28,20,34,9,45,31,33,39,3,43,32,24,21,26,18,15,4,14,0,11,1,10,19};
+ 		int[] chromossome9 = {52,38,7,10,13,62,36,27,19,55,17,24,34,64,31,37,41,54,48,32,21,0,39,53,18,2,1,68,8,40,9,26,60,67,12,23,50,59,61,3,63,44,22,14,66,35,15,45,20,28,42,57,51,58,65,4,47,25,43,16,49,56,30,33,29,11,6,5,46};
  		Rule[] rules9 = new Rule[chromossome9.length+1];
  		for (int i = 0; i < chromossome9.length; i++) {
  			rules9[i] = Rulebase.ruleMapping(chromossome9[i]);
@@ -120,6 +120,42 @@ public class StandardDeviationEstimation
  		HistogramAgent evolvedMirror3= Rulebase.makeAgent(rules9);
  		agents.add(evolvedMirror3);
  		population.add(new AgentPlayer("Evolved Mirror 3", evolvedMirror3));
+ 		
+// 		int[] chromossome6 = {6,40,8,10,13,28,37,22,18,49,2,5,24,33,31,35,26,14,38,34,21,44,25,9,15,19,36,32,45,39,47,20,3,4,29,7,16,48,42,17,43,1,27,46,0,41,12,30,23,11};
+// 		Rule[] rules6 = new Rule[chromossome6.length+1];
+// 		for (int i = 0; i < chromossome6.length; i++) {
+// 			rules6[i] = Rulebase.ruleMapping(chromossome6[i]);
+// 		}
+// 		HistogramAgent evolvedMixed3 = Rulebase.makeAgent(rules6);
+// 		agents.add(evolvedMixed3);
+// 		population.add(new AgentPlayer("Evolved Mixed 3", evolvedMixed3));
+// 		
+// 		int[] chromossome7 = {8,1,10,13,28,22,18,41,38,35,9,34,0,30,33,43,2,15,25,40,21,17,11,19,32,31,46,20,42,47,6,29,23,24,37,3,7,5,14,49,48,36,12,27,39,16,44,4,45,26};
+// 		Rule[] rules7 = new Rule[chromossome7.length+1];
+// 		for (int i = 0; i < chromossome7.length; i++) {
+// 			rules7[i] = Rulebase.ruleMapping(chromossome7[i]);
+// 		}
+// 		HistogramAgent evolvedMixed4 = Rulebase.makeAgent(rules7);
+// 		agents.add(evolvedMixed4);
+// 		population.add(new AgentPlayer("Evolved Mixed 4", evolvedMixed4));
+// 		
+// 		int[] chromossome8 = {7,35,2,41,46,47,13,36,23,16,17,48,49,44,30,6,8,27,22,29,37,40,12,42,25,5,38,28,20,34,9,45,31,33,39,3,43,32,24,21,26,18,15,4,14,0,11,1,10,19};
+// 		Rule[] rules8 = new Rule[chromossome8.length+1];
+// 		for (int i = 0; i < chromossome8.length; i++) {
+// 			rules8[i] = Rulebase.ruleMapping(chromossome8[i]);
+// 		}
+// 		HistogramAgent evolvedMirror2= Rulebase.makeAgent(rules8);
+// 		agents.add(evolvedMirror2);
+// 		population.add(new AgentPlayer("Evolved Mirror 2", evolvedMirror2));
+// 		
+// 		int[] chromossome9 = {7,35,2,41,46,47,13,36,23,16,17,48,49,44,30,6,8,27,22,29,37,40,12,42,25,5,38,28,20,34,9,45,31,33,39,3,43,32,24,21,26,18,15,4,14,0,11,1,10,19};
+// 		Rule[] rules9 = new Rule[chromossome9.length+1];
+// 		for (int i = 0; i < chromossome9.length; i++) {
+// 			rules9[i] = Rulebase.ruleMapping(chromossome9[i]);
+// 		}
+// 		HistogramAgent evolvedMirror3= Rulebase.makeAgent(rules9);
+// 		agents.add(evolvedMirror3);
+// 		population.add(new AgentPlayer("Evolved Mirror 3", evolvedMirror3));
      		
 // 		int[] chromossome4 = {46,8,10,13,28,17,20,22,18,29,49,41,38,34,9,24,37,45,35,47,0,12,15,14,6,43,48,2,23,27,1,21,42,16,44,4,7,25,3,40,39,26,33,11,19,36,32,31,5,30};
 // 		Rule[] rules4 = new Rule[chromossome4.length+1];
