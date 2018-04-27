@@ -52,12 +52,16 @@ public class TellUnambiguous extends AbstractTellRule{
 		for (int i = 0; i < state.getPlayerCount(); i++) {
 			int nextPlayer = (playerID + i) % state.getPlayerCount();
 			Hand hand = state.getHand(nextPlayer);
-
+			
+			
 			// gard against trying to tell ourselves things
 			if (nextPlayer == playerID) {
 				continue;
 			}
 
+			//System.out.println("Evaluating hand of player " + nextPlayer);
+
+			
 			int[] playableMask = new int[state.getHandSize()];
 			boolean hasPlayable = false;
 			for (int slot = 0; slot < state.getHandSize(); slot++) {
@@ -71,10 +75,10 @@ public class TellUnambiguous extends AbstractTellRule{
 //				int currTable = state.getTableValue(card.colour);
 //				if (card.value != currTable + 1) {
 				if (isPlayable(card,state)) {
-					playableMask[slot] = 0;
+					playableMask[slot] = 1;
 					continue;
 				}
-				playableMask[slot] = 1;
+				playableMask[slot] = 0;
 				hasPlayable = true;
 			}
 
@@ -83,7 +87,14 @@ public class TellUnambiguous extends AbstractTellRule{
 			// Time to check whether the player told already knows partial information on
 			// the playable cards
 			// And how the missing information collides with the playable/unplayable cards
+			
+//			System.out.print("Playable cards [");
+//			for (int playable:playableMask) {
+//				System.out.print(playable+",");
+//			}
+//			System.out.println("]");
 
+			
 			if (!hasPlayable) {
 				continue; // go to next player
 			}
