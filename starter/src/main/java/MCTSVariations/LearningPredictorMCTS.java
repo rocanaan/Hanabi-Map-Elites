@@ -7,12 +7,13 @@ import com.fossgalaxy.games.fireworks.state.events.GameEvent;
 import java.util.LinkedList;
 
 /**
- * - Create a variation of PredictorMCTS that uses probabilistic model agent -
- * Modify the last agent with the ability to look at history and update the
- * probabilities of the model agent
+ * This agent keeps a copy of the game state that is updated until the last time this MCTS agent made a move.
+ * When it updates the probability of the agents before making a move, the copy will be used to determine what 
+ * could have happened at that point of time, and compare with what actually happened. The copy will then get updated
+ * by one turn.
  */
 public class LearningPredictorMCTS extends MCTSPredictor {
-
+    GameState stateCopy; 
     ProbabilisticModel[] agents;
 
     //constructors
@@ -34,10 +35,17 @@ public class LearningPredictorMCTS extends MCTSPredictor {
         LinkedList<GameEvent> history = state.getHistory();
         for (int i = 0; i < agents.length; i++) {
             if (agents[i] != null) {
-                // update the probabilities
+                // get the corresponding GameEvent from history
+                
+                // turn the GameEvent into an Action
+                
+                // call updateProbability(stateCopy, action); see comments at ProbabilisticModel
+                
+                // update stateCopy with the actual event so it is ready for the next agent
 
             }
         }
+        // update stateCopy with the Action this MCTS agent will do this turn
         return super.doMove(agentID, state);
     }
 }

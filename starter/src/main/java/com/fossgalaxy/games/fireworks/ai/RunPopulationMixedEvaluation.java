@@ -16,10 +16,10 @@ import com.fossgalaxy.stats.StatsSummary;
 public class RunPopulationMixedEvaluation {
 	public static void main( String[] args ) {
 		int maxNumPlayers = 5;
-		int numGames = 1000;
+		int numGames = 100;
 		
 		// This is the population of agents we are evaluating
-		String[] agentNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers", "PiersNoDispensableTell", "PiersDispensableAfterOsawa"};
+		String[] agentNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
 		
 		// This is the set of agents we are testing AGAINST
 		// Note: This is the same testing pool used by Walton-Rivers

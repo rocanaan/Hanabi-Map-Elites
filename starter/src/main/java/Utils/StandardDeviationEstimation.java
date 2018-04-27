@@ -102,6 +102,7 @@ public class StandardDeviationEstimation
  		HistogramAgent evolvedMixed4 = Rulebase.makeAgent(rules7);
  		agents.add(evolvedMixed4);
  		population.add(new AgentPlayer("Evolved Mixed 4", evolvedMixed4));
+
  		
  		int[] chromossome8 = {7,10,21,35,56,13,60,68,36,26,27,2,19,65,32,66,53,8,44,16,55,17,24,12,15,64,38,50,37,62,45,46,41,34,47,29,3,51,58,54,14,9,31,40,42,63,33,0,5,39,4,23,61,43,22,11,57,48,25,1,20,28,52,6,18,67,59,49,30};
  		Rule[] rules8 = new Rule[chromossome8.length+1];
@@ -156,6 +157,7 @@ public class StandardDeviationEstimation
 // 		HistogramAgent evolvedMirror3= Rulebase.makeAgent(rules9);
 // 		agents.add(evolvedMirror3);
 // 		population.add(new AgentPlayer("Evolved Mirror 3", evolvedMirror3));
+
      		
 // 		int[] chromossome4 = {46,8,10,13,28,17,20,22,18,29,49,41,38,34,9,24,37,45,35,47,0,12,15,14,6,43,48,2,23,27,1,21,42,16,44,4,7,25,3,40,39,26,33,11,19,36,32,31,5,30};
 // 		Rule[] rules4 = new Rule[chromossome4.length+1];
@@ -205,25 +207,14 @@ public class StandardDeviationEstimation
         		scores.add(new Vector<Double>());
         }
         
-        if (mirror) {
-        		for (int i = 0; i<repetitions; i++) {
-		        	PopulationEvaluationSummary pes = TestSuite.mirrorPopulationEvaluation(population, 5, numGames);
-		    		for (int j = 0; j<population.size();j++) {
-		    			Vector<Double> individualScore = scores.get(j);
-		    			individualScore.add(pes.getScoreIndividualAgent(j));
-		    		}
+        for (int i = 0; i<repetitions; i++) {
+        		PopulationEvaluationSummary pes = TestSuite.mixedPopulationEvaluation(population, baseline, 5, numGames);
+        		for (int j = 0; j<population.size();j++) {
+        			Vector<Double> individualScore = scores.get(j);
+        			individualScore.add(pes.getScoreIndividualAgent(j));
         		}
         }
-        else {
-		    	for (int i = 0; i<repetitions; i++) {
-		   
-		    		PopulationEvaluationSummary pes = TestSuite.mixedPopulationEvaluation(population, baseline, 5, numGames);
-		    		for (int j = 0; j<population.size();j++) {
-		    			Vector<Double> individualScore = scores.get(j);
-		    			individualScore.add(pes.getScoreIndividualAgent(j));
-		    		}
-		    }
-        }
+        
         for (int j = 0; j<population.size(); j++) {
         		System.out.println("Agent " + population.get(j) + " stats: ");
             System.out.println("Mean: " + Utils.getMean(scores.get(j)));

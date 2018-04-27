@@ -19,9 +19,9 @@ import Evolution.Rulebase;
 public class RunPopulationMirrorEvaluation {
 	public static void main( String[] args ) {
 		int maxNumPlayers = 5; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
-		int numGames = 1000;
+		int numGames = 20;
 		
-		String[] agentNames = { "RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers","PiersNoDispensableTell", "PiersDispensableAfterOsawa"};
+		String[] agentNames = { "RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
 		
 		Vector<AgentPlayer> population = new Vector<AgentPlayer>();
 		
