@@ -16,7 +16,7 @@ import com.fossgalaxy.stats.StatsSummary;
 public class RunPopulationMixedEvaluation {
 	public static void main( String[] args ) {
 		int maxNumPlayers = 5;
-		int numGames = 100;
+		int numGames = 2000;
 		
 		// This is the population of agents we are evaluating
 		String[] agentNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};

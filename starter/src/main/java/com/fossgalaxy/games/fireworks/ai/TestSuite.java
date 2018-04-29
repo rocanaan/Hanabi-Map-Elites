@@ -54,18 +54,28 @@ public class TestSuite {
 	
 	public static StatsSummary ConstantNumberPlayersTest (int numPlayers, int numGames, AgentPlayer yourAgent, AgentPlayer otherAgent, Random random) {
         StatsSummary statsSummary = new BasicStats();
+        
+        boolean randomizePosition = true;
 
         for (int i=0; i<numGames; i++) {
             GameRunner runner = new GameRunner("test-game", numPlayers);
             
-            // Adds your agent to the game
-            runner.addPlayer(yourAgent);
-            
-            //add N-1 copies of other agent to the game
-            for (int j = 2; j<=numPlayers;j++)
-            {
-            		runner.addPlayer(new AgentPlayer(otherAgent.getName(),otherAgent.policy));
+            int playerPosition = 0;
+            if (randomizePosition) {
+            		playerPosition = random.nextInt(numPlayers);
             }
+            
+            for (int pos = 0; pos<numPlayers; pos++ ) {
+            		if (pos == playerPosition) {
+            			// Adds your agent to the game
+                     runner.addPlayer(yourAgent);
+            		}
+	            else {
+	            	// Adds the other 
+	            		runner.addPlayer(new AgentPlayer(otherAgent.getName(),otherAgent.policy));
+	            }
+            }
+            // Adds your agent to the game
             
 //            // Adds your agent to the game
 //            Player player = new AgentPlayer(yourAgentName, AgentUtils.buildAgent(yourAgentName));

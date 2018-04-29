@@ -76,10 +76,10 @@ public class TellUnambiguous extends AbstractTellRule{
 //				if (card.value != currTable + 1) {
 				if (isPlayable(card,state)) {
 					playableMask[slot] = 1;
+					hasPlayable = true;
 					continue;
 				}
 				playableMask[slot] = 0;
-				hasPlayable = true;
 			}
 
 			// Now we have an array representing whether each slot on that player's hand is
@@ -108,44 +108,6 @@ public class TellUnambiguous extends AbstractTellRule{
 			{
 				if (playableMask[candidateSlot] == 0) {
 					continue;
-				}
-				
-				//if I don't know the color of the current candidate, check how many collisions you get by hinting that color
-				if (hand.getKnownColour(candidateSlot) == null) {
-					int playableColorCollisions = 0;
-					int unplayableColorCollisions = 0;
-					for (int collisionTest = 0; collisionTest < state.getHandSize(); collisionTest++) {
-						if (collisionTest == candidateSlot) {
-							continue;
-						}
-						if (hand.getKnownColour(collisionTest) == null &&  hand.getCard(collisionTest).colour == hand.getCard(candidateSlot).colour) {
-							// Color collision detected
-							if (playableMask[collisionTest] == 1) {
-								playableColorCollisions++;
-							}
-							else {
-								unplayableColorCollisions++;
-							}
-						}
-					}
-					if (prioritizePlayableCollisions) {
-						if (playableColorCollisions > bestSlotPlayableCollisions ||
-								(playableColorCollisions == bestSlotPlayableCollisions && unplayableColorCollisions < bestSlotUnplayableCollisions)) {
-							bestSlotSoFar = candidateSlot;
-							typeOfClueBestSlot = "Color";
-							bestSlotPlayableCollisions = playableColorCollisions;
-							bestSlotUnplayableCollisions = unplayableColorCollisions;
-						}
-					}
-					else if (!prioritizePlayableCollisions) {
-						if (unplayableColorCollisions < bestSlotUnplayableCollisions ||
-								(unplayableColorCollisions == bestSlotUnplayableCollisions && playableColorCollisions > bestSlotPlayableCollisions)) {
-							bestSlotSoFar = candidateSlot;
-							typeOfClueBestSlot = "Color";
-							bestSlotPlayableCollisions = playableColorCollisions;
-							bestSlotUnplayableCollisions = unplayableColorCollisions;
-						}
-					}
 				}
 				
 				//if I don't know the value of the current candidate, check how many collisions you get by hinting that value
@@ -185,6 +147,44 @@ public class TellUnambiguous extends AbstractTellRule{
 							}
 						}
 					}
+				
+				//if I don't know the color of the current candidate, check how many collisions you get by hinting that color
+				if (hand.getKnownColour(candidateSlot) == null) {
+					int playableColorCollisions = 0;
+					int unplayableColorCollisions = 0;
+					for (int collisionTest = 0; collisionTest < state.getHandSize(); collisionTest++) {
+						if (collisionTest == candidateSlot) {
+							continue;
+						}
+						if (hand.getKnownColour(collisionTest) == null &&  hand.getCard(collisionTest).colour == hand.getCard(candidateSlot).colour) {
+							// Color collision detected
+							if (playableMask[collisionTest] == 1) {
+								playableColorCollisions++;
+							}
+							else {
+								unplayableColorCollisions++;
+							}
+						}
+					}
+					if (prioritizePlayableCollisions) {
+						if (playableColorCollisions > bestSlotPlayableCollisions ||
+								(playableColorCollisions == bestSlotPlayableCollisions && unplayableColorCollisions < bestSlotUnplayableCollisions)) {
+							bestSlotSoFar = candidateSlot;
+							typeOfClueBestSlot = "Color";
+							bestSlotPlayableCollisions = playableColorCollisions;
+							bestSlotUnplayableCollisions = unplayableColorCollisions;
+						}
+					}
+					else if (!prioritizePlayableCollisions) {
+						if (unplayableColorCollisions < bestSlotUnplayableCollisions ||
+								(unplayableColorCollisions == bestSlotUnplayableCollisions && playableColorCollisions > bestSlotPlayableCollisions)) {
+							bestSlotSoFar = candidateSlot;
+							typeOfClueBestSlot = "Color";
+							bestSlotPlayableCollisions = playableColorCollisions;
+							bestSlotUnplayableCollisions = unplayableColorCollisions;
+						}
+					}
+				}
 				
 			}
 			
