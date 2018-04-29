@@ -54,6 +54,7 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 
 import newrules.PlayJustHinted;
 import newrules.TellUnambiguous;
+import newrules.TellUnambiguous2;
 
 import com.fossgalaxy.games.fireworks.ai.TestSuite;
 
@@ -160,7 +161,11 @@ public class Rulebase {
 			new PlayJustHinted(false, false, 2, 1),
 			
 			new TellUnambiguous(true),
-			new TellUnambiguous(false)
+			new TellUnambiguous(false),
+			
+			new TellUnambiguous2(1,0),
+			new TellUnambiguous2(10,-1),
+			new TellUnambiguous2(2,-1),
 	};
 
 	
