@@ -27,9 +27,9 @@ public class RunEvolutionMixed {
 	static int maxNumPlayers = 5;
 	static boolean rulebaseStandard = false;
 	public static void main(String[] args) {
-		
+		Rulebase rb = new Rulebase(rulebaseStandard);
 		// Create cities
-		int numRules = RulebaseExtended.getRuleset().length;
+		int numRules = rb.getRuleset().length;
 //		City cities[] = new City[numRules];
 //		
 //		// Loop to create random cities

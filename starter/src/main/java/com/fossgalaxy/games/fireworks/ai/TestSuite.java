@@ -1,7 +1,6 @@
 package com.fossgalaxy.games.fireworks.ai;
 
-import Evolution.RulebaseExtended;
-import Evolution.RulebaseStandard;
+import Evolution.Rulebase;
 import java.util.Random;
 import java.util.Vector;
 
@@ -176,6 +175,7 @@ public class TestSuite {
 
     // fileName is the path to the file, rulebaseStandard determines if the standard rulebase or the extended rulebase is being used
     public static ArrayList<HistogramAgent> makeAgentsFromFile(String fileName, boolean rulebaseStandard) {
+        Rulebase rb = new Rulebase(rulebaseStandard);
         String thisLine;
         ArrayList<HistogramAgent> agents = null;
         try {
@@ -190,15 +190,15 @@ public class TestSuite {
                 Rule[] rules1 = new Rule[chromossome.length];
                 for (int i = 0; i < chromossome.length; i++) {
                     if (rulebaseStandard) {
-                        rules1[i] = RulebaseStandard.ruleMapping(chromossome[i]);
+                        rules1[i] = rb.ruleMapping(chromossome[i]);
                     } else {
-                        rules1[i] = RulebaseExtended.ruleMapping(chromossome[i]);
+                        rules1[i] = rb.ruleMapping(chromossome[i]);
                     }
                 }
                 if (rulebaseStandard) {
-                    agents.add(RulebaseStandard.makeAgent(rules1));
+                    agents.add(rb.makeAgent(rules1));
                 } else {
-                    agents.add(RulebaseExtended.makeAgent(rules1));
+                    agents.add(rb.makeAgent(rules1));
                 }
             }
         } catch (Exception e) {

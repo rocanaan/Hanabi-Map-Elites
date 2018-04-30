@@ -14,7 +14,7 @@ import com.fossgalaxy.stats.BasicStats;
 import com.fossgalaxy.stats.StatsSummary;
 
 
-import Evolution.RulebaseExtended;
+import Evolution.Rulebase;
 
 import java.util.Random;
 import java.util.Vector;
@@ -34,15 +34,16 @@ public class HistogramEvaluationRandom
         HistogramAgent[] agents = new HistogramAgent[populationSize];
         Vector<AgentPlayer> agentPlayers = new Vector<AgentPlayer>();
         
-        int chromossomeLength = RulebaseExtended.getChromossomeLength();
+        Rulebase rb = new Rulebase(false);
+        int chromossomeLength = rb.getChromossomeLength();
 
       
         for (int i = 0; i<populationSize; i++) {
-        		int[] chromossome = RulebaseExtended.getRandomChromossome(chromossomeLength);
+        		int[] chromossome = rb.getRandomChromossome(chromossomeLength);
         		System.out.println("Chromossome " + i + " " + chromossome);
         		ProductionRuleAgent pra = new ProductionRuleAgent();
         		for (int gene : chromossome) {
-        			pra.addRule(RulebaseExtended.ruleMapping(gene));
+        			pra.addRule(rb.ruleMapping(gene));
         		}
         		agents[i] = new HistogramAgent(pra);
         		agentPlayers.add(new AgentPlayer("agent"+i,agents[i]));

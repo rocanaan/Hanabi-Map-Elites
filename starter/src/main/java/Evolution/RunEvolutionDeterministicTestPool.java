@@ -35,9 +35,9 @@ public class RunEvolutionDeterministicTestPool {
 	private static int testIndex = 0; // Change this parameter to use each of the agents
 	
 	public static void main(String[] args) {
-		
+		Rulebase rb = new Rulebase(rulebaseStandard);
 		// Create cities
-		int numRules = Rulebase.getRuleset().length;
+		int numRules = rb.getRuleset().length;
 //		City cities[] = new City[numRules];
 //		
 //		// Loop to create random cities
