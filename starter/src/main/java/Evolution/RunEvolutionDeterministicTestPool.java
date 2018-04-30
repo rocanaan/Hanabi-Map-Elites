@@ -19,7 +19,7 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
  * @author bkanber
  *
  */
-public class RunEvolutionSpecificPartner {
+public class RunEvolutionDeterministicTestPool {
 	public static int maxGenerations = 500; // note : generation count starts at zero, so this is actually 1000
 	public static int populationSize = 200;
 	public static double mutationRate = 0.1;
@@ -27,12 +27,12 @@ public class RunEvolutionSpecificPartner {
     public static int elitismCount = 20;
 	public static  int tournamentSize = 5;
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
-	static int minNumPlayers = 2;
-	static int maxNumPlayers = 5;
+	static int minNumPlayers = 3;
+	static int maxNumPlayers = 3;
 	static boolean rulebaseStandard = false;
 	
-	private static String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
-	private static int testIndex = 0; // Change this parameter to use each of the agents (index goes from 0 - 6)
+	private static String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter"};
+	private static int testIndex = 0; // Change this parameter to use each of the agents
 	
 	public static void main(String[] args) {
 		
@@ -50,9 +50,11 @@ public class RunEvolutionSpecificPartner {
 //			cities[cityIndex] = new City(xPos, yPos);
 //		}
 		Vector<AgentPlayer> testPool = new Vector<AgentPlayer>();
-		String partnerName = testPoolNames[testIndex];
-		AgentPlayer partner = new AgentPlayer(partnerName, AgentUtils.buildAgent(partnerName));
-		testPool.add(partner);
+		for (String partnerName :testPoolNames) {
+			AgentPlayer partner = new AgentPlayer(partnerName, AgentUtils.buildAgent(partnerName));
+			testPool.add(partner);
+		}
+		
 
 
 		
@@ -83,7 +85,7 @@ public class RunEvolutionSpecificPartner {
 			population = ga.mutatePopulation(population);
 
 			// Evaluate population
-			System.out.println("Evaluating fitness using " + partnerName + " as partner after generation " + generation);
+			System.out.println("Evaluating fitness using for deterministic test pool after generation " + generation);
 			ga.evalPopulation(population, numRules, false, testPool, minNumPlayers, maxNumPlayers, rulebaseStandard);
 			ga.printFittestPerGeneration();
 
@@ -93,7 +95,7 @@ public class RunEvolutionSpecificPartner {
 			generation++;
 		}
 		
-		System.out.println("Finished evolving agents using as partner " + partnerName);
+		System.out.println("Finished evolving agents for deterministic test pool");
 		
 		//System.out.println("Stopped after " + maxGenerations + " generations.");
 		//Route route = new Route(population.getFittest(0));
