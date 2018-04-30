@@ -26,7 +26,7 @@ public class GamestateEvaluator {
 		
 		public CardProbabiltyPair(int slot, double probabilty) {
 			this.slot = slot;
-			this.probability = probability;
+			this.probability = probabilty;
 		}
 		
 	};

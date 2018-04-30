@@ -2,12 +2,7 @@ package com.fossgalaxy.games.fireworks.ai;
 
 import java.util.Vector;
 
-import com.fossgalaxy.games.fireworks.GameRunner;
-import com.fossgalaxy.games.fireworks.GameStats;
-import com.fossgalaxy.games.fireworks.players.Player;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
-import com.fossgalaxy.stats.BasicStats;
-import com.fossgalaxy.stats.StatsSummary;
 
 /*
  * This class evaluates an entire population in mirror tests

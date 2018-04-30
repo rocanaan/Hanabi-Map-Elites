@@ -89,7 +89,7 @@ public class GeneticAlgorithm {
 //            populationFitness += this.calcFitness(individual, cities);
 //        }
         
-        double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, numGames, mirror);
+        double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, numGames, mirror, false);
         
         double bestFitness = 0;
         

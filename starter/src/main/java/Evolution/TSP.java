@@ -26,7 +26,7 @@ public class TSP {
 	public static void main(String[] args) {
 		
 		// Create cities
-		int numRules = Rulebase.getRuleset().length;
+		int numRules = RulebaseExtended.getRuleset().length;
 //		City cities[] = new City[numRules];
 //		
 //		// Loop to create random cities
