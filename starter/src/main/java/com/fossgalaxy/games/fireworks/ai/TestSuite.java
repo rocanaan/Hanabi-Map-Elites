@@ -61,6 +61,7 @@ public class TestSuite {
         boolean randomizePosition = true;
 
         for (int i = 0; i < numGames; i++) {
+        		//System.out.println("Running game with number of players " +numPlayers);
             GameRunner runner = new GameRunner("test-game", numPlayers);
 
             int playerPosition = 0;

@@ -51,7 +51,7 @@ public class RunEvolutionMixed {
 		Population population = ga.initPopulation(numRules);
 
 		// Evaluate population
-		ga.evalPopulation(population, numRules, mirror, null, numRules, numRules, rulebaseStandard);
+		ga.evalPopulation(population, numRules, mirror, null, minNumPlayers, maxNumPlayers, rulebaseStandard);
 
 		//Route startRoute = new Route(population.getFittest(0), cities);
 		//System.out.println("Start Distance: " + startRoute.getDistance());
@@ -72,7 +72,7 @@ public class RunEvolutionMixed {
 
 			// Evaluate population
 			System.out.println("Evaluating fitness after generation " + generation);
-			ga.evalPopulation(population, numRules, mirror, null, numRules, numRules, rulebaseStandard);
+			ga.evalPopulation(population, numRules, mirror, null, minNumPlayers, maxNumPlayers, rulebaseStandard);
 			ga.printFittestPerGeneration();
 			
 
