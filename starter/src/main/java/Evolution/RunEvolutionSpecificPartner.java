@@ -1,5 +1,10 @@
 package Evolution;
 
+import java.util.Vector;
+
+import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
+import com.fossgalaxy.games.fireworks.utils.AgentUtils;
+
 /**
  * Main, executive class for the Traveling Salesman Problem.
  * 
@@ -14,7 +19,7 @@ package Evolution;
  * @author bkanber
  *
  */
-public class RunEvolutionMirror {
+public class RunEvolutionSpecificPartner {
 	public static int maxGenerations = 500; // note : generation count starts at zero, so this is actually 1000
 	public static int populationSize = 200;
 	public static double mutationRate = 0.1;
@@ -22,7 +27,10 @@ public class RunEvolutionMirror {
     public static int elitismCount = 20;
 	public static  int tournamentSize = 5;
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
-	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
+	
+	private static String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
+	private static int testIndex = 0; // Change this parameter to use each of the agents
+	
 	public static void main(String[] args) {
 		
 		// Create cities
@@ -38,8 +46,12 @@ public class RunEvolutionMirror {
 //			// Add city
 //			cities[cityIndex] = new City(xPos, yPos);
 //		}
+		Vector<AgentPlayer> testPool = new Vector<AgentPlayer>();
+		String partnerName = testPoolNames[testIndex];
+		AgentPlayer partner = new AgentPlayer(partnerName, AgentUtils.buildAgent(partnerName));
+		testPool.add(partner);
 
-		
+
 		
 		// Initial GA
 		GeneticAlgorithm ga = new GeneticAlgorithm(populationSize, mutationRate, crossoverRate, elitismCount, tournamentSize);
@@ -48,7 +60,7 @@ public class RunEvolutionMirror {
 		Population population = ga.initPopulation(numRules);
 
 		// Evaluate population
-		ga.evalPopulation(population, numGames, mirror);
+		ga.evalPopulation(population, numGames, testPool);
 
 		//Route startRoute = new Route(population.getFittest(0), cities);
 		//System.out.println("Start Distance: " + startRoute.getDistance());
@@ -68,8 +80,8 @@ public class RunEvolutionMirror {
 			population = ga.mutatePopulation(population);
 
 			// Evaluate population
-			System.out.println("Evaluating fitness after generation " + generation);
-			ga.evalPopulation(population, numGames, mirror);
+			System.out.println("Evaluating fitness using " + partnerName + " as partner after generation " + generation);
+			ga.evalPopulation(population, numGames, testPool);
 			ga.printFittestPerGeneration();
 
 			
@@ -77,6 +89,8 @@ public class RunEvolutionMirror {
 			// Increment the current generation
 			generation++;
 		}
+		
+		System.out.println("Finished evolving agents using as partner " + partnerName);
 		
 		//System.out.println("Stopped after " + maxGenerations + " generations.");
 		//Route route = new Route(population.getFittest(0));

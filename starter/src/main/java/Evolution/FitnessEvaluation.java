@@ -11,8 +11,41 @@ import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 public class FitnessEvaluation {
 	
 		
+		// Calculate fitness using a specific pool of test partners
+		public static double[] calculateFitness(Population population, int numGames, Vector<AgentPlayer> testPartners) {
+			Individual[] individuals = population.getIndividuals();
+			double[] populationFitness = new double[individuals.length];
+			
+			Rule[] ruleset = Rulebase.getRuleset();
+			
+			Vector<AgentPlayer> agents = new Vector<AgentPlayer>();
+			
+			// Create an AgentPlayer instance for each chromossome
+			int count = 0;
+			for (Individual individual : individuals)
+			{
+				Rule[] agentRules = new Rule[ruleset.length];
+				for  (int i=0 ; i < individual.getChromosomeLength(); i++)
+				{
+					agentRules[i] = Rulebase.ruleMapping(individual.getGene(i));
+				}
+				HistogramAgent agent = Rulebase.makeAgent(agentRules);
+				agents.add(new AgentPlayer("histogramAgent"+count, agent));
+				count++;
+			}
+			PopulationEvaluationSummary pes = null;
+			pes = TestSuite.mixedPopulationEvaluation(agents, testPartners, 5, numGames);
+			
+			for (int i = 0; i < individuals.length; i++) {
+				populationFitness[i] = pes.getScoreIndividualAgent(i);
+				System.out.println(pes);
+			}
+			
+			return populationFitness;
+			
+		}
 		
-	
+		// Calculate fitness either in mirror mode or in mixed mode with the standard test pool
 		public static double[] calculateFitness(Population population, int numGames, boolean mirrored)
 		
 		{

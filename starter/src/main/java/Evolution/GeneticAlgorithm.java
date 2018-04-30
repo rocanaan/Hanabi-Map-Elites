@@ -2,6 +2,8 @@ package Evolution;
 import java.util.Arrays;
 import java.util.Vector;
 
+import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
+
 public class GeneticAlgorithm {
 	
     private int populationSize;
@@ -106,10 +108,37 @@ public class GeneticAlgorithm {
         for (int i = 0; i<population.getIndividuals().length; i++) {
         		System.out.println("Individual [" +population.getIndividual(i).toString() + "] fitness = " + fitnessOfPopulation[i]);	
         }
-
+    }
         
-//        double avgFitness = populationFitness / population.size();
-        //population.setPopulationFitness(avgFitness);
+    public void evalPopulation(Population population, int numGames, Vector<AgentPlayer> testPartners ){
+	    	double populationFitness = 0;
+	
+	    	// Loop over population evaluating individuals and summing population fitness
+	    	//            for (Individual individual : population.getIndividuals()) {
+	    	//                populationFitness += this.calcFitness(individual, cities);
+	    	//            }
+	
+	    	double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, numGames, testPartners);
+	
+	    	double bestFitness = 0;
+	
+	    	for (int i = 0; i<fitnessOfPopulation.length; i++) {
+	    		double fitness = fitnessOfPopulation[i];
+	    		population.getIndividual(i).setFitness(fitnessOfPopulation[i]);
+	    		if (fitness > bestFitness) {
+	    			bestFitness = fitness;
+	    		}
+    	}
+
+    	fittestPerGeneration.add(bestFitness);
+
+    	for (int i = 0; i<population.getIndividuals().length; i++) {
+    		System.out.println("Individual [" +population.getIndividual(i).toString() + "] fitness = " + fitnessOfPopulation[i]);	
+    	}
+
+
+    	//        double avgFitness = populationFitness / population.size();
+    	//population.setPopulationFitness(avgFitness);
     }
     
     public void printFittestPerGeneration() {
