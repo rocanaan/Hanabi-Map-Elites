@@ -110,10 +110,10 @@ public class TestSuite {
 //		
 //		return pairingStats;
 //	}
-    public static PairingSummary VariableNumberPlayersTest(AgentPlayer yourAgent, AgentPlayer otherAgent, int maxNumPlayers, int numGames, Random random) {
+    public static PairingSummary VariableNumberPlayersTest(AgentPlayer yourAgent, AgentPlayer otherAgent, int minNumPlayers, int maxNumPlayers, int numGames, Random random) {
         PairingSummary pairingStats = new PairingSummary(yourAgent, otherAgent, maxNumPlayers, numGames);
 
-        for (int i = 2; i <= maxNumPlayers; i++) {
+        for (int i = minNumPlayers; i <= maxNumPlayers; i++) {
             StatsSummary stats = ConstantNumberPlayersTest(i, numGames, yourAgent, otherAgent, random);
             pairingStats.results.add(stats);
         }
@@ -121,7 +121,7 @@ public class TestSuite {
         return pairingStats;
     }
 
-    public static PopulationEvaluationSummary mirrorPopulationEvaluation(Vector<AgentPlayer> population, int maxNumPlayers, int numGames) {
+    public static PopulationEvaluationSummary mirrorPopulationEvaluation(Vector<AgentPlayer> population, int minNumPlayers, int maxNumPlayers, int numGames) {
         PopulationEvaluationSummary pes = new PopulationEvaluationSummary(true, population, null);
 
         Random random = new Random();
@@ -129,7 +129,7 @@ public class TestSuite {
 
         for (AgentPlayer agent : population) {
             random.setSeed(seed);
-            PairingSummary summary = VariableNumberPlayersTest(agent, agent, maxNumPlayers, numGames, random);
+            PairingSummary summary = VariableNumberPlayersTest(agent, agent, minNumPlayers, maxNumPlayers, numGames, random);
 
             AgentMultiPairingSummary amps = new AgentMultiPairingSummary(true, agent, null);
             amps.pairings.addElement(summary);
@@ -141,7 +141,7 @@ public class TestSuite {
 
     }
 
-    public static PopulationEvaluationSummary mixedPopulationEvaluation(Vector<AgentPlayer> population, Vector<AgentPlayer> testPool, int maxNumPlayers, int numGames) {
+    public static PopulationEvaluationSummary mixedPopulationEvaluation(Vector<AgentPlayer> population, Vector<AgentPlayer> testPool, int minNumPlayers, int maxNumPlayers, int numGames) {
         PopulationEvaluationSummary pes = new PopulationEvaluationSummary(true, population, null);
 
         Random random = new Random();
@@ -152,7 +152,7 @@ public class TestSuite {
             AgentMultiPairingSummary amps = new AgentMultiPairingSummary(false, agent, testPool);
 
             for (AgentPlayer other : testPool) {
-                PairingSummary summary = VariableNumberPlayersTest(agent, other, maxNumPlayers, numGames, random);
+                PairingSummary summary = VariableNumberPlayersTest(agent, other, minNumPlayers, maxNumPlayers, numGames, random);
                 amps.pairings.addElement(summary);
             }
             pes.pairings.add(amps);
@@ -161,6 +161,16 @@ public class TestSuite {
 
         return pes;
 
+    }
+    
+    
+    public static PopulationEvaluationSummary mirrorPopulationEvaluation(Vector<AgentPlayer> population, int maxNumPlayers, int numGames) {
+    		return mirrorPopulationEvaluation(population, 2,  maxNumPlayers, numGames);
+    }
+    
+    // 
+    public static PopulationEvaluationSummary mixedPopulationEvaluation(Vector<AgentPlayer> population, Vector<AgentPlayer> testPool,  int maxNumPlayers, int numGames) {
+    		return mixedPopulationEvaluation(population,  testPool, 2,  maxNumPlayers,  numGames);
     }
 
     // fileName is the path to the file, rulebaseStandard determines if the standard rulebase or the extended rulebase is being used

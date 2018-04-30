@@ -13,6 +13,7 @@ import Evolution.RulebaseExtended;
 
 public class RunPopulationMirrorEvaluation {
 	public static void main( String[] args ) {
+		int minNumPlayers = 2;
 		int maxNumPlayers = 5; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
 		int numGames = 20;
 		
@@ -52,7 +53,7 @@ public class RunPopulationMirrorEvaluation {
 		HistogramAgent HailMaryHAgent = RulebaseExtended.makeAgent(rules1);
 		population.add(new AgentPlayer("Hail Mary", HailMaryHAgent));
 		
-		PopulationEvaluationSummary pes = TestSuite.mirrorPopulationEvaluation(population, maxNumPlayers, numGames);
+		PopulationEvaluationSummary pes = TestSuite.mirrorPopulationEvaluation(population, minNumPlayers, maxNumPlayers, numGames);
 	
 		
 		System.out.println(pes);

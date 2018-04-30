@@ -83,7 +83,7 @@ public class GeneticAlgorithm {
      * @param population the population to evaluate
      * @param cities the cities being referenced
      */
-    public void evalPopulation(Population population, int numGames, boolean mirror ){
+    public void evalPopulation(Population population, int numGames,boolean mirror,  Vector<AgentPlayer> testPool, int minNumPlayers, int maxNumPlayers, boolean rulebaseStandard){
         double populationFitness = 0;
         
         // Loop over population evaluating individuals and summing population fitness
@@ -91,7 +91,7 @@ public class GeneticAlgorithm {
 //            populationFitness += this.calcFitness(individual, cities);
 //        }
         
-        double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, numGames, mirror, false);
+        double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, numGames, mirror, testPool, minNumPlayers, maxNumPlayers, rulebaseStandard);
         
         double bestFitness = 0;
         
@@ -110,36 +110,36 @@ public class GeneticAlgorithm {
         }
     }
         
-    public void evalPopulation(Population population, int numGames, Vector<AgentPlayer> testPartners ){
-	    	double populationFitness = 0;
-	
-	    	// Loop over population evaluating individuals and summing population fitness
-	    	//            for (Individual individual : population.getIndividuals()) {
-	    	//                populationFitness += this.calcFitness(individual, cities);
-	    	//            }
-	
-	    	double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, numGames, testPartners);
-	
-	    	double bestFitness = 0;
-	
-	    	for (int i = 0; i<fitnessOfPopulation.length; i++) {
-	    		double fitness = fitnessOfPopulation[i];
-	    		population.getIndividual(i).setFitness(fitnessOfPopulation[i]);
-	    		if (fitness > bestFitness) {
-	    			bestFitness = fitness;
-	    		}
-    	}
-
-    	fittestPerGeneration.add(bestFitness);
-
-    	for (int i = 0; i<population.getIndividuals().length; i++) {
-    		System.out.println("Individual [" +population.getIndividual(i).toString() + "] fitness = " + fitnessOfPopulation[i]);	
-    	}
-
-
-    	//        double avgFitness = populationFitness / population.size();
-    	//population.setPopulationFitness(avgFitness);
-    }
+//    public void evalPopulation(Population population, int numGames, Vector<AgentPlayer> testPartners ){
+//	    	double populationFitness = 0;
+//	
+//	    	// Loop over population evaluating individuals and summing population fitness
+//	    	//            for (Individual individual : population.getIndividuals()) {
+//	    	//                populationFitness += this.calcFitness(individual, cities);
+//	    	//            }
+//	
+//	    	double[] fitnessOfPopulation =  FitnessEvaluation.calculateFitness(population, numGames, false, testPartners, numGames, numGames, false);
+//	
+//	    	double bestFitness = 0;
+//	
+//	    	for (int i = 0; i<fitnessOfPopulation.length; i++) {
+//	    		double fitness = fitnessOfPopulation[i];
+//	    		population.getIndividual(i).setFitness(fitnessOfPopulation[i]);
+//	    		if (fitness > bestFitness) {
+//	    			bestFitness = fitness;
+//	    		}
+//    	}
+//
+//    	fittestPerGeneration.add(bestFitness);
+//
+//    	for (int i = 0; i<population.getIndividuals().length; i++) {
+//    		System.out.println("Individual [" +population.getIndividual(i).toString() + "] fitness = " + fitnessOfPopulation[i]);	
+//    	}
+//
+//
+//    	//        double avgFitness = populationFitness / population.size();
+//    	//population.setPopulationFitness(avgFitness);
+//    }
     
     public void printFittestPerGeneration() {
     		int i = 0;

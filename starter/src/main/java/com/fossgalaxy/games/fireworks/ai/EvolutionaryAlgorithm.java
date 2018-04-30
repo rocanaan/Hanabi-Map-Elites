@@ -19,6 +19,7 @@ import com.fossgalaxy.stats.StatsSummary;
 
 public class EvolutionaryAlgorithm {
 	public static void main( String[] args ) {
+		int minNumPlayers = 2;
 		int maxNumPlayers = 5;
 		int numGames = 100;
 		
@@ -55,7 +56,7 @@ public class EvolutionaryAlgorithm {
 			testPool.add(otherAgent);
 		}
 		
-		PopulationEvaluationSummary stats = TestSuite.mixedPopulationEvaluation(agentList, testPool, maxNumPlayers, numGames);
+		PopulationEvaluationSummary stats = TestSuite.mixedPopulationEvaluation(agentList, testPool, minNumPlayers, maxNumPlayers, numGames);
 
 		System.out.println(stats);
 				

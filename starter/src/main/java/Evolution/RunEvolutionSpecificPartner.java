@@ -27,6 +27,9 @@ public class RunEvolutionSpecificPartner {
     public static int elitismCount = 20;
 	public static  int tournamentSize = 5;
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
+	static int minNumPlayers = 2;
+	static int maxNumPlayers = 5;
+	static boolean rulebaseStandard = false;
 	
 	private static String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
 	private static int testIndex = 0; // Change this parameter to use each of the agents
@@ -60,7 +63,7 @@ public class RunEvolutionSpecificPartner {
 		Population population = ga.initPopulation(numRules);
 
 		// Evaluate population
-		ga.evalPopulation(population, numGames, testPool);
+		ga.evalPopulation(population, numRules, false, testPool, minNumPlayers, maxNumPlayers, rulebaseStandard);
 
 		//Route startRoute = new Route(population.getFittest(0), cities);
 		//System.out.println("Start Distance: " + startRoute.getDistance());
@@ -81,7 +84,7 @@ public class RunEvolutionSpecificPartner {
 
 			// Evaluate population
 			System.out.println("Evaluating fitness using " + partnerName + " as partner after generation " + generation);
-			ga.evalPopulation(population, numGames, testPool);
+			ga.evalPopulation(population, numRules, false, testPool, minNumPlayers, maxNumPlayers, rulebaseStandard);
 			ga.printFittestPerGeneration();
 
 			

@@ -5,6 +5,7 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 
 public class RunSinglePairingEvaluation {
 	public static void main( String[] args ) {
+		int minNumPlayers = 2;
 		int maxNumPlayers = 5;
 		int numGames = 100;
 		
@@ -22,7 +23,7 @@ public class RunSinglePairingEvaluation {
 		
 		AgentPlayer otherAgent = new AgentPlayer(otherAgentName, AgentUtils.buildAgent(otherAgentName));
 		
-		PairingSummary stats = TestSuite.VariableNumberPlayersTest( yourAgent,  otherAgent,  maxNumPlayers,  numGames, new Random());
+		PairingSummary stats = TestSuite.VariableNumberPlayersTest( yourAgent,  otherAgent, minNumPlayers, maxNumPlayers,  numGames, new Random());
 
 		System.out.println(stats);
 				

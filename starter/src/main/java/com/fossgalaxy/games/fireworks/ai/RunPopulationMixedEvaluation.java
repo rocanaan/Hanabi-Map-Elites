@@ -10,6 +10,7 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 
 public class RunPopulationMixedEvaluation {
 	public static void main( String[] args ) {
+		int minNumPlayers = 2;
 		int maxNumPlayers = 5;
 		int numGames = 2000;
 		
@@ -34,7 +35,7 @@ public class RunPopulationMixedEvaluation {
 		}
 
 		
-		PopulationEvaluationSummary pes = TestSuite.mixedPopulationEvaluation(population, testPool, maxNumPlayers, numGames);
+		PopulationEvaluationSummary pes = TestSuite.mixedPopulationEvaluation(population, testPool, minNumPlayers, maxNumPlayers, numGames);
 		
 		System.out.println(pes);
 		
