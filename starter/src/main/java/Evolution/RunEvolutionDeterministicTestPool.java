@@ -27,8 +27,8 @@ public class RunEvolutionDeterministicTestPool {
     public static int elitismCount = 20;
 	public static  int tournamentSize = 5;
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
-	static int minNumPlayers = 3;
-	static int maxNumPlayers = 3;
+	static int minNumPlayers = 2;
+	static int maxNumPlayers = 5;
 	static boolean rulebaseStandard = false;
 	
 	private static String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter"};

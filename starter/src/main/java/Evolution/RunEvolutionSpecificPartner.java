@@ -21,7 +21,7 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
  */
 public class RunEvolutionSpecificPartner {
 	public static int maxGenerations = 500; // note : generation count starts at zero, so this is actually 1000
-	public static int populationSize = 200;
+	public static int populationSize = 100;
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.9;
     public static int elitismCount = 20;
@@ -32,7 +32,7 @@ public class RunEvolutionSpecificPartner {
 	static boolean rulebaseStandard = false;
 	
 	private static String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
-	private static int testIndex = 0; // Change this parameter to use each of the agents (index goes from 0 - 6)
+	private static int testIndex = 1; // Change this parameter to use each of the agents (index goes from 0 - 6)
 	
 	public static void main(String[] args) {
 		

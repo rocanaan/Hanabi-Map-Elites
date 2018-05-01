@@ -15,7 +15,7 @@ package Evolution;
  *
  */
 public class RunEvolutionMirror {
-	public static int maxGenerations = 500; // note : generation count starts at zero, so this is actually 1000
+	public static int maxGenerations = 20; // note : generation count starts at zero, so this is actually 1000
 	public static int populationSize = 200;
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.9;
@@ -23,7 +23,7 @@ public class RunEvolutionMirror {
 	public static  int tournamentSize = 5;
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
-	static int minNumPlayers = 2;
+	static int minNumPlayers = 3;
 	static int maxNumPlayers = 5;
 	static boolean rulebaseStandard = false;
 	public static void main(String[] args) {
@@ -72,7 +72,7 @@ public class RunEvolutionMirror {
 
 			// Evaluate population
 			System.out.println("Evaluating fitness after generation " + generation);
-			ga.evalPopulation(population, numGames, mirror, null, generation, generation, mirror);
+			ga.evalPopulation(population, numRules, mirror, null, minNumPlayers, maxNumPlayers, rulebaseStandard);
 			ga.printFittestPerGeneration();
 
 			

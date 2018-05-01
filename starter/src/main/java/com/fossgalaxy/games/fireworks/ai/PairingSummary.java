@@ -13,16 +13,18 @@ import com.fossgalaxy.stats.StatsSummary;
  */
 public class PairingSummary {
 
-	public PairingSummary(AgentPlayer name, AgentPlayer other, int players, int games) {
+	public PairingSummary(AgentPlayer name, AgentPlayer other, int minPlayers, int maxPlayers, int games) {
 		agent = name;
 		otherAgent = other;
-		maxNumberPlayers = players;
+		this.minPlayers = minPlayers;
+		this.maxPlayers = maxPlayers;
 		gamesPlayed = games;
-		results = new Vector<StatsSummary>(players-1);	
+		results = new Vector<StatsSummary>(maxPlayers - minPlayers +1);	
 	}
 	public AgentPlayer agent;
 	public AgentPlayer otherAgent;
-	public int maxNumberPlayers;
+	public int minPlayers;
+	public int maxPlayers;
 	public int gamesPlayed;
 	public Vector<StatsSummary> results;
 	
@@ -30,7 +32,7 @@ public class PairingSummary {
 		String text = "	Pairing summary for agent " + agent.getName() + " paired with agent " + otherAgent.getName() + " :";
 		text += "\n";
 		
-		int n = 2;
+		int n = minPlayers;
 		for (StatsSummary s: results) {
 			text += ("		Stats for agent " +  agent.getName() + " playing " + gamesPlayed + " games with " + (n-1) + " copies of  " + otherAgent.getName() + ":\n");
 			text += ("			Mean: " + s.getMean() +"\n");
@@ -46,21 +48,21 @@ public class PairingSummary {
 
 	public double getMean() {
 		double mean = 0;
-		int n = maxNumberPlayers -1;
-		if(n > 0) {
-			for (StatsSummary s: results) {
-				mean += s.getMean();
-			}
-			mean  = mean/(double) n;
+		for (int n = minPlayers; n<= maxPlayers; n++) {
+			int index = n-minPlayers;
+			StatsSummary s = results.get(index);
+			mean += s.getMean();
 		}
+		mean  = mean/(double) (maxPlayers-minPlayers+1);
+	
 		
 		return mean; 
 	}
 	
 	public double getScoreByGameSize(int n) {
-		int i = n-2;
-		if (i<results.size()) {
-			return results.get(i).getMean();
+		if (n <= maxPlayers && n >= minPlayers) {
+			int index = n-minPlayers;
+			return results.get(index).getMean();
 		}
 		else {
 			return -1;

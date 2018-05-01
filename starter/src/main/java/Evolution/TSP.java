@@ -23,6 +23,9 @@ public class TSP {
 	public static  int tournamentSize = 5;
 	public static int numGames = 20;
 	public static boolean mirror = true;
+	static int minNumPlayers = 2;
+	static int maxNumPlayers = 5;
+	static boolean rulebaseStandard = false;
 	public static void main(String[] args) {
 		
 		// Create cities
@@ -48,7 +51,7 @@ public class TSP {
 		Population population = ga.initPopulation(numRules);
 
 		// Evaluate population
-		ga.evalPopulation(population, numGames, mirror);
+		ga.evalPopulation(population, numRules, mirror, null, minNumPlayers, maxNumPlayers, rulebaseStandard);
 
 		//Route startRoute = new Route(population.getFittest(0), cities);
 		//System.out.println("Start Distance: " + startRoute.getDistance());
@@ -69,7 +72,7 @@ public class TSP {
 
 			// Evaluate population
 			System.out.println("Evaluating fitness after generation " + generation);
-			ga.evalPopulation(population, numGames, mirror);
+			ga.evalPopulation(population, numRules, mirror, null, minNumPlayers, maxNumPlayers, rulebaseStandard);
 			
 
 			// Increment the current generation

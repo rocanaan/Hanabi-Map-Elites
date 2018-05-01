@@ -112,7 +112,7 @@ public class TestSuite {
 //		return pairingStats;
 //	}
     public static PairingSummary VariableNumberPlayersTest(AgentPlayer yourAgent, AgentPlayer otherAgent, int minNumPlayers, int maxNumPlayers, int numGames, Random random) {
-        PairingSummary pairingStats = new PairingSummary(yourAgent, otherAgent, maxNumPlayers, numGames);
+        PairingSummary pairingStats = new PairingSummary(yourAgent, otherAgent, minNumPlayers, maxNumPlayers, numGames);
 
         for (int i = minNumPlayers; i <= maxNumPlayers; i++) {
             StatsSummary stats = ConstantNumberPlayersTest(i, numGames, yourAgent, otherAgent, random);
