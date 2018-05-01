@@ -35,9 +35,9 @@ public class RunEvolutionSpecificPartner {
 	private static int testIndex = 1; // Change this parameter to use each of the agents (index goes from 0 - 6)
 	
 	public static void main(String[] args) {
-		
+		Rulebase rb = new Rulebase(rulebaseStandard);
 		// Create cities
-		int numRules = Rulebase.getRuleset().length;
+		int numRules = rb.getRuleset().length;
 //		City cities[] = new City[numRules];
 //		
 //		// Loop to create random cities

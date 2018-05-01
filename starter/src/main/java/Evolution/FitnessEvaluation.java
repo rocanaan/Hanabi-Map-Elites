@@ -10,8 +10,6 @@ import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 
 public class FitnessEvaluation {
 
-	
-		
 //		// Calculate fitness using a specific pool of test partners
 //		public static double[] calculateFitness(Population population, int numGames, Vector<AgentPlayer> testPartners) {
 //			Individual[] individuals = population.getIndividuals();
@@ -88,17 +86,16 @@ public class FitnessEvaluation {
 //			
 //			return populationFitness;
 //		}
-
-
     public static double[] calculateFitness(Population population, int numGames, boolean mirrored, Vector<AgentPlayer> testPool, int minNumPlayers, int maxNumPlayers, boolean rulebaseStandard) {
+        Rulebase rb = new Rulebase(rulebaseStandard);
         Individual[] individuals = population.getIndividuals();
         double[] populationFitness = new double[individuals.length];
 
         Rule[] ruleset;
         if (rulebaseStandard) {
-            ruleset = RulebaseStandard.getRuleset();
+            ruleset = rb.getRuleset();
         } else {
-            ruleset = RulebaseExtended.getRuleset();
+            ruleset = rb.getRuleset();
         }
 
         Vector<AgentPlayer> agents = new Vector<AgentPlayer>();
@@ -108,18 +105,10 @@ public class FitnessEvaluation {
         for (Individual individual : individuals) {
             Rule[] agentRules = new Rule[ruleset.length];
             for (int i = 0; i < individual.getChromosomeLength(); i++) {
-                if (rulebaseStandard) {
-                    agentRules[i] = RulebaseStandard.ruleMapping(individual.getGene(i));
-                } else {
-                    agentRules[i] = RulebaseExtended.ruleMapping(individual.getGene(i));
-                }
+                agentRules[i] = rb.ruleMapping(individual.getGene(i));
             }
             HistogramAgent agent;
-            if (rulebaseStandard) {
-                agent = RulebaseStandard.makeAgent(agentRules);
-            } else {
-                agent = RulebaseExtended.makeAgent(agentRules);
-            }
+            agent = rb.makeAgent(agentRules);
             agents.add(new AgentPlayer("histogramAgent" + count, agent));
             count++;
         }
@@ -127,21 +116,16 @@ public class FitnessEvaluation {
         // Potentially later take measures so every evaluation uses the sam random seed.
         PopulationEvaluationSummary pes = null;
         if (testPool == null) {
-	        if (mirrored) {
-	            pes = TestSuite.mirrorPopulationEvaluation(agents, minNumPlayers, maxNumPlayers, numGames);
-	        } //TODO: create a class that returns the testpool
-	        else {
-	            Vector<AgentPlayer> baselinePool;
-	            if (rulebaseStandard) {
-	                baselinePool= RulebaseStandard.GetBaselineAgentPlayers();
-	            } else {
-	                baselinePool= RulebaseExtended.GetBaselineAgentPlayers();
-	            }
-	            pes = TestSuite.mixedPopulationEvaluation(agents, baselinePool, minNumPlayers, maxNumPlayers, numGames);
-	        }
-        }
-        else {
-        		pes = TestSuite.mixedPopulationEvaluation(agents, testPool, minNumPlayers, maxNumPlayers, numGames);
+            if (mirrored) {
+                pes = TestSuite.mirrorPopulationEvaluation(agents, minNumPlayers, maxNumPlayers, numGames);
+            } //TODO: create a class that returns the testpool
+            else {
+                Vector<AgentPlayer> baselinePool;
+                baselinePool = rb.GetBaselineAgentPlayers();
+                pes = TestSuite.mixedPopulationEvaluation(agents, baselinePool, minNumPlayers, maxNumPlayers, numGames);
+            }
+        } else {
+            pes = TestSuite.mixedPopulationEvaluation(agents, testPool, minNumPlayers, maxNumPlayers, numGames);
         }
 
         for (int i = 0; i < individuals.length; i++) {
