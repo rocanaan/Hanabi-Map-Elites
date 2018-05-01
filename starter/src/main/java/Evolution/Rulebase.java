@@ -52,7 +52,6 @@ import newrules.PlayJustHinted;
 import newrules.TellUnambiguous;
 import newrules.TellUnambiguous2;
 
-
 public class Rulebase {
 
     private static final BiFunction<Integer, GameState, Boolean> hasMoreThanOneLife = (i, state) -> {
@@ -226,7 +225,12 @@ public class Rulebase {
 
     public void printRulesFromChromossome(int[] chromossome) {
         for (int i = 0; i < chromossome.length; i++) {
-            System.out.println(ruleMapping(chromossome[i]).toString());
+            String[] str = (ruleMapping(chromossome[i]).toString()).split("\\.");
+            if (str[str.length - 1].length() < 8) {
+                System.out.println(str[str.length - 2] +"."+ str[str.length - 1]);
+            } else {
+                System.out.println(str[str.length - 1]);
+            }
         }
     }
 
