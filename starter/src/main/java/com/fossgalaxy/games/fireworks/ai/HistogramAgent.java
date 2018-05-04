@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public class HistogramAgent extends ProductionRuleAgent{
-    ArrayList<Integer> histogram;
+    public ArrayList<Integer> histogram;
     int aID;
     protected List<Rule> rules;
     
