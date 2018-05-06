@@ -1,6 +1,7 @@
 package com.fossgalaxy.games.fireworks.ai.username;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
+import com.fossgalaxy.games.fireworks.ai.iggi.LegalRandom;
 import com.fossgalaxy.games.fireworks.ai.rule.PlaySafeCard;
 import com.fossgalaxy.games.fireworks.ai.rule.ProductionRuleAgent;
 import com.fossgalaxy.games.fireworks.ai.rule.random.DiscardRandomly;
@@ -26,6 +27,7 @@ public class RuleBasedIGGI {
         pra.addRule(new TellAnyoneAboutUsefulCard());
         pra.addRule(new OsawaDiscard());
         pra.addRule(new DiscardOldestFirst());
+        pra.addRule(new LegalRandom());
 
 
         return pra;

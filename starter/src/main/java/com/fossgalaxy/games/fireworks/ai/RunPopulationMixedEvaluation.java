@@ -1,5 +1,6 @@
 package com.fossgalaxy.games.fireworks.ai;
 
+import java.util.Map;
 import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
@@ -35,7 +36,7 @@ public class RunPopulationMixedEvaluation {
 		}
 
 		
-		PopulationEvaluationSummary pes = TestSuite.mixedPopulationEvaluation(population, testPool, minNumPlayers, maxNumPlayers, numGames);
+		Vector<Vector<Map<Integer, Vector<Double>>>> pes = NewTestSuite.mixedPopulationEvaluation(population, testPool, minNumPlayers, maxNumPlayers, numGames);
 		
 		System.out.println(pes);
 		

@@ -26,7 +26,7 @@ public class RuleBasedOuter {
         pra.addRule(new PlaySafeCard());
         pra.addRule(new OsawaDiscard());
         pra.addRule(new TellPlayableCardOuter());
-        pra.addRule(new TellRandomly());
+        pra.addRule(new TellUnknown());
         pra.addRule(new DiscardRandomly());
 
 
