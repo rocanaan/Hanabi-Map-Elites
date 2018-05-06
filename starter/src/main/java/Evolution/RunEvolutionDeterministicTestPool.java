@@ -38,6 +38,7 @@ public class RunEvolutionDeterministicTestPool {
 		Rulebase rb = new Rulebase(rulebaseStandard);
 		// Create cities
 		int numRules = rb.getRuleset().length;
+		int chromossomeLength = numRules;
 //		City cities[] = new City[numRules];
 //		
 //		// Loop to create random cities
@@ -62,7 +63,7 @@ public class RunEvolutionDeterministicTestPool {
 		GeneticAlgorithm ga = new GeneticAlgorithm(populationSize, mutationRate, crossoverRate, elitismCount, tournamentSize);
 
 		// Initialize population
-		Population population = ga.initPopulation(numRules);
+		Population population = ga.initPopulation(chromossomeLength, numRules);
 
 		// Evaluate population
 		ga.evalPopulation(population, numRules, false, testPool, minNumPlayers, maxNumPlayers, rulebaseStandard);

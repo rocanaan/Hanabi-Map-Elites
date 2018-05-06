@@ -39,6 +39,12 @@ public class GeneticAlgorithm {
         return population;
     }
     
+    public Population initPopulation(int chromosomeLength, int numRules){
+        // Initialize population
+        Population population = new Population(this.populationSize, chromosomeLength, numRules);
+        return population;
+    }
+    
 	/**
 	 * Check if population has met termination condition -- this termination
 	 * condition is a simple one; simply check if we've exceeded the allowed

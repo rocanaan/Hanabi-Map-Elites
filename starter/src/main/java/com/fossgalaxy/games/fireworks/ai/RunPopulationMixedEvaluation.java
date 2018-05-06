@@ -13,7 +13,7 @@ public class RunPopulationMixedEvaluation {
 	public static void main( String[] args ) {
 		int minNumPlayers = 2;
 		int maxNumPlayers = 5;
-		int numGames = 2000;
+		int numGames = 20;
 		
 		// This is the population of agents we are evaluating
 		String[] agentNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
@@ -36,7 +36,7 @@ public class RunPopulationMixedEvaluation {
 		}
 
 		
-		Vector<Vector<Map<Integer, Vector<Double>>>> pes = NewTestSuite.mixedPopulationEvaluation(population, testPool, minNumPlayers, maxNumPlayers, numGames);
+		PopulationEvaluationSummary pes = TestSuite.mixedPopulationEvaluation(population, testPool, minNumPlayers, maxNumPlayers, numGames);
 		
 		System.out.println(pes);
 		

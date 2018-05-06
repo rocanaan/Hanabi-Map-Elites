@@ -28,6 +28,33 @@ public class Individual {
 	 * @param chromosomeLength
 	 *            The length of the individuals chromosome
 	 */
+	public Individual(int chromosomeLength, int numRules) {
+		// Create random individual
+		Vector<Integer> individual = new Vector<Integer>();
+		//individual = new int[chromosomeLength];
+		
+		/**
+		 * In this case, we can no longer simply pick 0s and 1s -- we need to
+		 * use every city index available. We also don't need to randomize or
+		 * shuffle this chromosome, as crossover and mutation will ultimately
+		 * take care of that for us.
+		 */
+		for (int gene = 0; gene < numRules; gene++) {
+			individual.add(gene);
+		}
+		
+		Collections.shuffle(individual);
+		
+		
+		int chromossome[] = new int[chromosomeLength];
+		
+		for (int i=0; i< chromosomeLength; i++) {
+			chromossome[i]=individual.get(i);
+		}
+		
+		this.chromosome = chromossome;
+	}
+	
 	public Individual(int chromosomeLength) {
 		// Create random individual
 		Vector<Integer> individual = new Vector<Integer>();

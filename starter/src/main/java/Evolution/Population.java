@@ -38,6 +38,19 @@ public class Population {
 			this.population[individualCount] = individual;
 		}
 	}
+	
+	public Population(int populationSize, int chromosomeLength, int numRules) {
+		// Initial population
+		this.population = new Individual[populationSize];
+
+		// Loop over population size
+		for (int individualCount = 0; individualCount < populationSize; individualCount++) {
+			// Create individual
+			Individual individual = new Individual(chromosomeLength, numRules);
+			// Add individual to population
+			this.population[individualCount] = individual;
+		}
+	}
 
 	/**
 	 * Get individuals from the population

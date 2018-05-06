@@ -23,13 +23,14 @@ public class RunEvolutionMirror {
 	public static  int tournamentSize = 5;
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
-	static int minNumPlayers = 3;
+	static int minNumPlayers = 2;
 	static int maxNumPlayers = 5;
 	static boolean rulebaseStandard = false;
 	public static void main(String[] args) {
 		Rulebase rb = new Rulebase(rulebaseStandard);
 		// Create cities
 		int numRules = rb.getRuleset().length;
+		int chromossomeLength = 20;
 //		City cities[] = new City[numRules];
 //		
 //		// Loop to create random cities
@@ -48,7 +49,7 @@ public class RunEvolutionMirror {
 		GeneticAlgorithm ga = new GeneticAlgorithm(populationSize, mutationRate, crossoverRate, elitismCount, tournamentSize);
 
 		// Initialize population
-		Population population = ga.initPopulation(numRules);
+		Population population = ga.initPopulation(chromossomeLength, numRules);
 
 		// Evaluate population
 		ga.evalPopulation(population, numRules, mirror, null, minNumPlayers, maxNumPlayers, rulebaseStandard);
