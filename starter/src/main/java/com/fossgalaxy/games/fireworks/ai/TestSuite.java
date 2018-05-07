@@ -10,8 +10,12 @@ import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.stats.BasicStats;
 import com.fossgalaxy.stats.StatsSummary;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TestSuite {
 
@@ -177,7 +181,7 @@ public class TestSuite {
     public static ArrayList<HistogramAgent> makeAgentsFromFile(String fileName, boolean rulebaseStandard) {
         Rulebase rb = new Rulebase(rulebaseStandard);
         String thisLine;
-        ArrayList<HistogramAgent> agents = null;
+        ArrayList<HistogramAgent> agents = new ArrayList();
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
             while ((thisLine = br.readLine()) != null) {
@@ -185,15 +189,11 @@ public class TestSuite {
                 String[] c = thisLine.split(",");
                 int[] chromossome = new int[c.length];
                 for (int i = 0; i < c.length; i++) {
-                    chromossome[i] = Integer.parseInt(c[i]);
+                    if (c[i].compareTo("")!=0) chromossome[i] = Integer.parseInt(c[i]);
                 }
                 Rule[] rules1 = new Rule[chromossome.length];
                 for (int i = 0; i < chromossome.length; i++) {
-                    if (rulebaseStandard) {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
-                    } else {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
-                    }
+                    rules1[i] = rb.ruleMapping(chromossome[i]);
                 }
                 if (rulebaseStandard) {
                     agents.add(rb.makeAgent(rules1));
@@ -201,8 +201,10 @@ public class TestSuite {
                     agents.add(rb.makeAgent(rules1));
                 }
             }
-        } catch (Exception e) {
-
+        } catch (FileNotFoundException e) {
+            System.out.println("FileNotFoundException");
+        } catch (IOException ex) {
+            System.out.println("IOException");
         }
         return agents;
     }
