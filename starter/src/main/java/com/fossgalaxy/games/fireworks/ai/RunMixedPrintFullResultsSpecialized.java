@@ -12,18 +12,17 @@ import Evolution.Rulebase;
  * This class evaluates an entire population in mirror tests
  */
 
-public class RunMixedPrintFullResults {
+public class RunMixedPrintFullResultsSpecialized {
 	public static void main( String[] args ) {
 		int minNumPlayers = 2;
-		int maxNumPlayers = 5;
-		int numGames = 1000;
-		boolean includeBaselineAgents = true;
+		int maxNumPlayers = 2;
+		int numGames = 2000;
+		boolean includeBaselineAgents = false;
 		Rulebase rb = new Rulebase(false);
 		int[][] agentChromossomes = {
-				{46,8,2,13,25,38,1,36,27,26,12,17,14,11,48,19,15,3,10,33,30,34,44,29,49,6,28,47,37,39,9,43,45,42,21,22,24,23,35,20,4,40,41,7,32,0,5,31,16,18},
-				{62,8,40,54,68,52,33,36,14,53,23,21,15,57,43,63,22,49,69,30,10,65,35,20,29,25,12,31,0,56,70,27,11,1,18,39,45,42,17,66,48,67,50,32,13,5,60,7,58,38,28,41,47,9,34,19,6,51,71,55,44,26,4,24,16,3,37,46,2,59,61,64},
-				{61,64,8,40,62,68,52,33,36,14,53,23,21,15,57,43,63,22,49,69,30,10,65,35,20,29,25,12,31,0,56,70,27,11,1,54,18,39,45,42,17,3,26,67,50,6,13,5,60,7,58,28,38,41,47,9,34,19,32,51,71,55,44,48,4,24,16,66,37,46,2,59}
-		};
+				{56,13,8,33,36,17,45,14,34,53,1,7,2,58,23,12,22,25,24,64,15,41,55,26,9,31,3,71,69,40,20,11,65,47,42,51,66,35,32,18,54,62,27,10,44,29,39,49,59,4,60,48,50,46,21,5,38,30,28,6,52,63,19,57,37,68,70,43,67,16,0,61},
+				{67,69,62,57,46,21,16,8,33,36,71,19,2,23,44,58,54,47,26,7,25,14,60,22,5,70,39,20,49,63,29,64,38,56,51,12,32,66,17,45,0,11,30,34,28,15,13,42,65,52,4,43,35,37,1,3,10,48,24,53,68,50,59,6,61,41,31,9,18,27,55,40},
+			};
 		
 		// This is the population of agents we are evaluating
 		String[] agentNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
@@ -43,16 +42,29 @@ public class RunMixedPrintFullResults {
 			}
 		}
 		
-		// Read agents from agentChromossomes and add them to the population
-		for (int i = 0; i < agentChromossomes.length; i++){
+                Agent[] agents = new Agent[2];
+                for (int i = 0; i < agentChromossomes.length; i++){
 			int[] chromossome = agentChromossomes[i];
 			Rule[] rules = new Rule [chromossome.length];
 			for (int j= 0; j< chromossome.length; j++) {
 				rules[j] = rb.ruleMapping(chromossome[j]);
 			}
-			HistogramAgent agent = Rulebase.makeAgent(rules);
-			population.add(new AgentPlayer ("Agent " + i, agent));
+			HistogramAgent agent = rb.makeAgent(rules);
+			agents[i]=agent;
 		}
+                SpecializedAgent sa = new SpecializedAgent(agents);
+                population.add(new AgentPlayer ("Specialized Agent", sa));
+                
+		// Read agents from agentChromossomes and add them to the population
+//		for (int i = 0; i < agentChromossomes.length; i++){
+//			int[] chromossome = agentChromossomes[i];
+//			Rule[] rules = new Rule [chromossome.length];
+//			for (int j= 0; j< chromossome.length; j++) {
+//				rules[j] = rb.ruleMapping(chromossome[j]);
+//			}
+//			HistogramAgent agent = rb.makeAgent(rules);
+//			population.add(new AgentPlayer ("Agent " + i, agent));
+//		}
 		
 		for(String other: testPoolNames) {
 			AgentPlayer otherAgent = new AgentPlayer(other, AgentUtils.buildAgent(other));
