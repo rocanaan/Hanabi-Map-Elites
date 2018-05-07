@@ -242,7 +242,7 @@ public class Rulebase {
         return ruleset[index];
     }
 
-    public static HistogramAgent makeAgent(String name, Rule[] agentRules) {
+    public HistogramAgent makeAgent(String name, Rule[] agentRules) {
         ProductionRuleAgent pra = new ProductionRuleAgent();
 
         for (Rule r : agentRules) {
@@ -255,7 +255,7 @@ public class Rulebase {
 
     }
 
-    public static HistogramAgent makeAgent(Rule[] agentRules) {
+    public HistogramAgent makeAgent(Rule[] agentRules) {
         ProductionRuleAgent pra = new ProductionRuleAgent();
 
         for (Rule r : agentRules) {
