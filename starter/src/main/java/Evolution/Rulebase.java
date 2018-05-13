@@ -49,8 +49,10 @@ import com.fossgalaxy.games.fireworks.state.GameState;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 
 import newrules.PlayJustHinted;
+import newrules.TellAtLeastNUseless;
 import newrules.TellUnambiguous;
 import newrules.TellUnambiguous2;
+import newrules.TellUnambiguous3;
 
 public class Rulebase {
 
@@ -148,7 +150,7 @@ public class Rulebase {
                 new PlaySafeCard(),
                 new PlayUniquePossibleCard(),
                 // Tell rules
-                new CompleteTellUsefulCard(),
+                new CompleteTellUsefulCard(), //rule no 10
                 new TellAboutOnes(),
                 new TellAnyoneAboutOldestUsefulCard(),
                 new TellAnyoneAboutUsefulCard(),
@@ -158,7 +160,7 @@ public class Rulebase {
                 new TellFives(),
                 new TellIllInformed(),
                 new TellMostInformation(),
-                new TellPlayableCard(),
+                new TellPlayableCard(),  //20
                 new TellPlayableCardOuter(),
                 new TellRandomly(), // Random rule
                 new TellUnknown(),
@@ -169,7 +171,7 @@ public class Rulebase {
                 new DiscardOldestFirst(),
                 new DiscardOldestNoInfoFirst(),
                 new DiscardProbablyUselessCard(0.0), // Parametrized rule
-                new DiscardProbablyUselessCard(0.2), // Parametrized rule
+                new DiscardProbablyUselessCard(0.2), // Parametrized rule  //30
                 new DiscardProbablyUselessCard(0.4), // Parametrized rule
                 new DiscardProbablyUselessCard(0.6), // Parametrized rule
                 new DiscardProbablyUselessCard(0.8), // Parametrized rule
@@ -181,7 +183,7 @@ public class Rulebase {
                 new OsawaDiscard(),
                 // Other rules
                 new LegalRandom(), // Bad rule
-                new TryToUnBlock(),
+                new TryToUnBlock(), //40
                 // Conditional rules
                 new IfRule(hailMary, new PlayProbablySafeCard(0.0)), //hail mary
                 new IfRule(hailMary, new PlayProbablySafeCard(0.1)), // slightly smarter hail mary
@@ -197,7 +199,7 @@ public class Rulebase {
                 new PlayProbablySafeCard(0.25), // Used by Flawed
 
                 // New, more complex rules
-                new PlayJustHinted(),
+                new PlayJustHinted(), //50
                 new PlayJustHinted(true, true, 2, 0),
                 new PlayJustHinted(true, false, 2, 0),
                 new PlayJustHinted(false, true, 2, 0),
@@ -207,7 +209,7 @@ public class Rulebase {
                 new PlayJustHinted(false, true, 2, 0.6),
                 new PlayJustHinted(false, false, 2, 0.6),
                 new PlayJustHinted(true, true, 2, 0.8),
-                new PlayJustHinted(true, false, 2, 0.8),
+                new PlayJustHinted(true, false, 2, 0.8), //60
                 new PlayJustHinted(false, true, 2, 0.8),
                 new PlayJustHinted(false, false, 2, 0.8),
                 new PlayJustHinted(true, true, 2, 1),
@@ -217,8 +219,23 @@ public class Rulebase {
                 new TellUnambiguous(true),
                 new TellUnambiguous(false),
                 new TellUnambiguous2(1, 0),
-                new TellUnambiguous2(10, -1),
-                new TellUnambiguous2(2, -1),};
+                new TellUnambiguous2(10, -1), //70
+                new TellUnambiguous2(2, -1),
+                new TellUnambiguous3(1,0),
+                new TellUnambiguous3(0,-1),
+                new TellUnambiguous3(2,-1),
+                new TellUnambiguous3(1,-2),
+                new TellUnambiguous3(10,-1),
+                new TellUnambiguous3(1,-10),
+                new TellAtLeastNUseless(1),
+                new TellAtLeastNUseless(2),
+                new TellAtLeastNUseless(3),
+                new TellAtLeastNUseless(4),
+                new TellAtLeastNUseless(5),
+
+                
+            };
+            		
             this.ruleset = rulesset;
         };
     }
