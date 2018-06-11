@@ -23,7 +23,7 @@ import java.util.Scanner;
 public class TestRuleAgent implements Agent {
 
     private Random random;
-    private Rule testRule = new TellUnambiguous2();
+    private Rule testRule = new PlayJustHinted();
 
     public TestRuleAgent() {
         this.random = new Random();

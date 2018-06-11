@@ -24,7 +24,7 @@ public class RunEvolutionMixed {
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	public static boolean mirror = false; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
 	static int minNumPlayers = 2;
-	static int maxNumPlayers = 5;
+	static int maxNumPlayers = 2;
 	static boolean rulebaseStandard = false;
 	public static void main(String[] args) {
 		Rulebase rb = new Rulebase(rulebaseStandard);

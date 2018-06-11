@@ -23,8 +23,8 @@ public class App
         int numPlayers = 5;
         int numGames = 1;
         //String agentName = "SampleAgent";
-        String agentName = "HumanControlledStateEvaluator";
-        String otherAgentName = "pmctsND";
+        String agentName = "HistoryTestAgent";
+        String otherAgentName = "RuleBasedPiers";
         String modelName = "RuleBasedPiers";
 
         Random random = new Random();

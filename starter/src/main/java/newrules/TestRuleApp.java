@@ -24,8 +24,8 @@ public class TestRuleApp
         int numPlayers = 2;
         int numGames = 1;
         //String agentName = "SampleAgent";
-        String agentName = "DeterminePartnerBehaviorAgent";
-        String otherAgentName = "DeterminePartnerBehaviorAgent";
+        String agentName = "TestRuleAgent";
+        String otherAgentName = "TestRuleAgent";
 
         Random random = new Random();
         StatsSummary statsSummary = new BasicStats();
