@@ -50,6 +50,7 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 
 import newrules.PlayJustHinted;
 import newrules.TellAtLeastNUseless;
+import newrules.TellHighProbabilityMistake;
 import newrules.TellUnambiguous;
 import newrules.TellUnambiguous2;
 import newrules.TellUnambiguous3;
@@ -232,6 +233,28 @@ public class Rulebase {
                 new TellAtLeastNUseless(3),
                 new TellAtLeastNUseless(4),
                 new TellAtLeastNUseless(5),
+                new TellHighProbabilityMistake(true, 0),
+                new TellHighProbabilityMistake(true, 0.1),
+                new TellHighProbabilityMistake(true, 0.2),
+                new TellHighProbabilityMistake(true, 0.3),
+                new TellHighProbabilityMistake(true, 0.4),
+                new TellHighProbabilityMistake(true, 0.5),
+                new TellHighProbabilityMistake(true, 0.6),
+                new TellHighProbabilityMistake(true, 0.7),
+                new TellHighProbabilityMistake(true, 0.8),
+                new TellHighProbabilityMistake(true, 0.9),
+                new TellHighProbabilityMistake(true, 1),
+                new TellHighProbabilityMistake(false, 0),
+                new TellHighProbabilityMistake(false, 0.1),
+                new TellHighProbabilityMistake(false, 0.2),
+                new TellHighProbabilityMistake(false, 0.3),
+                new TellHighProbabilityMistake(false, 0.4),
+                new TellHighProbabilityMistake(false, 0.5),
+                new TellHighProbabilityMistake(false, 0.6),
+                new TellHighProbabilityMistake(false, 0.7),
+                new TellHighProbabilityMistake(false, 0.8),
+                new TellHighProbabilityMistake(false, 0.9),
+                new TellHighProbabilityMistake(false, 1),
 
                 
             };

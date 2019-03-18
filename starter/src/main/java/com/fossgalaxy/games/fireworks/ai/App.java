@@ -9,6 +9,8 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import com.fossgalaxy.stats.BasicStats;
 import com.fossgalaxy.stats.StatsSummary;
 
+import MapElites.ReportAgent;
+
 import java.util.Random;
 
 /**
@@ -20,7 +22,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        int numPlayers = 5;
+        int numPlayers = 2;
         int numGames = 1;
         //String agentName = "SampleAgent";
         String agentName = "HistoryTestAgent";
@@ -34,8 +36,11 @@ public class App
         
         
         
-        Agent a1 = AgentUtils.buildAgent(agentName);
-        Player player = new AgentPlayer(agentName, AgentUtils.buildAgent(agentName));
+//        Agent a1 = AgentUtils.buildAgent(agentName);
+        Agent human = AgentUtils.buildAgent("HumanControlledAgent");
+        Agent report = new ReportAgent(human);
+//        Player player = new AgentPlayer(agentName, AgentUtils.buildAgent(agentName));
+        Player player = new AgentPlayer("Report", report);
         runner.addPlayer(player);
         
         Agent a2 = AgentUtils.buildAgent(modelName);

@@ -38,10 +38,12 @@ import com.fossgalaxy.games.fireworks.state.events.GameEvent;
 
 public class TellHighProbabilityMistake extends AbstractTellRule{
 	
-
+	private double threshold;
+	private boolean checkFalsePositive;
 	
-	public TellHighProbabilityMistake() {
-
+	public TellHighProbabilityMistake(boolean falsePositive, double threshold) {
+		this.threshold = threshold;
+		this.checkFalsePositive = falsePositive;
 	}
 	
 
@@ -88,25 +90,37 @@ public class TellHighProbabilityMistake extends AbstractTellRule{
 			List<Double> probabilityPlayable = getProbabiltyPlayable(nextPlayer, state, hand);
 			//System.out.println("probability playable mask " +probabilityPlayable);
 			
-			double maxProbability = -1;
-			int maxSlot = -1;
-			for (int slot = 0; slot < probabilityPlayable.size(); slot++)
-			{
-				double probability = probabilityPlayable.get(slot);
-				if (probability > maxProbability) {
-					maxProbability = probability;
-					maxSlot =  slot;
-				}
-				
-			}
+			int prioritySlot = -1;
 			
-			if (maxSlot !=-1) {
-				if (playableMask[maxSlot] != 1) {
-					Hand newHand = state.getHand(i);
-					if (newHand.getKnownColour(maxSlot) !=null || newHand.getKnownValue(maxSlot) !=null) {
-						return tellMissingPrioritiseValue(newHand, i, maxSlot);
+			if (checkFalsePositive) {
+				// Keep track of the unplayable card with highest playable probability
+				double maxProbability = threshold;
+				for (int slot = 0; slot < probabilityPlayable.size(); slot++)
+				{
+					if (playableMask[slot] == 0 && probabilityPlayable.get(slot) >= maxProbability) {
+						maxProbability = probabilityPlayable.get(slot);
+						prioritySlot = slot;
 					}
 				}
+			}
+			else {
+				// Keep track of the playable card with lowest playable probability
+				double minProbability = threshold;
+				int maxSlot = -1;
+				for (int slot = 0; slot < probabilityPlayable.size(); slot++)
+				{
+					if (playableMask[slot] == 1 && probabilityPlayable.get(slot) <= minProbability) {
+						minProbability = probabilityPlayable.get(slot);
+						prioritySlot = slot;
+					}
+				}
+			}
+	
+
+			
+			if (prioritySlot !=-1) {
+				Hand newHand = state.getHand(i);
+				return tellMissingPrioritiseValue(newHand, i, prioritySlot);	
 			}
 			continue;
 			

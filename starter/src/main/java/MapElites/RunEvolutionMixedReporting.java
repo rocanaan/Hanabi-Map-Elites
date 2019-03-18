@@ -1,4 +1,9 @@
-package Evolution;
+package MapElites;
+
+import Evolution.GeneticAlgorithm;
+import Evolution.GeneticAlgorithm2;
+import Evolution.Population;
+import Evolution.Rulebase;
 
 /**
  * Main, executive class for the Traveling Salesman Problem.
@@ -14,7 +19,7 @@ package Evolution;
  * @author bkanber
  *
  */
-public class RunEvolutionMixed {
+public class RunEvolutionMixedReporting {
 	public static int maxGenerations = 500; // note : generation count starts at zero, so this is actually 1000
 	public static int populationSize = 100;
 	public static double mutationRate = 0.1;
@@ -48,7 +53,7 @@ public class RunEvolutionMixed {
 		
 		
 		// Initial GA
-		GeneticAlgorithm ga = new GeneticAlgorithm(populationSize, mutationRate, crossoverRate, elitismCount, tournamentSize);
+		GeneticAlgorithm2 ga = new GeneticAlgorithm2(populationSize, mutationRate, crossoverRate, elitismCount, tournamentSize);
 
 		// Initialize population
 		Population population = ga.initPopulation(chromossomeLength, numRules);
