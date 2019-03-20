@@ -33,7 +33,7 @@ import javassist.compiler.ast.Pair;
  */
 public class RunMapElites {
 	public static int G = 10000; //number of random individuals
-	public static int I = 1000000; // number of mutations after initial random individuals
+	public static int I = 1000000 - G; // number of mutations after initial random individuals
 	public static int d1 = 20; // numer of niches in the first dimension
 	public static int d2 = 20; // numer of niches in the second dimension
 	public static double mutationRate = 0.1;
@@ -215,11 +215,12 @@ public class RunMapElites {
 
     			if (individual % 100 == 0) {
         			System.out.println("Printing Map for initial iteration " + individual);
+    				printParameters();
         			printMap();
+
     			}
     			if ( (individual % 1000) == 0) {
     				printChromosomes();
-    				printParameters();
     			}
 	        
 		}
@@ -293,11 +294,12 @@ public class RunMapElites {
 
     			if (individual % 100 == 0) {
         			System.out.println("Printing Map for mutation iteration " + individual);
+    				printParameters();
         			printMap();
+
     			}
     			if ( (individual % 10000) == 0) {
     				printChromosomes();
-    				printParameters();
     			}
 		}
 		
@@ -305,6 +307,8 @@ public class RunMapElites {
 
 		printMap();
 		printChromosomes();
+		printParameters();
+
 	}
 ////		City cities[] = new City[numRules];
 ////		

@@ -60,8 +60,14 @@ public class TestSuite {
 //	}
     public static StatsSummary ConstantNumberPlayersTest(int numPlayers, int numGames, AgentPlayer yourAgent, AgentPlayer otherAgent, Random random) {
         StatsSummary statsSummary = new BasicStats();
+        
+        boolean parallelize = false;
 
         boolean randomizePosition = true;
+        
+//        if (parallelize) {
+//        		Set<Server> servers = getServer();
+//        }
 
         for (int i = 0; i < numGames; i++) {
         		//System.out.println("Running game with number of players " +numPlayers);
