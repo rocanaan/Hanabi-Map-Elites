@@ -39,7 +39,7 @@ public class RunMapElites {
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.5;
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
-	public static boolean mirror = false; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
+	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
 	static int minNumPlayers = 2;
 	static int maxNumPlayers = 2;
 	static boolean rulebaseStandard = false;
@@ -47,6 +47,24 @@ public class RunMapElites {
 	static Vector<AgentPlayer> testPool = null;
 	static double[][] map = new double[d1][d2];
 	static int[][][] population = new int[d1][d2][chromosomeLength];
+	
+	public static void printParameters() {
+		System.out.println("Parameters for this run: ");
+
+		System.out.println("G = "  + G);
+		System.out.println("I = " + I);
+		System.out.println("d1 = " + d1);
+		System.out.println("d2 = " + d2);
+		System.out.println("Mutation rate = " + mutationRate);
+		System.out.println("Crossover rate =  " + crossoverRate);
+		System.out.println("numGames  = " + numGames);
+		System.out.println("Mirror =  " + mirror);
+		System.out.println("min / max num players = " + minNumPlayers + " / " + maxNumPlayers);
+		System.out.println("rulebaseStandard = " + rulebaseStandard);
+		System.out.println("Chromosome Length =  " + chromosomeLength);
+	}
+
+
 	
 	public static ArrayList<Integer> getNiche(double feature1, double feature2){
 		ArrayList<Integer> coords = new ArrayList<Integer>();
@@ -70,11 +88,41 @@ public class RunMapElites {
 		return coords;
 	}
 	
-	public static void updateMap(double fitness, int niche1, int niche2, int[] chromosome) {
-		if (fitness > map[niche1][niche2]) {
+	public static void updateMap(double fitness, int niche1, int niche2, int[] candidateChromosome) {
+		Rulebase rb = new Rulebase(rulebaseStandard);
+		int[] eliteChromosome = population[niche1][niche2];
+		Rule[] agentRules = new Rule[chromosomeLength];
+		for (int geneIndex = 0; geneIndex<chromosomeLength; geneIndex++) {
+			agentRules[geneIndex] = rb.ruleMapping(eliteChromosome[geneIndex]);
+		}
+		HistogramAgent histo;
+        histo = rb.makeAgent(agentRules);
+        ReportAgent agent = new ReportAgent(histo);
+        
+        Vector<AgentPlayer> agentPlayers = new Vector<AgentPlayer>();
+        Vector<ReportAgent> agents = new Vector<ReportAgent>();
+        
+        agentPlayers.add(new AgentPlayer("elite report agent ", agent));
+
+        PopulationEvaluationSummary pes = null;
+        if (testPool == null) {
+            if (mirror) {
+                pes = TestSuite.mirrorPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
+            } //TODO: create a class that returns the testpool
+            else {
+                Vector<AgentPlayer> baselinePool;
+                baselinePool = Rulebase.GetBaselineAgentPlayers();
+                pes = TestSuite.mixedPopulationEvaluation(agentPlayers, baselinePool, minNumPlayers, maxNumPlayers, numGames);
+            }
+        } else {
+            pes = TestSuite.mixedPopulationEvaluation(agentPlayers, testPool, minNumPlayers, maxNumPlayers, numGames);
+        }
+        
+        double eliteFitness = pes.getScoreIndividualAgent(0);
+		if (fitness > eliteFitness) {
 //			System.out.println("Fitness is greater than current elite");
 			map[niche1][niche2] = fitness;
-			population[niche1][niche2] = chromosome;
+			population[niche1][niche2] = candidateChromosome;
 		}
 	}
 	
@@ -95,6 +143,8 @@ public class RunMapElites {
 		}
 		System.out.println("Max from this generation is [" + imax +"," + jmax+ "] with fitness " + max);
 	}
+	
+	
 	
 	public static void printChromosomes() {
 		for (int i = 0; i<d1; i++) {
@@ -146,6 +196,8 @@ public class RunMapElites {
 	        } else {
 	            pes = TestSuite.mixedPopulationEvaluation(agentPlayers, testPool, minNumPlayers, maxNumPlayers, numGames);
 	        }
+	        // This whole block up to here should be a function that returns a pair of pes and agent
+	        
 	        
 	        double fitness = pes.getScoreIndividualAgent(0);
 	        double dim1 = (double)agent.hintsGiven/(double)agent.possibleHints;
@@ -167,6 +219,7 @@ public class RunMapElites {
     			}
     			if ( (individual % 1000) == 0) {
     				printChromosomes();
+    				printParameters();
     			}
 	        
 		}
@@ -244,6 +297,7 @@ public class RunMapElites {
     			}
     			if ( (individual % 10000) == 0) {
     				printChromosomes();
+    				printParameters();
     			}
 		}
 		
@@ -308,4 +362,5 @@ public class RunMapElites {
 //		//System.out.println("Best distance: " + route.getDistance());
 //
 //	}
+
 }
