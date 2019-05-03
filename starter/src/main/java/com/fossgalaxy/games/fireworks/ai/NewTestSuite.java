@@ -146,7 +146,7 @@ public class NewTestSuite {
                 }
             }
         } catch (Exception e) {
-
+        		System.err.println(e);;
         }
         return agents;
     }

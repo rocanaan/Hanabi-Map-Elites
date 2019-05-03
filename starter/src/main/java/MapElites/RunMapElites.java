@@ -228,7 +228,7 @@ public class RunMapElites {
 		for (int individual = 0; individual < I; individual++) {
 			Random r = new Random();
 			int i = r.nextInt(d1);
-			int j = r.nextInt(d2);
+			int j = r.nextInt(d2); //TODO: what happens if this niche is empty
 			
 			int[] chromosome = population[i][j];
 			
@@ -248,7 +248,7 @@ public class RunMapElites {
 				if (mutationRate > Math.random()) {
 					chromosome[k] = r.nextInt(rb.getRuleset().length);
 				}
-			}
+			} 	 		
 			
 			// From here on out it's the same, should refactor
 			Rule[] agentRules = new Rule[chromosomeLength];
