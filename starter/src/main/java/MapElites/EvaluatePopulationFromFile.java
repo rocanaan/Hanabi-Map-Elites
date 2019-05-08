@@ -52,7 +52,7 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 75;
+		int numGames = 500;
 		
 		Mode mode  = Mode.INTRAPOPULATION;
 		
@@ -78,7 +78,7 @@ public class EvaluatePopulationFromFile {
 			populationResults = NewTestSuite.intraPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
 		}
 		
-		String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Output";
+		String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/20190508_2P_500";
 		try {
 			FileOutputStream file = new FileOutputStream(outputFileName); // TODO: There should bbe a class just to serialize, another to gather the data
 			ObjectOutputStream out = new ObjectOutputStream(file);
@@ -192,6 +192,11 @@ public class EvaluatePopulationFromFile {
 			int [][] dim2BestPair = new int[sizeDim1][sizeDim2];
 			int [][] countBestPartner = new int[sizeDim1][sizeDim2];
 
+			double global_max = 0;
+			int i_global_max = 0;
+			int j_global_max = 0;
+			int m_global_max = 0;
+			int n_global_max = 0;
 			
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j<sizeDim2; j++) {
@@ -218,6 +223,14 @@ public class EvaluatePopulationFromFile {
 								m_max = m;
 								n_max = n;
 							}
+							
+							if (score > global_max) {
+								 global_max = score;
+								i_global_max = i;
+								j_global_max = j;
+								m_global_max = m;
+								n_global_max = n; 
+							}
 						
 							//System.out.println ("[" +i + ","+j+"] ["+m+","+n+"] index = " + index + " score = " + score);
 						}
@@ -230,6 +243,8 @@ public class EvaluatePopulationFromFile {
 					dim2BestPair[i][j] = n_max;
 					countBestPartner[m_max][n_max] +=1;
 				}
+				System.out.println("Global max is " + global_max + " between agents ["+i_global_max+","+j_global_max+"] and ["+m_global_max+","+n_global_max+"]" );
+				
 			}
 			
 			// Print averages
@@ -256,6 +271,7 @@ public class EvaluatePopulationFromFile {
 				}
 				System.out.println("");
 			}
+			
 
 			
 			
