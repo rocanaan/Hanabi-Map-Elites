@@ -92,6 +92,52 @@ public class NewTestSuite {
         return populationResults;
 
     }
+    
+    public static Vector<Map<Integer, Vector<Double>>> crossPopulationEvaluation(Vector<AgentPlayer> population1, Vector<AgentPlayer> population2, int minNumPlayers, int maxNumPlayers, int numGames){
+    		Vector<Map<Integer, Vector<Double>>> populationResults  = new Vector <Map<Integer, Vector<Double>>>();
+    		
+    		Random random = new Random();
+        Long seed = random.nextLong();
+        
+        for (int i=0; i<population1.size(); i++) {
+        		AgentPlayer agent1 = population1.get(i);
+        		AgentPlayer agent2 = population1.get(i);
+        		
+        		 random.setSeed(seed);
+             populationResults.add(VariableNumberPlayersTest(agent1, agent2, minNumPlayers, maxNumPlayers, numGames, random));
+
+        		
+        }
+
+    		
+    		return populationResults;
+
+    }
+    
+    
+    // TODO: This should be a map of (integer, integer) because j should be from i to population size
+    public static Vector<Map<Integer, Vector<Double>>> intraPopulationEvaluation(Vector<AgentPlayer> population, int minNumPlayers, int maxNumPlayers, int numGames){
+		Vector<Map<Integer, Vector<Double>>> populationResults  = new Vector <Map<Integer, Vector<Double>>>();
+		
+		Random random = new Random();
+		Long seed = random.nextLong();
+    
+		for (int i=0; i<population.size(); i++) {
+			for (int j=0; j<population.size(); j++) {
+    			AgentPlayer agent1 = population.get(i);
+    			AgentPlayer agent2 = population.get(j);
+    		
+    			random.setSeed(seed);
+    			populationResults.add(VariableNumberPlayersTest(agent1, agent2, minNumPlayers, maxNumPlayers, numGames, random));
+			}
+		}
+    		return populationResults;
+    			
+
+    		
+    }
+
+		
 
     	// First index is the number of the player in the population, second is the number of the partner in the test pool
     public static Vector<Vector <Map<Integer, Vector<Double>>>> mixedPopulationEvaluation(Vector<AgentPlayer> population, Vector<AgentPlayer> testPool, int minNumPlayers, int maxNumPlayers, int numGames) {

@@ -8,7 +8,7 @@ import com.fossgalaxy.stats.StatsSummary;
 /*
  * Class containing the summary for the evaluation of a single agent paired with a pool of test agents.
  */
-public class PopulationEvaluationSummary {
+public class PopulationEvaluationSummary implements java.io.Serializable{
 
 	public PopulationEvaluationSummary(boolean mirror, Vector<AgentPlayer> population, Vector<AgentPlayer> testPool) {
 		this.mirror = mirror;

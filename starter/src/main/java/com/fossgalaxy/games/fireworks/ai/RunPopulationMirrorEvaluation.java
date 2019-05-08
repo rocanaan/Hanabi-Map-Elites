@@ -14,8 +14,8 @@ import Evolution.Rulebase;
 public class RunPopulationMirrorEvaluation {
 	public static void main( String[] args ) {
 		int minNumPlayers = 2;
-		int maxNumPlayers = 5; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
-		int numGames = 20;
+		int maxNumPlayers = 2; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
+		int numGames = 500 ;
 		Rulebase rb = new Rulebase(false);
                 
 		String[] agentNames = { "RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
@@ -24,7 +24,7 @@ public class RunPopulationMirrorEvaluation {
 		
 		for(String name: agentNames) {
 			AgentPlayer newAgent = new AgentPlayer(name, AgentUtils.buildAgent(name));
-			population.add(newAgent);
+			//population.add(newAgent);
 		}
 		
 		// Best agent on the GA
@@ -34,7 +34,7 @@ public class RunPopulationMirrorEvaluation {
 			rules1[i] = rb.ruleMapping(chromossome1[i]);
 		}
 		HistogramAgent evolvedHAgent = rb.makeAgent(rules1);
-		population.add(new AgentPlayer("evolvedAgent", evolvedHAgent));
+		//population.add(new AgentPlayer("evolvedAgent", evolvedHAgent));
 		
 		// Variation putting Osawa discard (38) before oldestNoInfo (28)
 		int[] chromossome2 = {8,13,38,28,6,33,35,20,37,23,30,26,9,0,14,17,10,21,25,4,15,16,11,31,3,5,29,36,7,27,34,12,2,39,19,40,18,24,1,32,22};
@@ -43,25 +43,35 @@ public class RunPopulationMirrorEvaluation {
 			rules2[i] = rb.ruleMapping(chromossome2[i]);
 		}
 		HistogramAgent variantHAgent = rb.makeAgent(rules2);
-		population.add(new AgentPlayer("variantAgent", variantHAgent));
+		//population.add(new AgentPlayer("variantAgent", variantHAgent));
 		
 		// Variation putting Osawa discard (38) before oldestNoInfo (28) and add hailMary
 		int[] chromossome3 = {42,8,13,38,28,6,33,35,20,37,23,30,26,9,0,14,17,10,21,25,4,15,16,11,31,3,5,29,36,7,27,34,12,2,39,19,40,18,24,1,32,22};
-		Rule[] rules3 = new Rule[chromossome2.length+1];
+		Rule[] rules3 = new Rule[chromossome3.length+1];
 		for (int i = 0; i < chromossome3.length; i++) {
 			rules3[i] = rb.ruleMapping(chromossome3[i]);
 		}
+		
+		int[] chromossomeMapElites = {6,67,56,75,41,58,36,70,57,23,54,85,1,15,40};
+		Rule[] rulesMapElites = new Rule[chromossomeMapElites.length+1];
+		for (int i = 0; i < chromossomeMapElites.length; i++) {
+			rulesMapElites[i] = rb.ruleMapping(chromossomeMapElites[i]);
+		}
+		HistogramAgent MapElitesAgent = rb.makeAgent(rulesMapElites);
+		population.add(new AgentPlayer("MapElitesAgent", MapElitesAgent));
+		
 		HistogramAgent HailMaryHAgent = rb.makeAgent(rules1);
-		population.add(new AgentPlayer("Hail Mary", HailMaryHAgent));
+		//population.add(new AgentPlayer("Hail Mary", HailMaryHAgent));
 		
 		PopulationEvaluationSummary pes = TestSuite.mirrorPopulationEvaluation(population, minNumPlayers, maxNumPlayers, numGames);
 	
 		
 		System.out.println(pes);
 		
-		evolvedHAgent.printHistogram();
-		variantHAgent.printHistogram();
-		HailMaryHAgent.printHistogram();
+//		evolvedHAgent.printHistogram();
+//		variantHAgent.printHistogram();
+//		HailMaryHAgent.printHistogram();
+		MapElitesAgent.printHistogram();
 		
 //		PairingSummary stats = TestSuite.VariableNumberPlayersTest(agentName, otherAgent, maxNumPlayers, numGames );
 //		

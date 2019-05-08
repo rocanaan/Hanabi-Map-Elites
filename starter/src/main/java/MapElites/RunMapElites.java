@@ -1,6 +1,11 @@
 package MapElites;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 
@@ -38,7 +43,7 @@ public class RunMapElites {
 	public static int d2 = 20; // numer of niches in the second dimension
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.5;
-	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
+	public static int numGames = 100; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
 	static int minNumPlayers = 2;
 	static int maxNumPlayers = 2;
@@ -47,6 +52,9 @@ public class RunMapElites {
 	static Vector<AgentPlayer> testPool = null;
 	static double[][] map = new double[d1][d2];
 	static int[][][] population = new int[d1][d2][chromosomeLength];
+
+	static String filePath = "/Users/rodrigocanaan/Dev/HanabiResults/Evolution";
+	static String directory = "/20190507/";
 	
 	public static void printParameters() {
 		System.out.println("Parameters for this run: ");
@@ -89,36 +97,40 @@ public class RunMapElites {
 	}
 	
 	public static void updateMap(double fitness, int niche1, int niche2, int[] candidateChromosome) {
-		Rulebase rb = new Rulebase(rulebaseStandard);
-		int[] eliteChromosome = population[niche1][niche2];
-		Rule[] agentRules = new Rule[chromosomeLength];
-		for (int geneIndex = 0; geneIndex<chromosomeLength; geneIndex++) {
-			agentRules[geneIndex] = rb.ruleMapping(eliteChromosome[geneIndex]);
+		boolean reevaluate = true; //TODO: This should be an external parameter
+		double eliteFitness = map[niche1][niche2];
+		if (reevaluate) {
+			Rulebase rb = new Rulebase(rulebaseStandard);
+			int[] eliteChromosome = population[niche1][niche2];
+			Rule[] agentRules = new Rule[chromosomeLength];
+			for (int geneIndex = 0; geneIndex<chromosomeLength; geneIndex++) {
+				agentRules[geneIndex] = rb.ruleMapping(eliteChromosome[geneIndex]);
+			}
+			HistogramAgent histo;
+	        histo = rb.makeAgent(agentRules);
+	        ReportAgent agent = new ReportAgent(histo);
+	        
+	        Vector<AgentPlayer> agentPlayers = new Vector<AgentPlayer>();
+	        Vector<ReportAgent> agents = new Vector<ReportAgent>();
+	        
+	        agentPlayers.add(new AgentPlayer("elite report agent ", agent));
+	
+	        PopulationEvaluationSummary pes = null;
+	        if (testPool == null) {
+	            if (mirror) {
+	                pes = TestSuite.mirrorPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
+	            } //TODO: create a class that returns the testpool
+	            else {
+	                Vector<AgentPlayer> baselinePool;
+	                baselinePool = Rulebase.GetBaselineAgentPlayers();
+	                pes = TestSuite.mixedPopulationEvaluation(agentPlayers, baselinePool, minNumPlayers, maxNumPlayers, numGames);
+	            }
+	        } else {
+	            pes = TestSuite.mixedPopulationEvaluation(agentPlayers, testPool, minNumPlayers, maxNumPlayers, numGames);
+	        }
+	        
+	        eliteFitness = pes.getScoreIndividualAgent(0);
 		}
-		HistogramAgent histo;
-        histo = rb.makeAgent(agentRules);
-        ReportAgent agent = new ReportAgent(histo);
-        
-        Vector<AgentPlayer> agentPlayers = new Vector<AgentPlayer>();
-        Vector<ReportAgent> agents = new Vector<ReportAgent>();
-        
-        agentPlayers.add(new AgentPlayer("elite report agent ", agent));
-
-        PopulationEvaluationSummary pes = null;
-        if (testPool == null) {
-            if (mirror) {
-                pes = TestSuite.mirrorPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
-            } //TODO: create a class that returns the testpool
-            else {
-                Vector<AgentPlayer> baselinePool;
-                baselinePool = Rulebase.GetBaselineAgentPlayers();
-                pes = TestSuite.mixedPopulationEvaluation(agentPlayers, baselinePool, minNumPlayers, maxNumPlayers, numGames);
-            }
-        } else {
-            pes = TestSuite.mixedPopulationEvaluation(agentPlayers, testPool, minNumPlayers, maxNumPlayers, numGames);
-        }
-        
-        double eliteFitness = pes.getScoreIndividualAgent(0);
 		if (fitness > eliteFitness) {
 //			System.out.println("Fitness is greater than current elite");
 			map[niche1][niche2] = fitness;
@@ -141,7 +153,16 @@ public class RunMapElites {
 			}
 			System.out.println("");
 		}
-		System.out.println("Max from this generation is [" + imax +"," + jmax+ "] with fitness " + max);
+		System.out.print("Max from this generation is [" + imax +"," + jmax+ "] with fitness " + max + " with chromosome: {");
+		for (int k=0; k< chromosomeLength;k++) {
+			if (k != (chromosomeLength-1)) {
+				System.out.print(population[imax][jmax][k] + ",");
+			}
+			else {
+				System.out.print(population[imax][jmax][k] + "}");
+			}
+		}
+		System.out.println("");
 	}
 	
 	
@@ -149,20 +170,172 @@ public class RunMapElites {
 	public static void printChromosomes() {
 		for (int i = 0; i<d1; i++) {
 			for(int j = 0; j<d2; j++) {
-				System.out.print("Chromosome in niche " + i + "," + j +  " : [");
+				System.out.print("Chromosome in niche " + i + "," + j +  " : {");
 				for (int k=0; k< chromosomeLength;k++) {
-					System.out.print(population[i][j][k] + " ");
+					if (k != (chromosomeLength-1)) {
+						System.out.print(population[i][j][k] + ",");
+					}
+					else {
+						System.out.print(population[i][j][k]);
+					}
 				}
-				System.out.println("] with fitness " + map[i][j]);
+				System.out.println("} with fitness " + map[i][j]);
 			}
 
 		}
 	}
 	
+	public static boolean sanityCheck(double fitness) { //TODO: Threshold should be a parameter
+		double threshold = 3;
+		double max = 0;
+		int imax = 0;
+		int jmax = 0;
+		for (int i = 0; i<d1; i++) {
+			for(int j = 0; j<d2; j++) {
+				if (map[i][j] > max) {
+					max = map[i][j];
+					imax = i;
+					jmax = j;
+				}
+			}
+		} //TODO Thiw whole "make agent from chromosome, add to population of agent players, call pes etc should be encapsulated"
+		Rulebase rb = new Rulebase(rulebaseStandard);
+		int [] elite = population[imax][jmax];
+		Rule[] rulesMapElites = new Rule[elite.length+1]; //TODO check if the +1 is needed
+		for (int i = 0; i < elite.length; i++) {
+			rulesMapElites[i] = rb.ruleMapping(elite[i]); // TODO making an agent player out of a chromosome should be extracted
+		}
+		
+		HistogramAgent histo;
+        histo = rb.makeAgent(rulesMapElites);
+        ReportAgent agent = new ReportAgent(histo);
+		
+		Vector<AgentPlayer> agentPlayers = new Vector<AgentPlayer>();
+        
+        agentPlayers.add(new AgentPlayer("elite report agent ", agent));
+		
+		
+		PopulationEvaluationSummary pes = null;
+		if (mirror) {
+            pes = TestSuite.mirrorPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
+        } //TODO: create a class that returns the testpool
+        else {
+            Vector<AgentPlayer> baselinePool;
+            baselinePool = Rulebase.GetBaselineAgentPlayers();
+            pes = TestSuite.mixedPopulationEvaluation(agentPlayers, baselinePool, minNumPlayers, maxNumPlayers, numGames);
+        }
+		
+		double sanityFitness = pes.getScoreIndividualAgent(0);
+		if (Math.abs(sanityFitness-fitness) < threshold) {
+			return true;
+		}
+		return false;
+		
+	}
+	
+	private static class AvgMaxNumGood{
+		public double avg;
+		public double max;
+		public int numGood;
+		
+		public AvgMaxNumGood(double avg, double max, int numGood) {
+			this.avg = avg;
+			this.max = max;
+			this.numGood = numGood;
+			
+		}
+		
+	}
+	
+	public static AvgMaxNumGood getStats(double threshold) {
+		double avg = 0;
+		int count = 0;
+		double max = 0;
+		int numGood = 0;
+		for (int i = 0; i<d1; i++) {
+			for(int j = 0; j<d2; j++) {
+				avg += map[i][j];
+				count +=1;
+				if (map[i][j] > max) {
+					max = map[i][j];
+				}
+				if (map[i][j] > threshold) {
+					numGood ++;
+				}
+			}
+		}
+		if (count != 0) {
+			avg = avg/count;
+		}
+		return new AvgMaxNumGood(avg,max,numGood);
+		
+	}
+	
+	public static void  printStats(ArrayList<AvgMaxNumGood> stats) {
+		System.out.print("Printing avgs: ");
+		for(AvgMaxNumGood s: stats) {
+			System.out.print(String.format("%.02f", s.avg) + " ");
+		}
+		System.out.println("");
+		System.out.print("Printing max: ");
+		for(AvgMaxNumGood s: stats) {
+			System.out.print(s.max + " ");
+		}
+		System.out.println("");
+		System.out.print("Printing numGood: ");
+		for(AvgMaxNumGood s: stats) {
+			System.out.print(s.numGood + " ");
+		}
+		System.out.println("");
+	}
+	
+	public static void serialize(double[][] map, String mapFileName, int[][][] population, String populationFileName) {
+		//map
+		try {
+			FileOutputStream file = new FileOutputStream(mapFileName); // TODO: There should bbe a class just to serialize, another to gather the data
+			ObjectOutputStream out = new ObjectOutputStream(file);
+			out.writeObject(map);
+			out.close();
+			file.close();
+            System.out.println("Map has been serialized"); 
+
+		}
+	    catch(IOException ex) 
+        { 
+            System.err.println("Failed to serialize map"); 
+            System.err.println(ex); 
+
+        } 
+		//population
+		try {
+			FileOutputStream file = new FileOutputStream(populationFileName); // TODO: There should bbe a class just to serialize, another to gather the data
+			ObjectOutputStream out = new ObjectOutputStream(file);
+			out.writeObject(population);
+			out.close();
+			file.close();
+            System.out.println("Population has been serialized"); 
+
+		}
+	    catch(IOException ex) 
+        { 
+            System.err.println("Failed to serialize population"); 
+        } 
+	}
+//		
+//		
+//		
+//		
+//		
+//	}
+	
 	public static void main(String[] args) {
 		Rulebase rb = new Rulebase(rulebaseStandard);
 		// Create cities
 		int numRules = rb.getRuleset().length;
+		
+		ArrayList<AvgMaxNumGood> stats = new ArrayList<AvgMaxNumGood>(); 
+		
+		int numFailsSanityCheck = 0;
 		
 		double[][] map = new double[d1][d2];
 		
@@ -213,15 +386,28 @@ public class RunMapElites {
 
     			updateMap(fitness,  niches.get(0), niches.get(1), chromosome);
 
-    			if (individual % 100 == 0) {
+    			if (individual % 1000 == 0) {
         			System.out.println("Printing Map for initial iteration " + individual);
     				printParameters();
         			printMap();
+     			printChromosomes();
+        			AvgMaxNumGood s = getStats(12);
+        			stats.add(s);
+        			printStats(stats);
+         		System.out.println("");
+        			if (!sanityCheck(s.max)) {
+        				numFailsSanityCheck +=1;
+        			}
+           		System.out.println("Number of batches that failed sanity check =  " + numFailsSanityCheck );
+           		
+           		String mapFileName = filePath+directory+"map"+individual;
+           		String populationFileName = filePath+directory+"population"+individual; 		
+           		serialize(map, mapFileName,population,populationFileName);
+           		
+           		
+           		
+    			}
 
-    			}
-    			if ( (individual % 1000) == 0) {
-    				printChromosomes();
-    			}
 	        
 		}
 		
@@ -230,7 +416,7 @@ public class RunMapElites {
 			int i = r.nextInt(d1);
 			int j = r.nextInt(d2); //TODO: what happens if this niche is empty
 			
-			int[] chromosome = population[i][j];
+			int[] chromosome = Arrays.copyOf(population[i][j],chromosomeLength);
 			
 			if (crossoverRate > Math.random()) {
 				int x = r.nextInt(d1);
@@ -292,15 +478,29 @@ public class RunMapElites {
 
     			updateMap(fitness,  niches.get(0), niches.get(1), chromosome);
 
-    			if (individual % 100 == 0) {
+
+    			if (individual % 5000 == 0) {
         			System.out.println("Printing Map for mutation iteration " + individual);
     				printParameters();
         			printMap();
+     			printChromosomes();
+        			AvgMaxNumGood s = getStats(12);
+        			stats.add(s);
+        			printStats(stats);
+         		System.out.println("");
+        			if (!sanityCheck(s.max)) {
+        				numFailsSanityCheck +=1;
+        			}
+           		System.out.println("Number of batches that failed sanity check =  " + numFailsSanityCheck );
+         		int ind = individual+G;
+         		String mapFileName = filePath+directory+"map"+ind;
+           		String populationFileName = filePath+directory+"population"+ind; 		
+           		serialize(map, mapFileName,population,populationFileName);
 
     			}
-    			if ( (individual % 10000) == 0) {
-    				printChromosomes();
-    			}
+//    			if ( (individual % 10000) == 0) {
+//    				printChromosomes();
+//    			}
 		}
 		
 		System.out.println("Final iteration results:  ");
