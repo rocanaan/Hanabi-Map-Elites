@@ -70,7 +70,7 @@ public class HumanControlledAgent implements Agent {
         return possibleMoves.get(moveToMake);
     }
 
-    public void showGameState(int playerID, GameState gameState) {
+    public static void showGameState(int playerID, GameState gameState) {
         System.out.println("Player " + playerID + "'s turn");
         System.out.println("Information tokens: " + gameState.getInfomation() + "; Lives: " + gameState.getLives() + "; Deck size: " + gameState.getDeck().getCardsLeft());
         System.out.println("Discard pile: ");
@@ -117,7 +117,7 @@ public class HumanControlledAgent implements Agent {
         }
     }
 
-    public void showLegalActions(List<Action> possibleMoves) {
+    public static void showLegalActions(List<Action> possibleMoves) {
         System.out.println("Possible actions:");
         for (int i = 0; i < possibleMoves.size(); i++) {
             Action a = possibleMoves.get(i);
@@ -133,7 +133,7 @@ public class HumanControlledAgent implements Agent {
         }
     }
     
-    public void showHistory(int playerID, GameState gameState) {
+    public static void showHistory(int playerID, GameState gameState) {
     		System.out.println("Printing history");
     		LinkedList<GameEvent> history = gameState.getHistory();
     		

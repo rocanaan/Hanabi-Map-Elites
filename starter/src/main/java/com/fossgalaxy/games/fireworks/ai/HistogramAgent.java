@@ -5,11 +5,13 @@ import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.state.GameState;
 import com.fossgalaxy.games.fireworks.state.actions.Action;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class HistogramAgent extends ProductionRuleAgent{
+public class HistogramAgent extends ProductionRuleAgent implements Serializable{
     public ArrayList<Integer> histogram;
     int aID;
     protected List<Rule> rules;

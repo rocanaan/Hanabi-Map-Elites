@@ -52,74 +52,83 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 500;
+		int numGames = 100;
+		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
+		// TODO: This should bb extracted
 		
 		Mode mode  = Mode.INTRAPOPULATION;
 		
-
-		Vector<AgentPlayer> agentPlayers  = makeAgentsFromFile(fileName, sizeDim1, sizeDim2, rulebaseStandard);
-		Vector<AgentPlayer> agentPlayers2 = null;
-		if (mode == Mode.CROSSPOPULATION) {
-			agentPlayers2 =  makeAgentsFromFile(fileName2, sizeDim1, sizeDim2, rulebaseStandard);
-		}
-
 		Vector<Map<Integer, Vector<Double>>> populationResults = null;
-		
-		if (mode == Mode.SIMPLE) {
-			populationResults = NewTestSuite.mirrorPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
-		}
-		if (mode == Mode.CROSSPOPULATION) {
-			populationResults = NewTestSuite.crossPopulationEvaluation(agentPlayers, agentPlayers2, minNumPlayers, maxNumPlayers, numGames);
-		}
-		
-		
-		
-		if (mode == Mode.INTRAPOPULATION) {
-			populationResults = NewTestSuite.intraPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
-		}
-		
-		String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/20190508_2P_500";
-		try {
-			FileOutputStream file = new FileOutputStream(outputFileName); // TODO: There should bbe a class just to serialize, another to gather the data
-			ObjectOutputStream out = new ObjectOutputStream(file);
-			out.writeObject(populationResults);
-			out.close();
-			file.close();
-            System.out.println("Object has been serialized"); 
 
+		if (usePrecomputedResults) {
+			String inputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Output";
+			try
+	        {    
+	            // Reading the object from a file 
+	            FileInputStream file = new FileInputStream(inputFileName); 
+	            ObjectInputStream in = new ObjectInputStream(file); 
+	              
+	            // Method for deserialization of object 
+	            populationResults = (Vector<Map<Integer, Vector<Double>>>)in.readObject(); 
+	              
+	            in.close(); 
+	            file.close(); 
+	              
+	            System.out.println("Object has been deserialized "); 
+	
+	        } 
+	          
+	        catch(IOException ex) 
+	        { 
+	            System.out.println("IOException is caught"); 
+	        } 
+	          
+	        catch(ClassNotFoundException ex) 
+	        { 
+	            System.out.println("ClassNotFoundException is caught"); 
+	        } 
 		}
-	    catch(IOException ex) 
-        { 
-            System.err.println("Failed to serialize"); 
-        } 
 		
-		populationResults = null;
-		
-		try
-        {    
-            // Reading the object from a file 
-            FileInputStream file = new FileInputStream(outputFileName); 
-            ObjectInputStream in = new ObjectInputStream(file); 
-              
-            // Method for deserialization of object 
-            populationResults = (Vector<Map<Integer, Vector<Double>>>)in.readObject(); 
-              
-            in.close(); 
-            file.close(); 
-              
-            System.out.println("Object has been deserialized "); 
+		else {
 
-        } 
-          
-        catch(IOException ex) 
-        { 
-            System.out.println("IOException is caught"); 
-        } 
-          
-        catch(ClassNotFoundException ex) 
-        { 
-            System.out.println("ClassNotFoundException is caught"); 
-        } 
+			Vector<AgentPlayer> agentPlayers  = makeAgentsFromFile(fileName, sizeDim1, sizeDim2, rulebaseStandard);
+			Vector<AgentPlayer> agentPlayers2 = null;
+			if (mode == Mode.CROSSPOPULATION) {
+				agentPlayers2 =  makeAgentsFromFile(fileName2, sizeDim1, sizeDim2, rulebaseStandard);
+			}
+	
+			
+			if (mode == Mode.SIMPLE) {
+				populationResults = NewTestSuite.mirrorPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
+			}
+			if (mode == Mode.CROSSPOPULATION) {
+				populationResults = NewTestSuite.crossPopulationEvaluation(agentPlayers, agentPlayers2, minNumPlayers, maxNumPlayers, numGames);
+			}
+			
+			
+			
+			if (mode == Mode.INTRAPOPULATION) {
+				populationResults = NewTestSuite.intraPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
+			}
+			
+			String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation";
+			try {
+				FileOutputStream file = new FileOutputStream(outputFileName); // TODO: There should bbe a class just to serialize, another to gather the data
+				ObjectOutputStream out = new ObjectOutputStream(file);
+				out.writeObject(populationResults);
+				out.close();
+				file.close();
+	            System.out.println("Object has been serialized"); 
+	
+			}
+		    catch(IOException ex) 
+	        { 
+	            System.err.println("Failed to serialize"); 
+	        } 
+		}
+		
+		
+		
 		
   
 		
@@ -162,6 +171,8 @@ public class EvaluatePopulationFromFile {
 						bestPlayer = playerID;
 					}	
 					System.out.println("");
+					
+
 				}
 			}
 			for (int i = 0; i < sizeDim1; i++) {
@@ -187,6 +198,8 @@ public class EvaluatePopulationFromFile {
 		}
 		
 		else if (mode == Mode.INTRAPOPULATION){ //TODO: This should actually be m ranging from i to size, and n from j to size
+			double[][][][] matchupTable = new double[sizeDim1][sizeDim2][sizeDim1][sizeDim2];
+
 			double [][] averageAdHocScore = new double[sizeDim1][sizeDim2];
 			int [][] dim1BestPair = new int[sizeDim1][sizeDim2];
 			int [][] dim2BestPair = new int[sizeDim1][sizeDim2];
@@ -231,6 +244,8 @@ public class EvaluatePopulationFromFile {
 								m_global_max = m;
 								n_global_max = n; 
 							}
+							
+							matchupTable[i][j][m][n] = score;
 						
 							//System.out.println ("[" +i + ","+j+"] ["+m+","+n+"] index = " + index + " score = " + score);
 						}
@@ -243,9 +258,12 @@ public class EvaluatePopulationFromFile {
 					dim2BestPair[i][j] = n_max;
 					countBestPartner[m_max][n_max] +=1;
 				}
-				System.out.println("Global max is " + global_max + " between agents ["+i_global_max+","+j_global_max+"] and ["+m_global_max+","+n_global_max+"]" );
 				
 			}
+			System.out.println("Global max is " + global_max + " between agents ["+i_global_max+","+j_global_max+"] and ["+m_global_max+","+n_global_max+"]" );
+			System.out.println("For comparison, the self play score for ["+i_global_max+","+j_global_max+"] is "+ matchupTable[i_global_max][j_global_max][i_global_max][j_global_max]);
+			System.out.println("For comparison, the self play score for ["+m_global_max+","+n_global_max+"] is "+ matchupTable[m_global_max][n_global_max][m_global_max][n_global_max]);
+			//TODO: Use games across the diagonal
 			
 			// Print averages
 			System.out.println("Printing averages");
@@ -306,6 +324,8 @@ public class EvaluatePopulationFromFile {
 		
 	}
 	
+	
+	//TODO: Extract into a class that gets the integers from file, then one that builds the agents. See chromosome similarity analyzer
 	public static Vector<AgentPlayer> makeAgentsFromFile(String fileName, int sizeDim1, int sizeDim2, boolean rulebaseStandard) {
         Rulebase rb = new Rulebase(rulebaseStandard);
         String thisLine;

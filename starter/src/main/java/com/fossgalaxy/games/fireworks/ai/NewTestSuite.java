@@ -78,6 +78,24 @@ public class NewTestSuite {
     	// Returns a vector where the index is the number of the agent in the population, the key of the map is the number of players in the game, and a list of games is the value
     public static Vector<Map<Integer, Vector<Double>>> mirrorPopulationEvaluation(Vector<AgentPlayer> population, int minNumPlayers, int maxNumPlayers, int numGames) {
         
+//        Vector<Map<Integer, Vector<Double>>> populationResults  = new Vector <Map<Integer, Vector<Double>>>();
+//
+//        Random random = new Random();
+//        Long seed = random.nextLong();
+//
+//        for (AgentPlayer agent : population) {
+//            random.setSeed(seed);
+//            populationResults.add(VariableNumberPlayersTest(agent, agent, minNumPlayers, maxNumPlayers, numGames, random)); //TODO: Maybe this should be a copy of agent
+//
+//        }
+//
+//        return populationResults;
+        return mirrorPopulationEvaluation(population, minNumPlayers, maxNumPlayers, numGames, true); 
+
+    }
+    
+   public static Vector<Map<Integer, Vector<Double>>> mirrorPopulationEvaluation(Vector<AgentPlayer> population, int minNumPlayers, int maxNumPlayers, int numGames, boolean useSameSeed) {
+        
         Vector<Map<Integer, Vector<Double>>> populationResults  = new Vector <Map<Integer, Vector<Double>>>();
 
         Random random = new Random();
@@ -85,7 +103,12 @@ public class NewTestSuite {
 
         for (AgentPlayer agent : population) {
             random.setSeed(seed);
-            populationResults.add(VariableNumberPlayersTest(agent, agent, minNumPlayers, maxNumPlayers, numGames, random));
+            populationResults.add(VariableNumberPlayersTest(agent, agent, minNumPlayers, maxNumPlayers, numGames, random)); //TODO: Maybe this should be a copy of agent
+            
+            if (!useSameSeed) {
+            		random = new Random();
+            		seed = random.nextLong();
+            }
 
         }
 

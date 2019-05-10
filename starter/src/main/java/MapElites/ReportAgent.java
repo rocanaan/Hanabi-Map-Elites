@@ -11,6 +11,8 @@ import com.fossgalaxy.games.fireworks.state.actions.PlayCard;
 import com.fossgalaxy.games.fireworks.state.actions.TellColour;
 import com.fossgalaxy.games.fireworks.state.actions.TellValue;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,10 @@ public class ReportAgent implements Agent{
 	public int hintsGiven;
 	public double totalPlayability;
 	public int countPlays;
+	public boolean recordPlays;
+	private ArrayList<StateActionPair> stateActionArchive;
+	
+
     
     public ReportAgent(Agent a){
         agent = a;
@@ -29,6 +35,19 @@ public class ReportAgent implements Agent{
         hintsGiven = 0;
         totalPlayability = 0.0;
         countPlays = 0;
+        recordPlays = false;
+        stateActionArchive = null;
+    }
+    public ReportAgent(Agent a, boolean recordPlays){
+        agent = a;
+        possibleHints = 0;
+        hintsGiven = 0;
+        totalPlayability = 0.0;
+        countPlays = 0;
+        this.recordPlays = recordPlays;
+        if (recordPlays) {
+        		stateActionArchive = new ArrayList<StateActionPair>();
+        }
         
     }
     
@@ -44,8 +63,16 @@ public class ReportAgent implements Agent{
         }
         updateHints(state, action);
         
+        if (recordPlays) {
+        		stateActionArchive.add(new StateActionPair(state,action));
+        }
+        
         
         return action;
+    }
+    
+    public ArrayList<StateActionPair> getStateActionArchive(){
+    		return stateActionArchive;
     }
     
     private void updatePlayability(GameState state, int playerID, PlayCard action) {
