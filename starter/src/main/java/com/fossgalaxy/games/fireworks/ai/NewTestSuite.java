@@ -147,6 +147,7 @@ public class NewTestSuite {
     
 		for (int i=0; i<population.size(); i++) {
 			for (int j=0; j<population.size(); j++) {
+			System.out.println("["+i+","+j+"]");
     			AgentPlayer agent1 = population.get(i);
     			AgentPlayer agent2 = population.get(j);
     		

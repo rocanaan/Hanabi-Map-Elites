@@ -8,7 +8,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Vector;
 
@@ -52,8 +54,8 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 100;
-		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
+		int numGames = 500;
+		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
 		Mode mode  = Mode.INTRAPOPULATION;
@@ -112,8 +114,9 @@ public class EvaluatePopulationFromFile {
 			}
 			
 			String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation";
+			String dateTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 			try {
-				FileOutputStream file = new FileOutputStream(outputFileName); // TODO: There should bbe a class just to serialize, another to gather the data
+				FileOutputStream file = new FileOutputStream(outputFileName+dateTime); // TODO: There should bbe a class just to serialize, another to gather the data
 				ObjectOutputStream out = new ObjectOutputStream(file);
 				out.writeObject(populationResults);
 				out.close();
