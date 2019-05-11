@@ -54,7 +54,7 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 500;
+		int numGames = 250;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
@@ -63,7 +63,7 @@ public class EvaluatePopulationFromFile {
 		Vector<Map<Integer, Vector<Double>>> populationResults = null;
 
 		if (usePrecomputedResults) {
-			String inputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Output";
+			String inputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation20190510_201535";
 			try
 	        {    
 	            // Reading the object from a file 
@@ -202,6 +202,28 @@ public class EvaluatePopulationFromFile {
 		
 		else if (mode == Mode.INTRAPOPULATION){ //TODO: This should actually be m ranging from i to size, and n from j to size
 			double[][][][] matchupTable = new double[sizeDim1][sizeDim2][sizeDim1][sizeDim2];
+			
+			//First we do selfplay results for sanity (discard any agent with self-play of zero)
+			
+			double[][] selfPlayTable = new double[sizeDim1][sizeDim2];
+			
+			
+			for (int i = 0; i < sizeDim1; i++) {
+				for (int j = 0; j<sizeDim2; j++) {
+					int index = getMatchupIndex(i,j,i,j,sizeDim1,sizeDim2);
+					Vector<Double> scores = new Vector<Double>();
+					for (Vector<Double> results: populationResults.get(index).values()) {
+						for (double result: results) {
+							scores.add(result);
+						}
+					}
+					double score = 	Utils.Utils.getMean(scores);			
+					selfPlayTable[i][j] = score;
+					
+				}
+
+			}
+			
 
 			double [][] averageAdHocScore = new double[sizeDim1][sizeDim2];
 			int [][] dim1BestPair = new int[sizeDim1][sizeDim2];
@@ -216,50 +238,78 @@ public class EvaluatePopulationFromFile {
 			
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j<sizeDim2; j++) {
-					double average = 0;
-					int count = 0;
-					double max = 0;
-					int m_max = 0;
-					int n_max = 0;
-					for (int m = 0; m < sizeDim1; m++) {
-						for (int n = 0; n<sizeDim2; n++) {
-							int index = n + sizeDim1*m + sizeDim2*sizeDim1*j +sizeDim1*sizeDim2*sizeDim1*i;
-							Vector<Double> scores = new Vector<Double>();
-							for (Vector<Double> results: populationResults.get(index).values()) {
-								for (double result: results) {
-									scores.add(result);
+					if (selfPlayTable[i][j] ==0) {
+						averageAdHocScore[i][j] = 0;
+					}
+					else{
+						double average = 0;
+						int count = 0;
+						double max = 0;
+						int m_max = 0;
+						int n_max = 0;
+						for (int m = 0; m < sizeDim1; m++) {
+							for (int n = 0; n<sizeDim2; n++) {
+								if (selfPlayTable[m][n] !=0) {
+									double score = 0;
+									if (matchupTable[i][j][m][n] == 0) {
+										int index = getMatchupIndex(i,j,m,n,sizeDim1,sizeDim2);
+										Vector<Double> scores = new Vector<Double>();
+										for (Vector<Double> results: populationResults.get(index).values()) {
+											for (double result: results) {
+												scores.add(result);
+											}
+										}
+										index = getMatchupIndex(m,n,i,j,sizeDim1,sizeDim2);
+										for (Vector<Double> results: populationResults.get(index).values()) {
+											for (double result: results) {
+												scores.add(result);
+											}
+										}
+										
+										score = 	Utils.Utils.getMean(scores);			
+									}
+									else {
+										score = matchupTable[i][j][m][n];
+									}
+		
+									
+									average += score;
+									count+=1;
+									if (score>max) {
+										max = score;
+										m_max = m;
+										n_max = n;
+									}
+									
+									if (score > global_max) {
+										 global_max = score;
+										i_global_max = i;
+										j_global_max = j;
+										m_global_max = m;
+										n_global_max = n; 
+									}
+									
+									matchupTable[i][j][m][n] = score;
+									matchupTable[m][n][i][j] = score;
+								
+									//System.out.println ("[" +i + ","+j+"] ["+m+","+n+"] index = " + index + " score = " + score);
+								}
+								else {
+									matchupTable[i][j][m][n] = 0;
+									matchupTable[m][n][i][j] = 0;
 								}
 							}
-							double score = 	Utils.Utils.getMean(scores);
-							
-							average += score;
-							count+=1;
-							if (score>max) {
-								max = score;
-								m_max = m;
-								n_max = n;
-							}
-							
-							if (score > global_max) {
-								 global_max = score;
-								i_global_max = i;
-								j_global_max = j;
-								m_global_max = m;
-								n_global_max = n; 
-							}
-							
-							matchupTable[i][j][m][n] = score;
-						
-							//System.out.println ("[" +i + ","+j+"] ["+m+","+n+"] index = " + index + " score = " + score);
 						}
+
+						if (count > 0) {
+							average = average/count;
+							averageAdHocScore[i][j] = average;
+						}
+						dim1BestPair[i][j] = m_max;
+						dim2BestPair[i][j] = n_max;
+						countBestPartner[m_max][n_max] +=1;
+				
 					}
-					if (count >0) {
-						average = average/count;
-						averageAdHocScore[i][j] = average;
-					}
-					dim1BestPair[i][j] = m_max;
-					dim2BestPair[i][j] = n_max;
-					countBestPartner[m_max][n_max] +=1;
 				}
 				
 			}
@@ -325,6 +375,10 @@ public class EvaluatePopulationFromFile {
 //			}
 //		}
 		
+	}
+	
+	public static int getMatchupIndex(int i, int j, int m, int n, int sizeDim1, int sizeDim2) {
+		return (n + sizeDim1*m + sizeDim2*sizeDim1*j +sizeDim1*sizeDim2*sizeDim1*i);	
 	}
 	
 	
