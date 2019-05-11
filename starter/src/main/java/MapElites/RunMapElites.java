@@ -39,8 +39,8 @@ import javassist.compiler.ast.Pair;
 public class RunMapElites {
 	public static int G = 10000; //number of random individuals
 	public static int I = 1000000 - G; // number of mutations after initial random individuals
-	public static int d1 = 20; // numer of niches in the first dimension
-	public static int d2 = 20; // numer of niches in the second dimension
+	public static int d1 = 20; // number of niches in the first dimension
+	public static int d2 = 20; // number of niches in the second dimension
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.5;
 	public static int numGames = 100; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher

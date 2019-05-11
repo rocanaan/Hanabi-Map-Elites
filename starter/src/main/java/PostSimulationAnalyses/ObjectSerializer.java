@@ -7,7 +7,7 @@ import java.io.ObjectOutputStream;
 public class ObjectSerializer {
 	
 	
-	public boolean serializeObject(Object obj, String outputFileName, String identifier) {
+	public static boolean serializeObject(Object obj, String outputFileName, String identifier) {
 		try {
 			FileOutputStream file = new FileOutputStream(outputFileName);
 			ObjectOutputStream out = new ObjectOutputStream(file);
@@ -20,7 +20,8 @@ public class ObjectSerializer {
 		}
 	    catch(IOException ex) 
         { 
-            System.err.println("Failed to serialize " + identifier); 
+            System.err.println("Failed to serialize " + identifier);
+            System.err.println(ex);
             return false;
         } 
 	}
