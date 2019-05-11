@@ -1,8 +1,14 @@
 package Utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 
 public class Utils {
+	
+		public static String getDateTimeString() {
+			return new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+		}
 
 		public static  double getMin(Collection<Double> c) {
 			double min = 9999;

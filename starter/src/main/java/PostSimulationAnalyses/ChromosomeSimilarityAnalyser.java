@@ -7,18 +7,98 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import com.fossgalaxy.games.fireworks.ai.Agent;
+
+import MapElites.ActionDatabaseEntry;
+
 public class ChromosomeSimilarityAnalyser {
 	
 	public static void main(String[] args) {
-		String path = "/Users/rodrigocanaan/Dev/HanabiResults/HammingDistances";
-		String identifier = "HammingDistances";
+//		String path = "/Users/rodrigocanaan/Dev/HanabiResults/HammingDistances";
+//		String identifier = "HammingDistances";
+//		
+//		ArrayList<int[]> chromosomes = getChromosomesFromFile();
 		
-		ArrayList<int[]> chromosomes = getChromosomesFromFile();
+		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
+		String chromosomeFileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
+
+		int sizeDim1 = 20;
+		int sizeDim2 = 20;
+
+		int[][] validMask = GetStateActionArchiveFromFile.getValidMaskFromFile(chromosomeFileName,sizeDim1,sizeDim2);
+		ArrayList<int[]> chromosomes = getChromosomesFromFile(chromosomeFileName);
+		
+		
+		//Intra
+		int[][][][] pairwiseHamming = getPairwiseHammingDistances (chromosomes, validMask, sizeDim1, sizeDim2);
+		CalculateActionSimilarity.printHistogram(pairwiseHamming, validMask, sizeDim1, sizeDim2, 1);
+		
+		//Cross
+		int[][] validMask2 = GetStateActionArchiveFromFile.getValidMaskFromFile(chromosomeFileName2,sizeDim1,sizeDim2);
+		ArrayList<int[]> chromosomes2 = getChromosomesFromFile(chromosomeFileName2);
+		getCrossHammingDistance(chromosomes,validMask,chromosomes2,validMask2,sizeDim1,sizeDim2);
+	}
+	
+	public static int[][] getCrossHammingDistance (ArrayList<int[]> chromosomes1, int[][] validMask1,
+			ArrayList<int[]> chromosomes2, int[][] validMask2, 
+			int sizeDim1, int sizeDim2){
+		int[][] crossHamming = new int[sizeDim1][sizeDim2];
+		
+		for(int i = 0; i< sizeDim1; i++) {
+			for(int j = 0; j< sizeDim2; j++) {
+				if (validMask1[i][j]==1 && validMask2[i][j]==1) {
+					int[] chromosome1 = chromosomes1.get(j+sizeDim1*i);
+					int[] chromosome2 = chromosomes2.get(j+sizeDim1*i);
+					crossHamming[i][j] = calculateHammingDistance(chromosome1,chromosome2);
+				}
+				else {
+					crossHamming[i][j] = 99;
+				}
+				System.out.print(crossHamming[i][j] + " ");
+			}
+			System.out.println("");
+		}
+		return crossHamming;
 	}
 	
 	
 	
-	
+	public static int[][][][] getPairwiseHammingDistances (ArrayList<int[]> chromosomes, int[][] validMask, int sizeDim1, int sizeDim2){
+		int[][][][] pairwiseHammingDistances = new int[sizeDim1][sizeDim2][sizeDim1][sizeDim2];
+		
+
+		for(int i = 0; i< sizeDim1; i++) {
+			for(int j = 0; j< sizeDim2; j++) {
+				int[] chromosome1 = chromosomes.get(j+sizeDim1*i);
+				for(int m = 0; m< sizeDim1; m++) {
+					for(int n = 0; n< sizeDim2; n++) {
+						int[] chromosome2 = chromosomes.get(n+sizeDim1*m);
+						pairwiseHammingDistances[i][j][m][n] = calculateHammingDistance(chromosome1,chromosome2);
+					}
+				}
+			}
+		}
+		return pairwiseHammingDistances;
+	}
+
+	public static int calculateHammingDistance(int[] c1, int[]c2) {
+		int distance = 0;
+		int maxLength = Math.max(c1.length, c2.length);
+		int minLength = Math.min(c1.length, c2.length);
+		for (int geneIndex = 0; geneIndex< maxLength; geneIndex++) {
+			if (geneIndex >= minLength) {
+				distance+=1;
+			}
+			else {
+				if (c1[geneIndex]!=c2[geneIndex]) {
+					distance+=1;
+				}
+			}
+		}
+//		System.out.println(distance);
+		return distance;
+	}
+
 	
 	public void serializeLog(String log, String logFileName) {
 		
@@ -40,34 +120,34 @@ public class ChromosomeSimilarityAnalyser {
         } 
 	}
 	
-	public int[][] getHammingDistance(ArrayList<int[]> chromosomes){
-		int size=chromosomes.size();
-		int[][] pairwiseHammingDistances = new int[size][size];
-		
-		for (int i = 0; i<size; i++) {
-			for(int j = 0; j<size;j++) {
-				int[] c1 = chromosomes.get(i);
-				int[] c2 = chromosomes.get(j);
-				int distance = 0;
-				int maxLength = Math.max(c1.length, c2.length);
-				int minLength = Math.min(c1.length, c2.length);
-				for (int geneIndex = 0; geneIndex< maxLength; geneIndex++) {
-					if (geneIndex >= minLength) {
-						distance+=1;
-					}
-					else {
-						if (c1[geneIndex]!=c2[geneIndex]) {
-							distance+=1;
-						}
-					}
-				}
-				pairwiseHammingDistances[i][j] = distance;
-			}
-		}
-		return pairwiseHammingDistances;
-	}
+//	public int[][] getHammingDistance(ArrayList<int[]> chromosomes){
+//		int size=chromosomes.size();
+//		int[][] pairwiseHammingDistances = new int[size][size];
+//		
+//		for (int i = 0; i<size; i++) {
+//			for(int j = 0; j<size;j++) {
+//				int[] c1 = chromosomes.get(i);
+//				int[] c2 = chromosomes.get(j);
+//				int distance = 0;
+//				int maxLength = Math.max(c1.length, c2.length);
+//				int minLength = Math.min(c1.length, c2.length);
+//				for (int geneIndex = 0; geneIndex< maxLength; geneIndex++) {
+//					if (geneIndex >= minLength) {
+//						distance+=1;
+//					}
+//					else {
+//						if (c1[geneIndex]!=c2[geneIndex]) {
+//							distance+=1;
+//						}
+//					}
+//				}
+//				pairwiseHammingDistances[i][j] = distance;
+//			}
+//		}
+//		return pairwiseHammingDistances;
+//	}
 	
-	public ArrayList<int[]> getChromosomesFromFile(String fileName){
+	public static ArrayList<int[]> getChromosomesFromFile(String fileName){
 		ArrayList<int[]> chromosomes = new ArrayList<int[]>();
 		try {
 			String thisLine;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 
-import MapElites.StateActionPair;
+import PostSimulationAnalyses.StateActionPair;
 
 public class ActionDatabaseEntry implements Serializable{
 	//public Agent agent; //TODO: Can't do this otherwize can't serialize

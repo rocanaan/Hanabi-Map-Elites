@@ -1,4 +1,4 @@
-package MapElites;
+package PostSimulationAnalyses;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +25,8 @@ import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.ai.username.HumanControlledAgent;
 
 import Evolution.Rulebase;
-import MapElites.StateActionPair;
+import MapElites.ActionDatabaseEntry;
+import MapElites.ReportAgent;
 
 
 
@@ -53,14 +54,14 @@ public class GetStateActionArchiveFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
+		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
 		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run2";
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 100;
+		int numGames = 10;
 		boolean useSameSeed = false; //TODO:
 		
 		Mode mode  = Mode.SIMPLE;
@@ -75,7 +76,7 @@ public class GetStateActionArchiveFromFile {
 		Vector<Map<Integer, Vector<Double>>> populationResults = null;
 		
 		if (mode == Mode.SIMPLE) {
-			populationResults = NewTestSuite.mirrorPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames, useSameSeed);
+			populationResults = NewTestSuite.mirrorPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames, useSameSeed);//TODO this should be extracted also
 		}
 		if (mode == Mode.CROSSPOPULATION) {
 			populationResults = NewTestSuite.crossPopulationEvaluation(agentPlayers, agentPlayers2, minNumPlayers, maxNumPlayers, numGames);
@@ -87,7 +88,7 @@ public class GetStateActionArchiveFromFile {
 			populationResults = NewTestSuite.intraPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
 		}
 		
-		String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/20190508_2P_100_Different_Seeds";
+		String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/" + Utils.Utils.getDateTimeString();
 		try {
 			FileOutputStream file = new FileOutputStream(outputFileName); // TODO: There should bbe a class just to serialize, another to gather the data
 			ObjectOutputStream out = new ObjectOutputStream(file);
@@ -287,7 +288,7 @@ public class GetStateActionArchiveFromFile {
 			
 		}
 		
-		printStateActionDatabase(reportPlayers,sizeDim1,sizeDim2);
+		getStateActionDatabase(reportPlayers,sizeDim1,sizeDim2);
 		
 		System.out.println(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
           
@@ -323,7 +324,8 @@ public class GetStateActionArchiveFromFile {
 	
 
 
-	public static void printStateActionDatabase(ArrayList<ReportAgent> agents, int sizeDim1, int sizeDim2) {
+	public static ArrayList<ActionDatabaseEntry> getStateActionDatabase(ArrayList<ReportAgent> agents, int sizeDim1, int sizeDim2) {
+		int count = 0;
 		ArrayList<ActionDatabaseEntry> database = new ArrayList<ActionDatabaseEntry>();
 		for (int i = 0; i<sizeDim1; i++) {
 			for(int j = 0; j<sizeDim2; j++) {
@@ -332,6 +334,7 @@ public class GetStateActionArchiveFromFile {
 				database.add(entry);
 				
 				for(StateActionPair sap: agent.getStateActionArchive()) {
+					count+=1;
 //					System.out.println("State action pair for agent ["+i+","+j+"]:");
 //					System.out.println(sap.state);
 //					System.out.println(sap.action);
@@ -339,9 +342,10 @@ public class GetStateActionArchiveFromFile {
 				
 			}
 		}
+		System.out.println("Count" +count);
 		
 		
-		String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/ActionDatabase/20190508_2P_100";
+		String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/ActionDatabase/1M" + Utils.Utils.getDateTimeString();
 		try {
 			FileOutputStream file = new FileOutputStream(outputFileName); // TODO: There should bbe a class just to serialize, another to gather the data
 			ObjectOutputStream out = new ObjectOutputStream(file);
@@ -358,45 +362,46 @@ public class GetStateActionArchiveFromFile {
         } 
 		
 		
-		try
-        {    
-            // Reading the object from a file 
-            FileInputStream file = new FileInputStream(outputFileName); 
-            ObjectInputStream in = new ObjectInputStream(file); 
-              
-            // Method for deserialization of object 
-            database = (ArrayList<ActionDatabaseEntry>)in.readObject(); 
-              
-            in.close(); 
-            file.close(); 
-              
-            System.out.println("Object has been deserialized "); 
-			for(ActionDatabaseEntry entry:database) {
-				for(StateActionPair sap:entry.stateActionArchive) {
-					System.out.println("De-serialized state action pair for agent ["+entry.dim1+","+entry.dim2+"]:");
-					System.out.println(sap.state);
-					HumanControlledAgent.showGameState(0, sap.state); //TODO: Think if methods in showGameState should really be static or should make another class for it
-					System.out.println(sap.action);
-				}
-	
-			}
-
-        } 
-	    catch(IOException ex) 
-        { 
-            System.err.println("Failed to deserialize database"); 
-            System.err.println(ex);
-        } catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
+//		try
+//        {    
+//            // Reading the object from a file 
+//            FileInputStream file = new FileInputStream(outputFileName); 
+//            ObjectInputStream in = new ObjectInputStream(file); 
+//              
+//            // Method for deserialization of object 
+//            database = (ArrayList<ActionDatabaseEntry>)in.readObject(); 
+//              
+//            in.close(); 
+//            file.close(); 
+//              
+//            System.out.println("Object has been deserialized "); 
+//			for(ActionDatabaseEntry entry:database) {
+//				for(StateActionPair sap:entry.stateActionArchive) {
+//					System.out.println("De-serialized state action pair for agent ["+entry.dim1+","+entry.dim2+"]:");
+//					System.out.println(sap.state);
+//					HumanControlledAgent.showGameState(0, sap.state); //TODO: Think if methods in showGameState should really be static or should make another class for it
+//					System.out.println(sap.action);
+//				}
+//	
+//			}
+//
+//        } 
+//	    catch(IOException ex) 
+//        { 
+//            System.err.println("Failed to deserialize database"); 
+//            System.err.println(ex);
+//        } catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+		return database;
 
 		
 		
 		
 	}
 	
+	//TODO: Deal correctly with null agents. Also, this method should be the same as in Evaluate Population From File
 	public static ArrayList<ReportAgent> makeReportAgentsFromFile(String fileName, int sizeDim1, int sizeDim2, boolean rulebaseStandard) {
 		 Rulebase rb = new Rulebase(rulebaseStandard);
 	        String thisLine;
@@ -409,33 +414,75 @@ public class GetStateActionArchiveFromFile {
 	            		thisLine = thisLine.replaceAll("\t", "");
 	            		String[] c = thisLine.split(",");
 	            		int[] chromossome = new int[c.length];
+	            		boolean valid = false;
 	                for (int i = 0; i < c.length; i++) {
-	                    chromossome[i] = Integer.parseInt(c[i]);    
-	                }
-	               
-	                Rule[] rules1 = new Rule[chromossome.length];
-	                for (int i = 0; i < chromossome.length; i++) {
-
-	                    if (rulebaseStandard) {
-	                        rules1[i] = rb.ruleMapping(chromossome[i]);
-	                    } else {
-	                        rules1[i] = rb.ruleMapping(chromossome[i]);
-
+	                    chromossome[i] = Integer.parseInt(c[i]);
+	                    if (chromossome[i]!=0) {
+	                    		valid = true;
 	                    }
-
 	                }
-	                if (rulebaseStandard) {
-	                    agents.add(new ReportAgent(rb.makeAgent(rules1),true));
-	                } else {
-	                    agents.add(new ReportAgent(rb.makeAgent(rules1),true));
+//	               if (valid) {
+		                Rule[] rules1 = new Rule[chromossome.length];
+		                for (int i = 0; i < chromossome.length; i++) {
+	
+		                    if (rulebaseStandard) {
+		                        rules1[i] = rb.ruleMapping(chromossome[i]);
+		                    } else {
+		                        rules1[i] = rb.ruleMapping(chromossome[i]);
+	
+		                    }
+	
+		                }
+		                if (rulebaseStandard) {
+		                    agents.add(new ReportAgent(rb.makeAgent(rules1),true));
+		                } else {
+		                    agents.add(new ReportAgent(rb.makeAgent(rules1),true));
+		               }
 	               }
-	            }
+//	            }
 	            br.close();
 	        } catch (Exception e) {
 	        		System.err.println(e);;
 	        }
 	        return agents;
 	}
+	
+	 public static int[][] getValidMaskFromFile(String fileName, int sizeDim1, int sizeDim2){
+		 int[][] validMask  = new int[sizeDim1][sizeDim2];
+	     String thisLine;
+		 try {
+	            BufferedReader br = new BufferedReader(new FileReader(fileName));
+	            int index = 0;
+	            while ((thisLine = br.readLine()) != null) {
+	                //thisLine = thisLine.substring(1, thisLine.length() - 2);
+	            		thisLine = thisLine.replaceAll(" ", "");
+	            		thisLine = thisLine.replaceAll("\t", "");
+	            		String[] c = thisLine.split(",");
+	            		int[] chromossome = new int[c.length];
+	            		boolean valid = false;
+	                for (int gene = 0; gene < c.length; gene++) {
+	                    chromossome[gene] = Integer.parseInt(c[gene]);
+	                    if (chromossome[gene]!=0) {
+	                    		valid = true;
+	                    }
+	                }
+	                if (valid) {
+	                		validMask[index/sizeDim1][index%sizeDim1] = 1;
+	                }
+	                index++;
+	            }
+		 } 
+		 catch (Exception e) {
+			 System.err.println(e);;
+		 }
+		 for(int i = 0; i<20; i++) {
+			 for(int j = 0; j<20; j++) {
+				 System.out.print(validMask[i][j] + " ");
+			 }
+			 System.out.println("");
+		 }
+		 return validMask;
+	 }
 	
 	public static Vector<AgentPlayer> makeAgentPlayersFromAgent(ArrayList<ReportAgent> reportPlayers, int sizeDim1, int sizeDim2){
 		Vector<AgentPlayer> agentPlayers = new Vector<AgentPlayer>();
@@ -449,6 +496,7 @@ public class GetStateActionArchiveFromFile {
 		return agentPlayers;
 	}
 	
+	//TODO: Deal correctly with null agents. Also, this method should be the same as in Evaluate Population From File
 	public static Vector<AgentPlayer> makeAgentsFromFile(String fileName, int sizeDim1, int sizeDim2, boolean rulebaseStandard) {
         Rulebase rb = new Rulebase(rulebaseStandard);
         String thisLine;
@@ -461,27 +509,32 @@ public class GetStateActionArchiveFromFile {
             		thisLine = thisLine.replaceAll("\t", "");
             		String[] c = thisLine.split(",");
             		int[] chromossome = new int[c.length];
+            		boolean valid = false;
                 for (int i = 0; i < c.length; i++) {
-                    chromossome[i] = Integer.parseInt(c[i]);    
-                }
-               
-                Rule[] rules1 = new Rule[chromossome.length];
-                for (int i = 0; i < chromossome.length; i++) {
-
-                    if (rulebaseStandard) {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
-                    } else {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
-
+                    chromossome[i] = Integer.parseInt(c[i]);   
+                    if (chromossome[i]!=0) {
+                    	valid = true;
                     }
-
                 }
-                if (rulebaseStandard) {
-                    agents.add(new ReportAgent(rb.makeAgent(rules1),true));
-                } else {
-                    agents.add(new ReportAgent(rb.makeAgent(rules1),true));
+//               if (valid) {
+	                Rule[] rules1 = new Rule[chromossome.length];
+	                for (int i = 0; i < chromossome.length; i++) {
+	
+	                    if (rulebaseStandard) {
+	                        rules1[i] = rb.ruleMapping(chromossome[i]);
+	                    } else {
+	                        rules1[i] = rb.ruleMapping(chromossome[i]);
+	
+	                    }
+	
+	                }
+	                if (rulebaseStandard) {
+	                    agents.add(new ReportAgent(rb.makeAgent(rules1),true));
+	                } else {
+	                    agents.add(new ReportAgent(rb.makeAgent(rules1),true));
+	               }
                }
-            }
+//            }
             br.close();
         } catch (Exception e) {
         		System.err.println(e);;

@@ -12,6 +12,8 @@ import com.fossgalaxy.games.fireworks.state.actions.TellColour;
 import com.fossgalaxy.games.fireworks.state.actions.TellValue;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 
+import PostSimulationAnalyses.StateActionPair;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +66,7 @@ public class ReportAgent implements Agent{
         updateHints(state, action);
         
         if (recordPlays) {
-        		stateActionArchive.add(new StateActionPair(state,action));
+        		stateActionArchive.add(new StateActionPair(state,action, agentID));
         }
         
         

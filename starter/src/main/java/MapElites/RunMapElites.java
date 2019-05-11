@@ -289,6 +289,8 @@ public class RunMapElites {
 		System.out.println("");
 	}
 	
+	
+	//TODO: Map is not correctly serialized
 	public static void serialize(double[][] map, String mapFileName, int[][][] population, String populationFileName) {
 		//map
 		try {
@@ -479,7 +481,7 @@ public class RunMapElites {
     			updateMap(fitness,  niches.get(0), niches.get(1), chromosome);
 
 
-    			if (individual % 5000 == 0) {
+    			if (individual % 5000 == 0 || individual == (I-1)) {
         			System.out.println("Printing Map for mutation iteration " + individual);
     				printParameters();
         			printMap();
