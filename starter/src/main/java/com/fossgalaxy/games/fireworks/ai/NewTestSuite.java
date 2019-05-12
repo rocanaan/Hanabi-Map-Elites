@@ -160,6 +160,75 @@ public class NewTestSuite {
 
     		
     }
+    
+    public static Vector<Map<Integer, Vector<Double>>> intraPopulationEvaluationThreaded(Vector<AgentPlayer> population, int minNumPlayers, int maxNumPlayers, int numGames){
+		Vector<Map<Integer, Vector<Double>>> populationResults  = new Vector <Map<Integer, Vector<Double>>>();
+		
+		Random random = new Random();
+		Long seed = random.nextLong();		
+    
+		for (int i=0; i<population.size(); i++) {
+			for (int j=0; j<population.size(); j++) {
+			Vector<RunnableWorker> workers = new Vector<RunnableWorker>();
+	
+			System.out.println("["+i+","+j+"]");
+    			AgentPlayer agent1 = population.get(i);
+    			AgentPlayer agent2 = population.get(j);
+    		
+    			random.setSeed(seed);
+    			populationResults.add(VariableNumberPlayersTest(agent1, agent2, minNumPlayers, maxNumPlayers, numGames, random));
+			}
+		}
+    		return populationResults;
+    		
+    }
+    
+    public class RunnableWorker implements Runnable{
+    		private Thread t;
+		private String threadName;
+		AgentPlayer agent1;
+		AgentPlayer agent2;
+		int minNumPlayers;
+		int maxNumPlayers;
+		int numGames;
+		Random random;
+		Map<Integer, Vector<Double>> results;
+		
+		public RunnableWorker(Thread t, String threadName, AgentPlayer agent1, AgentPlayer agent2, int minNumPlayers,
+				int maxNumPlayers, int numGames, Random random) {
+			super();
+			this.t = t;
+			this.threadName = threadName;
+			this.agent1 = agent1;
+			this.agent2 = agent2;
+			this.minNumPlayers = minNumPlayers;
+			this.maxNumPlayers = maxNumPlayers;
+			this.numGames = numGames;
+			this.random = random;
+		}
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			results = VariableNumberPlayersTest(agent1, agent2, minNumPlayers, maxNumPlayers, numGames, random);
+			
+		}
+		
+		public void start() {
+			if (t==null) {
+				t.start();
+			}
+		}
+		
+		public Map<Integer, Vector<Double>> getResults(){
+			return results;
+		}
+
+
+
+    		
+    	
+    }
 
 		
 

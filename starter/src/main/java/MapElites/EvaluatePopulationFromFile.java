@@ -47,18 +47,18 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
-		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run2";
+		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
+		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 250;
+		int numGames = 100;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
-		Mode mode  = Mode.INTRAPOPULATION;
+		Mode mode  = Mode.CROSSPOPULATION;
 		
 		Vector<Map<Integer, Vector<Double>>> populationResults = null;
 
@@ -113,8 +113,8 @@ public class EvaluatePopulationFromFile {
 				populationResults = NewTestSuite.intraPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
 			}
 			
-			String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation";
-			String dateTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation" + mode.toString();
+			String dateTime = Utils.Utils.getDateTimeString();
 			try {
 				FileOutputStream file = new FileOutputStream(outputFileName+dateTime); // TODO: There should bbe a class just to serialize, another to gather the data
 				ObjectOutputStream out = new ObjectOutputStream(file);
@@ -206,7 +206,8 @@ public class EvaluatePopulationFromFile {
 			//First we do selfplay results for sanity (discard any agent with self-play of zero)
 			
 			double[][] selfPlayTable = new double[sizeDim1][sizeDim2];
-			
+			int[][] validMask = new int[sizeDim1][sizeDim2];
+
 			
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j<sizeDim2; j++) {
@@ -219,6 +220,12 @@ public class EvaluatePopulationFromFile {
 					}
 					double score = 	Utils.Utils.getMean(scores);			
 					selfPlayTable[i][j] = score;
+					if (score == 0) {
+						validMask[i][j] = 0;
+					}
+					else {
+						validMask[i][j] = 1;
+					}
 					
 				}
 
@@ -313,6 +320,10 @@ public class EvaluatePopulationFromFile {
 				}
 				
 			}
+			
+			
+			PostSimulationAnalyses.CalculateActionSimilarity.printHistogram(matchupTable, validMask, sizeDim1, sizeDim2, 1);
+			
 			System.out.println("Global max is " + global_max + " between agents ["+i_global_max+","+j_global_max+"] and ["+m_global_max+","+n_global_max+"]" );
 			System.out.println("For comparison, the self play score for ["+i_global_max+","+j_global_max+"] is "+ matchupTable[i_global_max][j_global_max][i_global_max][j_global_max]);
 			System.out.println("For comparison, the self play score for ["+m_global_max+","+n_global_max+"] is "+ matchupTable[m_global_max][n_global_max][m_global_max][n_global_max]);

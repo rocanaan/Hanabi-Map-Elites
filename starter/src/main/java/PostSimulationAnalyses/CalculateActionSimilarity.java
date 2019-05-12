@@ -96,6 +96,40 @@ public class CalculateActionSimilarity {
 
 	}
 	
+	public static void printHistogram (double[][][][] matchups, int[][]validMask, int sizeDim1, int sizeDim2, int count) {
+		double[] histogram = new double[sizeDim1+sizeDim2];
+		int[] countOcurrences = new int[sizeDim1+sizeDim2];
+
+
+		for(int i = 0; i< sizeDim1; i++) {
+			for(int j = 0; j< sizeDim2; j++) {
+				for(int m = 0; m< sizeDim1; m++) {
+					for(int n = 0; n< sizeDim2; n++) {
+						if (i<=m || j<=n) {
+							if (validMask[i][j] == 1 && validMask[m][n] == 1) {
+								int distance = Math.abs(i-m)+ Math.abs(j-n);
+								histogram[distance] += matchups[i][j][m][n];
+								countOcurrences[distance] += 1;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		for (int distance=0; distance<sizeDim1+sizeDim2; distance++) {
+			double mean = (double) histogram[distance] / (double) (countOcurrences[distance]*count);
+			System.out.println(countOcurrences[distance] + " Ocurrences at distance " + distance + " With a total of " + histogram[distance] + " and mean "+mean);
+		}
+		
+		for (int distance=0; distance<sizeDim1+sizeDim2; distance++) {
+			double mean = (double) histogram[distance] / (double) (countOcurrences[distance]*count);
+			System.out.println(distance + " " + mean);
+		}
+		
+
+	}
+	
 	public static int getCount(ArrayList<ActionDatabaseEntry> database, int[][] validMask) {
 		int count = 0;
 		for (ActionDatabaseEntry entry : database) {
