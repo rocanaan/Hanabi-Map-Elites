@@ -3,6 +3,8 @@ package com.fossgalaxy.games.fireworks.ai;
 import Evolution.Rulebase;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import com.fossgalaxy.games.fireworks.GameRunner;
 import com.fossgalaxy.games.fireworks.GameStats;
@@ -161,74 +163,120 @@ public class NewTestSuite {
     		
     }
     
-    public static Vector<Map<Integer, Vector<Double>>> intraPopulationEvaluationThreaded(Vector<AgentPlayer> population, int minNumPlayers, int maxNumPlayers, int numGames){
-		Vector<Map<Integer, Vector<Double>>> populationResults  = new Vector <Map<Integer, Vector<Double>>>();
-		
-		Random random = new Random();
-		Long seed = random.nextLong();		
-    
-		for (int i=0; i<population.size(); i++) {
-			for (int j=0; j<population.size(); j++) {
-			Vector<RunnableWorker> workers = new Vector<RunnableWorker>();
-	
-			System.out.println("["+i+","+j+"]");
-    			AgentPlayer agent1 = population.get(i);
-    			AgentPlayer agent2 = population.get(j);
-    		
-    			random.setSeed(seed);
-    			populationResults.add(VariableNumberPlayersTest(agent1, agent2, minNumPlayers, maxNumPlayers, numGames, random));
-			}
-		}
-    		return populationResults;
-    		
-    }
-    
-    public class RunnableWorker implements Runnable{
-    		private Thread t;
-		private String threadName;
-		AgentPlayer agent1;
-		AgentPlayer agent2;
-		int minNumPlayers;
-		int maxNumPlayers;
-		int numGames;
-		Random random;
-		Map<Integer, Vector<Double>> results;
-		
-		public RunnableWorker(Thread t, String threadName, AgentPlayer agent1, AgentPlayer agent2, int minNumPlayers,
-				int maxNumPlayers, int numGames, Random random) {
-			super();
-			this.t = t;
-			this.threadName = threadName;
-			this.agent1 = agent1;
-			this.agent2 = agent2;
-			this.minNumPlayers = minNumPlayers;
-			this.maxNumPlayers = maxNumPlayers;
-			this.numGames = numGames;
-			this.random = random;
-		}
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			results = VariableNumberPlayersTest(agent1, agent2, minNumPlayers, maxNumPlayers, numGames, random);
-			
-		}
-		
-		public void start() {
-			if (t==null) {
-				t.start();
-			}
-		}
-		
-		public Map<Integer, Vector<Double>> getResults(){
-			return results;
-		}
-
-
-
-    		
-    	
-    }
+//    public static Vector<Map<Integer, Vector<Double>>> intraPopulationEvaluationThreaded(Vector<AgentPlayer> population, int minNumPlayers, int maxNumPlayers, int numGames){
+//		Vector<Map<Integer, Vector<Double>>> populationResults  = new Vector <Map<Integer, Vector<Double>>>();
+//		
+//		int numWorkers = 4;
+//		
+//		Random random = new Random();
+//		Long seed = random.nextLong();	
+//		
+//		RunnableWorker[] workers = new RunnableWorker[numWorkers];
+//		
+//		int index=0;
+//		while (index < population.size()*population.size()) {
+//			for (int w =0; w<numWorkers; w++) {
+//				RunnableWorker worker = workers[w];
+//				if (worker==null) {
+//					int i = index/population.size();
+//					int j = index%population.size();
+//					AgentPlayer agent1 = population.get(i);
+//	    				AgentPlayer agent2 = population.get(j);
+//					worker = new RunnableWorker(i+","+j, agent1, agent2, i, j, minNumPlayers, maxNumPlayers, numGames, random);
+//					Future<Map<Integer,Vector<Double>>> result = worker.call();
+//					index++;
+//					random.setSeed(seed);
+//
+//
+//				}
+//				else if (worker.done) {
+//					System.out.println(worker.threadName + " has finished running");
+//					populationResults.add(worker.results);
+//					worker.terminate = true;
+//					int i = index/population.size();
+//					int j = index%population.size();
+//					System.out.println("["+i+","+j+"]");
+//					AgentPlayer agent1 = population.get(i);
+//	    				AgentPlayer agent2 = population.get(j);
+//					worker = new RunnableWorker(i+","+j, agent1, agent2, i, j, minNumPlayers, maxNumPlayers, numGames, random);
+//					worker.start();
+//					index++;
+//					random.setSeed(seed);
+//
+//				}
+//			}
+////			try {
+////				Thread.sleep(50);
+////			} catch (InterruptedException e) {
+////				// TODO Auto-generated catch block
+////				e.printStackTrace();
+////			}
+//		}
+//    
+//
+//    		return populationResults;
+//    		
+//    }
+//    
+//    public static class RunnableWorker implements Callable<Map<Integer, Vector<Double>>>{
+//    		private Thread t;
+//		private String threadName;
+//		AgentPlayer agent1;
+//		AgentPlayer agent2;
+//		int i;
+//		int j;
+//		int minNumPlayers;
+//		int maxNumPlayers;
+//		int numGames;
+//		Random random;
+//		Map<Integer, Vector<Double>> results;
+//		boolean done;
+//		boolean terminate;
+//		
+//		public RunnableWorker(String threadName, AgentPlayer agent1, AgentPlayer agent2, int i, int j, int minNumPlayers,
+//				int maxNumPlayers, int numGames, Random random) {
+//			super();
+//			this.threadName = threadName;
+//			this.agent1 = agent1;
+//			this.agent2 = agent2;
+//			this.minNumPlayers = minNumPlayers;
+//			this.maxNumPlayers = maxNumPlayers;
+//			this.i = i;
+//			this.j = j;
+//			this.numGames = numGames;
+//			this.random = random;
+//			done = false;
+//			terminate = false;
+//		    System.out.println("Creating thread " +  threadName );
+//
+//		}
+//
+////		@Override
+////		public void run() {
+////			// TODO Auto-generated method stub
+////
+////		
+////		public void start() {
+////			if (t==null) {
+////				t=new Thread (this,threadName);
+////				t.start();
+////			}
+////		}
+////		
+////		public Map<Integer, Vector<Double>> getResults(){
+////			return results;
+////		}
+//
+//		@Override
+//		public Map<Integer, Vector<Double>> call() throws Exception {
+//		    System.out.println("Running " +  threadName );
+//
+//			results = VariableNumberPlayersTest(agent1, agent2, minNumPlayers, maxNumPlayers, numGames, random);
+//		    System.out.println("Got results for " +  threadName + (results == null));
+//		    return (results);
+//	
+//		}
+//    }
 
 		
 

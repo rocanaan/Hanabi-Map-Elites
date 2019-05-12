@@ -54,7 +54,7 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 100;
+		int numGames = 1000;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
@@ -143,6 +143,10 @@ public class EvaluatePopulationFromFile {
 			
 			System.out.println("SIZE");
 			System.out.println(populationResults.size());
+			double averageSD = 0;
+			double maxSD=0;
+			double minSD=9999;
+			int countNotNull = 0;
 	
 			for (int i = 0; i < sizeDim1; i++) {
 				for(int j=0; j<sizeDim2; j++) {
@@ -165,8 +169,18 @@ public class EvaluatePopulationFromFile {
 						}
 					}
 					double mean = Utils.Utils.getMean(individualResults);
+					if (mean >0) {
+						countNotNull++;
+					}
 					System.out.println("Player " + i + "," + j + "'s mean score: " + mean );
 					double SD = Utils.Utils.getStandardDeviation(individualResults);
+					if (SD>maxSD) {
+						maxSD = SD;
+					}
+					if (SD<minSD) {
+						minSD = SD;
+					}
+					averageSD+=SD;
 					System.out.println("SD: " + SD + " SEM: " + SD/Math.sqrt(individualResults.size()));
 	//				
 					if (mean > maxScore) {
@@ -174,8 +188,6 @@ public class EvaluatePopulationFromFile {
 						bestPlayer = playerID;
 					}	
 					System.out.println("");
-					
-
 				}
 			}
 			for (int i = 0; i < sizeDim1; i++) {
@@ -195,6 +207,9 @@ public class EvaluatePopulationFromFile {
 				}
 				System.out.println("");
 			}
+			averageSD = averageSD/countNotNull;
+			System.out.println("Not null " + countNotNull);
+			System.out.println("SD (min max avg) " + minSD + " " + maxSD + " " + averageSD);
 			System.out.println(maxScore);
 			System.out.println((int)(bestPlayer/sizeDim1));
 			System.out.println(bestPlayer%sizeDim1);
