@@ -41,9 +41,26 @@ public class CalculateActionSimilarity {
 		int count = getCount(database, validMask);
 		System.out.println("Count: " + count);
 
+		int sumLegal = 0;
+		int countStates = 0;
+		for(ActionDatabaseEntry entry:database) {
+			for(StateActionPair sap:entry.stateActionArchive) {
+				int playerID = sap.agentID;
+				GameState state = sap.state;
+				double legalActions = com.fossgalaxy.games.fireworks.ai.iggi.Utils.generateActions(playerID, state).size();
+				sumLegal += legalActions;
+				countStates++;
+			}
+		}
+		if (countStates >0) {
+			System.out.println(sumLegal);
+			System.out.println(sumLegal/countStates);
+			System.out.println(countStates/sumLegal);
+		}
+		
 		// Intra
-		int[][][][] similarityMatchups = getActionSimilarityMatchups(database, a, validMask, sizeDim1, sizeDim2);
-		printHistogram(similarityMatchups,validMask,sizeDim1,sizeDim2,count);
+//		int[][][][] similarityMatchups = getActionSimilarityMatchups(database, a, validMask, sizeDim1, sizeDim2);
+//		printHistogram(similarityMatchups,validMask,sizeDim1,sizeDim2,count);
 		
 		
 		//Cross

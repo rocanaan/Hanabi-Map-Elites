@@ -54,7 +54,7 @@ public class RunMapElites {
 	static int[][][] population = new int[d1][d2][chromosomeLength];
 
 	static String filePath = "/Users/rodrigocanaan/Dev/HanabiResults/Evolution";
-	static String directory = "/20190507/";
+	static String directory = "/20190513/";
 	
 	public static void printParameters() {
 		System.out.println("Parameters for this run: ");

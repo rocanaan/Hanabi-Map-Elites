@@ -58,7 +58,7 @@ public class EvaluatePopulationFromFile {
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
-		Mode mode  = Mode.CROSSPOPULATION;
+		Mode mode  = Mode.SIMPLE;
 		
 		Vector<Map<Integer, Vector<Double>>> populationResults = null;
 
@@ -113,7 +113,7 @@ public class EvaluatePopulationFromFile {
 				populationResults = NewTestSuite.intraPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
 			}
 			
-			String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation" + mode.toString();
+			String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation" + numGames + mode.toString();
 			String dateTime = Utils.Utils.getDateTimeString();
 			try {
 				FileOutputStream file = new FileOutputStream(outputFileName+dateTime); // TODO: There should bbe a class just to serialize, another to gather the data
@@ -217,6 +217,7 @@ public class EvaluatePopulationFromFile {
 		
 		else if (mode == Mode.INTRAPOPULATION){ //TODO: This should actually be m ranging from i to size, and n from j to size
 			double[][][][] matchupTable = new double[sizeDim1][sizeDim2][sizeDim1][sizeDim2];
+			double[][][][] averageTable = new double[sizeDim1][sizeDim2][sizeDim1][sizeDim2];
 			
 			//First we do selfplay results for sanity (discard any agent with self-play of zero)
 			
@@ -248,6 +249,7 @@ public class EvaluatePopulationFromFile {
 			
 
 			double [][] averageAdHocScore = new double[sizeDim1][sizeDim2];
+			double [][] averageNaiveScore = new double[sizeDim1][sizeDim2];
 			int [][] dim1BestPair = new int[sizeDim1][sizeDim2];
 			int [][] dim2BestPair = new int[sizeDim1][sizeDim2];
 			int [][] countBestPartner = new int[sizeDim1][sizeDim2];
@@ -264,7 +266,8 @@ public class EvaluatePopulationFromFile {
 						averageAdHocScore[i][j] = 0;
 					}
 					else{
-						double average = 0;
+						double averagePairwiseScore = 0;
+						double averageNaiveMatchup = 0;
 						int count = 0;
 						double max = 0;
 						int m_max = 0;
@@ -295,7 +298,8 @@ public class EvaluatePopulationFromFile {
 									}
 		
 									
-									average += score;
+									averagePairwiseScore += score;
+									averageNaiveMatchup += (selfPlayTable[i][j] + selfPlayTable[m][n])/2;
 									count+=1;
 									if (score>max) {
 										max = score;
@@ -313,19 +317,26 @@ public class EvaluatePopulationFromFile {
 									
 									matchupTable[i][j][m][n] = score;
 									matchupTable[m][n][i][j] = score;
+									averageTable[i][j][m][n] = (selfPlayTable[i][j] + selfPlayTable[m][n])/2;
+									averageTable[m][n][i][j] = (selfPlayTable[i][j] + selfPlayTable[m][n])/2;
+									
 								
 									//System.out.println ("[" +i + ","+j+"] ["+m+","+n+"] index = " + index + " score = " + score);
 								}
 								else {
 									matchupTable[i][j][m][n] = 0;
 									matchupTable[m][n][i][j] = 0;
+									averageTable[i][j][m][n] = 0;
+									averageTable[m][n][i][j] = 0;
 								}
 							}
 						}
 
 						if (count > 0) {
-							average = average/count;
-							averageAdHocScore[i][j] = average;
+							averageNaiveMatchup = averageNaiveMatchup/count;
+							averagePairwiseScore = averagePairwiseScore/count;
+							averageAdHocScore[i][j] = averagePairwiseScore;
+							averageNaiveScore[i][j] = averageNaiveMatchup;
 						}
 						dim1BestPair[i][j] = m_max;
 						dim2BestPair[i][j] = n_max;
@@ -336,8 +347,11 @@ public class EvaluatePopulationFromFile {
 				
 			}
 			
-			
+			System.out.println("Score by distance");
 			PostSimulationAnalyses.CalculateActionSimilarity.printHistogram(matchupTable, validMask, sizeDim1, sizeDim2, 1);
+			System.out.println("Naive Score by distance");
+			PostSimulationAnalyses.CalculateActionSimilarity.printHistogram(averageTable, validMask, sizeDim1, sizeDim2, 1);
+
 			
 			System.out.println("Global max is " + global_max + " between agents ["+i_global_max+","+j_global_max+"] and ["+m_global_max+","+n_global_max+"]" );
 			System.out.println("For comparison, the self play score for ["+i_global_max+","+j_global_max+"] is "+ matchupTable[i_global_max][j_global_max][i_global_max][j_global_max]);
@@ -349,6 +363,14 @@ public class EvaluatePopulationFromFile {
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j<sizeDim2; j++) {
 					System.out.print(averageAdHocScore[i][j] + " ");
+				}
+				System.out.println("");
+			}
+			
+			System.out.println("Printing naive averages");
+			for (int i = 0; i < sizeDim1; i++) {
+				for (int j = 0; j<sizeDim2; j++) {
+					System.out.print(averageNaiveScore[i][j] + " ");
 				}
 				System.out.println("");
 			}

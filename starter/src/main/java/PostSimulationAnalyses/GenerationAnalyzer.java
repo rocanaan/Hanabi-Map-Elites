@@ -147,11 +147,12 @@ public class GenerationAnalyzer {
 					}
 				}
 			}
-			averageScore = averageScore/400;
 			double averageNonzeroScore =0; 
 			if(countNonZero!=0) {
 				averageNonzeroScore = averageScore/countNonZero;
 			}
+			averageScore = averageScore/400;
+
 			System.out.println(generation + " " + countNonZero + " " + countMismatches + " " + maxScore + " " + averageScore + " " + averageNonzeroScore);
 			for (int i =0; i<sizeDim1; i++) {
 				for(int j =0; j<sizeDim2; j++) {

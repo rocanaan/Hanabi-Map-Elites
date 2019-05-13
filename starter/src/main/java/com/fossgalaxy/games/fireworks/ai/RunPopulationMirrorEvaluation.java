@@ -34,7 +34,7 @@ public class RunPopulationMirrorEvaluation {
 			rules1[i] = rb.ruleMapping(chromossome1[i]);
 		}
 		HistogramAgent evolvedHAgent = rb.makeAgent(rules1);
-		//population.add(new AgentPlayer("evolvedAgent", evolvedHAgent));
+		population.add(new AgentPlayer("evolvedAgent", evolvedHAgent));
 		
 		// Variation putting Osawa discard (38) before oldestNoInfo (28)
 		int[] chromossome2 = {8,13,38,28,6,33,35,20,37,23,30,26,9,0,14,17,10,21,25,4,15,16,11,31,3,5,29,36,7,27,34,12,2,39,19,40,18,24,1,32,22};
