@@ -72,16 +72,16 @@ public class GeneticAlgorithm {
 	 *            the cities being referenced
 	 * @return double The fitness value for individual
 	 */
-    public double calcFitness(Individual individual, City cities[]){
-        // Get fitness
-        Route route = new Route(individual, cities);
-        double fitness = 1 / route.getDistance();
-                
-        // Store fitness
-        individual.setFitness(fitness);
-        
-        return fitness;
-    }
+//    public double calcFitness(Individual individual, City cities[]){
+//        // Get fitness
+//        Route route = new Route(individual, cities);
+//        double fitness = 1 / route.getDistance();
+//                
+//        // Store fitness
+//        individual.setFitness(fitness);
+//        
+//        return fitness;
+//    }
 
     /**
      * Evaluate population -- basically run calcFitness on each individual.
