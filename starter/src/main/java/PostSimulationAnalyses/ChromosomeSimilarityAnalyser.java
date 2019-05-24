@@ -19,8 +19,9 @@ public class ChromosomeSimilarityAnalyser {
 //		
 //		ArrayList<int[]> chromosomes = getChromosomesFromFile();
 		
-		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String chromosomeFileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
+//		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
+		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
+		String chromosomeFileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
 
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;

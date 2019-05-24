@@ -18,7 +18,8 @@ public class CalculateActionSimilarity {
 	
 	public static void main(String[] args) {
 		String inputFileNameDatabase = "/Users/rodrigocanaan/Dev/HanabiResults/ActionDatabase/1M20190511_054448";
-		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
+//		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
+		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
 		String chromosomeFileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
 
 		int sizeDim1 = 20;
@@ -63,18 +64,18 @@ public class CalculateActionSimilarity {
 //		printHistogram(similarityMatchups,validMask,sizeDim1,sizeDim2,count);
 		
 		
-		//Cross
-//		int[][] validMask2 = GetStateActionArchiveFromFile.getValidMaskFromFile(chromosomeFileName2,sizeDim1,sizeDim2);
-//		ArrayList<ReportAgent> agents2 = GetStateActionArchiveFromFile.makeReportAgentsFromFile(chromosomeFileName2, sizeDim1, sizeDim2, false);
-//		Agent[][] a2 = new Agent[sizeDim1][sizeDim2];
-//		for (int i= 0; i<sizeDim1; i++) {
-//			for(int j=0; j<sizeDim2; j++) {
-//				a2[i][j] = (Agent) agents2.get(j+sizeDim1*i);
-//			}
-//		}
-//		
-//		int[][] cross = getCrossPopulationSimilarity(database, a, validMask, a2, validMask2, sizeDim1, sizeDim2);
-//		printCrossPopulationSimilarity(cross,sizeDim1,sizeDim2,count);
+//		//Cross
+		int[][] validMask2 = GetStateActionArchiveFromFile.getValidMaskFromFile(chromosomeFileName2,sizeDim1,sizeDim2);
+		ArrayList<ReportAgent> agents2 = GetStateActionArchiveFromFile.makeReportAgentsFromFile(chromosomeFileName2, sizeDim1, sizeDim2, false);
+		Agent[][] a2 = new Agent[sizeDim1][sizeDim2];
+		for (int i= 0; i<sizeDim1; i++) {
+			for(int j=0; j<sizeDim2; j++) {
+				a2[i][j] = (Agent) agents2.get(j+sizeDim1*i);
+			}
+		}
+		
+		int[][] cross = getCrossPopulationSimilarity(database, a, validMask, a2, validMask2, sizeDim1, sizeDim2);
+		printCrossPopulationSimilarity(cross,sizeDim1,sizeDim2,count);
 		
 		
 	}

@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Random;
 import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
@@ -20,13 +21,14 @@ import com.fossgalaxy.games.fireworks.ai.NewTestSuite;
 import com.fossgalaxy.games.fireworks.ai.PopulationEvaluationSummary;
 import com.fossgalaxy.games.fireworks.ai.TestSuite;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
+import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 
 import Evolution.Rulebase;
 
 public class EvaluatePopulationFromFile {
 	
 	public enum Mode{
-		SIMPLE, CROSSPOPULATION, INTRAPOPULATION
+		SIMPLE, CROSSPOPULATION, INTRAPOPULATION, GAUNTLET
 	}
 	
 //	public class Pairing{
@@ -49,21 +51,27 @@ public class EvaluatePopulationFromFile {
 		Rulebase rb = new Rulebase(rulebaseStandard);
 		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
 		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
+//		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
 		int numGames = 1000;
-		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
+		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
-		Mode mode  = Mode.SIMPLE;
+		Mode mode  = Mode.CROSSPOPULATION;
 		
 		Vector<Map<Integer, Vector<Double>>> populationResults = null;
+		Vector<Vector<Map<Integer, Vector<Double>>>> gauntletResults = null;
 
+		Vector<AgentPlayer> agentPlayers  = makeAgentsFromFile(fileName, sizeDim1, sizeDim2, rulebaseStandard);
+		Vector<AgentPlayer> agentPlayers2 = makeAgentsFromFile(fileName2, sizeDim1, sizeDim2, rulebaseStandard);
+		
+		//Precomputed
 		if (usePrecomputedResults) {
-			String inputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation20190510_201535";
+			String inputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ReevaluationINTRAPOPULATION20190512_030806";
 			try
 	        {    
 	            // Reading the object from a file 
@@ -93,10 +101,21 @@ public class EvaluatePopulationFromFile {
 		
 		else {
 
-			Vector<AgentPlayer> agentPlayers  = makeAgentsFromFile(fileName, sizeDim1, sizeDim2, rulebaseStandard);
-			Vector<AgentPlayer> agentPlayers2 = null;
-			if (mode == Mode.CROSSPOPULATION) {
+			//Instantiate agents and run games
+			agentPlayers  = makeAgentsFromFile(fileName, sizeDim1, sizeDim2, rulebaseStandard);
+	//		agentPlayers2 = deserializeAgents(serialName);
+			if (mode == Mode.CROSSPOPULATION || mode == Mode.INTRAPOPULATION) {
 				agentPlayers2 =  makeAgentsFromFile(fileName2, sizeDim1, sizeDim2, rulebaseStandard);
+			}
+			
+			if (mode == Mode.GAUNTLET) {
+				String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
+				Vector<AgentPlayer> gauntlet = new Vector<AgentPlayer>();
+				for(String other: testPoolNames) {
+					AgentPlayer otherAgent = new AgentPlayer(other, AgentUtils.buildAgent(other));
+					gauntlet.add(otherAgent);
+				}
+				gauntletResults = NewTestSuite.mixedPopulationEvaluation(agentPlayers, gauntlet, minNumPlayers, maxNumPlayers, numGames);
 			}
 	
 			
@@ -113,6 +132,8 @@ public class EvaluatePopulationFromFile {
 				populationResults = NewTestSuite.intraPopulationEvaluation(agentPlayers, minNumPlayers, maxNumPlayers, numGames);
 			}
 			
+			
+			// Serialize results
 			String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation" + numGames + mode.toString();
 			String dateTime = Utils.Utils.getDateTimeString();
 			try {
@@ -132,12 +153,38 @@ public class EvaluatePopulationFromFile {
 		
 		
 		
-		
+		//Printing results
   
 		
 		// TODO: Printing should be its own function
 		// TODO: Trying to do too much by serializing and analyzing the data in the same class
-		if (mode != Mode.INTRAPOPULATION) {
+		if (mode == mode.GAUNTLET) {
+			//TODO: GAUNTLET currently does not care about zero results
+			for (int i = 0; i < sizeDim1; i++) {
+				for(int j=0; j<sizeDim2; j++) {
+					double sum = 0;
+					int numMatches = 0;
+					int playerID = j+sizeDim1*i;
+					Vector<Map<Integer, Vector<Double>>> playerResults = gauntletResults.get(playerID);
+					
+					for (int partnerID = 0; partnerID < playerResults.size(); partnerID++) {
+						Map<Integer, Vector<Double>> pairingResults = playerResults.get(partnerID);
+						for (int gameSize = minNumPlayers; gameSize <= maxNumPlayers; gameSize++) {
+							Vector<Double> matchResults = pairingResults.get(gameSize);
+							for (double result : matchResults) {
+								//System.out.println(playerID + "," +partnerID + "," + gameSize + "," + result);
+								sum+=result;
+								numMatches++;
+							}
+						}
+					}
+					System.out.print((sum/numMatches) + " ");
+				}
+				System.out.println("");
+			}
+
+		}
+		else if (mode != Mode.INTRAPOPULATION) {
 			double maxScore = -1;
 			int bestPlayer = -1;
 			
@@ -391,6 +438,53 @@ public class EvaluatePopulationFromFile {
 				System.out.println("");
 			}
 			
+			System.out.println("Doing matchups based on best pair");
+			System.out.println("In this population:");
+			double sum = 0;
+			int count = 0;
+			for (int i = 0; i < sizeDim1; i++) {
+				for (int j = 0; j<sizeDim2; j++) {
+					double score = 0;
+					if (validMask[i][j]>0) {
+						int dim1 = dim1BestPair[i][j];
+						int dim2 = dim2BestPair[i][j];
+						score = matchupTable[i][j][dim1][dim2];
+						sum+=score;
+						count+=1;
+					}
+					System.out.print(score + " ");
+				}
+				System.out.println("");
+			}
+			System.out.println((sum/count));
+			System.out.println("Across populations:");
+			sum = 0;
+			count = 0;
+			Random random = new  Random();
+			for (int i = 0; i < sizeDim1; i++) {
+				for (int j = 0; j<sizeDim2; j++) {
+					double thisScore = 0;
+					int thisCount = 0;
+					if (validMask[i][j]>0) {
+						int dim1 = dim1BestPair[i][j];
+						int dim2 = dim2BestPair[i][j];
+						AgentPlayer bestPartner = agentPlayers.get(dim2 + sizeDim1*dim1);
+						AgentPlayer alternateSubject = agentPlayers2.get(j+sizeDim1*i);
+						Vector<Double> results = NewTestSuite.ConstantNumberPlayersTest(2, 1000, bestPartner, alternateSubject, random);
+						for (double score:results) {
+							thisScore+=score;
+							thisCount+=1;
+						}
+						thisScore = thisScore/thisCount;
+						sum+=thisScore;
+						count+=1;
+
+					}
+					System.out.print(thisScore + " ");
+				}
+				System.out.println("");
+			}
+			System.out.println((sum/count));
 
 			
 			
@@ -429,6 +523,26 @@ public class EvaluatePopulationFromFile {
 		return (n + sizeDim1*m + sizeDim2*sizeDim1*j +sizeDim1*sizeDim2*sizeDim1*i);	
 	}
 	
+	
+	public static Vector<AgentPlayer> deserializeAgents(String fileName){
+		Rulebase rb = new Rulebase(false);
+		Vector<AgentPlayer> agentPlayers = null;
+		int[][][] agents = PostSimulationAnalyses.GenerationAnalyzer.readPopulationsFromFile(fileName);
+		for(int i =0; i<20; i++) {
+			for(int j  =0 ; j< 20; j++) {
+				int[] chromosome =agents[i][j];
+				Rule[] agentRules = new Rule[chromosome.length];
+				for (int geneIndex = 0; geneIndex<chromosome.length; geneIndex++) {
+					agentRules[geneIndex] = rb.ruleMapping(chromosome[geneIndex]);
+				}
+				HistogramAgent histo;
+	            histo = rb.makeAgent(agentRules);
+	            ReportAgent agent = new ReportAgent(histo);				        
+		        agentPlayers.add(new AgentPlayer("report agent " + i + "," + j, agent));
+			}
+		}
+		return agentPlayers;
+	}
 	
 	//TODO: Extract into a class that gets the integers from file, then one that builds the agents. See chromosome similarity analyzer
 	public static Vector<AgentPlayer> makeAgentsFromFile(String fileName, int sizeDim1, int sizeDim2, boolean rulebaseStandard) {
