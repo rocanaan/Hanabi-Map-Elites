@@ -177,15 +177,15 @@ List<Double> probabilities = new ArrayList<Double>();
 		return new CardProbabiltyPair(bestSlot, bestSoFar);
 	}
 	
-    private boolean isPlayable(Card card, GameState state) {
+    public boolean isPlayable(Card card, GameState state) {
         return state.getTableValue(card.colour) + 1 == card.value;
     }
     
-    private boolean isUseless(Card card, GameState state) {
+    public boolean isUseless(Card card, GameState state) {
         return HandUtils.isSafeToDiscard(state, card.colour, card.value);
     }
     
-    private boolean isNecessary(Card card, GameState state) {
+    public boolean isNecessary(Card card, GameState state) {
         // Can't be necessary if needed again.
         if (HandUtils.isSafeToDiscard(state, card.colour, card.value)) {
             return false;

@@ -33,9 +33,7 @@ public class RunnableGame implements Runnable {
 	
 	public StatsSummary statsSummary;
 
-	
-	private
-	
+		
 	@Override
 	public void run() {
 		GameRunner runner = new GameRunner("test-game", numPlayers);
