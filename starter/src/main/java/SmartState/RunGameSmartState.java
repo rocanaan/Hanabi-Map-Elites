@@ -33,17 +33,15 @@ public class RunGameSmartState {
          
 	    Agent human = AgentUtils.buildAgent("HumanControlledAgent");
      
-     
-	    // Create a list of observations
-	    ArrayList<SmartStateObservation> observations = new ArrayList<SmartStateObservation>();
-//	    ProbabilityCardIsPlayableObservation cardPlayability = new ProbabilityCardIsPlayableObservation();
-	    
-	    observations.add(new ProbabilityCardIsPlayableObservation());
-	    observations.add(new ProbabilityCardIsUselessObservation());
-	    observations.add(new ProbabilityCardIsNecessaryObservation());
-	    observations.add(new PartnerCardIsPlayableObservation());
-	    observations.add(new PartnerCardIsUselessObservation());
-	    observations.add(new PartnerCardIsNecessaryObservation());
+    
+	    SmartStateObservation[] observations = {
+	    		new ProbabilityCardIsPlayableObservation(),
+	    		new ProbabilityCardIsUselessObservation(),
+	    		new ProbabilityCardIsNecessaryObservation(),
+	    		new PartnerCardIsPlayableObservation(),
+	    		new PartnerCardIsUselessObservation(),
+	    		new PartnerCardIsNecessaryObservation()
+	    };
 	    SmartStateAgent ssa = new SmartStateAgent(new SmartGameState(observations), human);
 	    
         Player player1 = new AgentPlayer("P1", ssa);

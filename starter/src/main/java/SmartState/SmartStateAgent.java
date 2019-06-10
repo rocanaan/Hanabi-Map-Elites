@@ -21,11 +21,11 @@ public class SmartStateAgent implements Agent {
 		
 		double smartStateArray[] = smartState.getObservation(state, agentID);
 		System.out.println("Printing Smart State");
-		System.out.print("[ ");
+		System.out.print("{ ");
 		for (int i = 0; i<smartStateArray.length;i++) {
-			System.out.print(smartStateArray[i] + " ");
+			System.out.print(String.format("%.2f",smartStateArray[i]) + " ");
 		}
-		System.out.println("]");
+		System.out.println("}");
 
 		
 		return policy.doMove(agentID, state);
