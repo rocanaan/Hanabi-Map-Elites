@@ -23,10 +23,19 @@ public class NewTestSuite {
 
     public static Vector<Double> ConstantNumberPlayersTest(int numPlayers, int numGames, AgentPlayer yourAgent, AgentPlayer otherAgent, Random random) {
        
+    	
+    	boolean threaded =false;
         boolean randomizePosition = true;
         
+        if (threaded) {
+        	//your code test:runevolutionmirror get time to finish
+        }
+        else {
+        	//current code
+        }
         Vector<Double> results = new Vector<Double>();
-
+//ask cores available or get as a parameter 
+//new constructor for multi thread
         for (int i = 0; i < numGames; i++) {
         		//System.out.println("Running game with number of players " +numPlayers);
             GameRunner runner = new GameRunner("test-game", numPlayers);

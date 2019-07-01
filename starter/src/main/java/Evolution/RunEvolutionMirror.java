@@ -14,9 +14,10 @@ package Evolution;
  * @author bkanber
  *
  */
+
 public class RunEvolutionMirror {
-	public static int maxGenerations = 500; // note : generation count starts at zero, so this is actually 1000
-	public static int populationSize = 100;
+	public static int maxGenerations = 5; // note : generation count starts at zero, so this is actually 1000
+	public static int populationSize = 10;
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.9;
     public static int elitismCount = 20;

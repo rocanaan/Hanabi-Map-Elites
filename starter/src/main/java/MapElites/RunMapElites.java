@@ -37,8 +37,8 @@ import javassist.compiler.ast.Pair;
  *
  */
 public class RunMapElites {
-	public static int G = 10000; //number of random individuals
-	public static int I = 1000000 - G; // number of mutations after initial random individuals
+	public static int G = 10; //number of random individuals
+	public static int I = 20 - G; // number of mutations after initial random individuals
 	public static int d1 = 20; // number of niches in the first dimension
 	public static int d2 = 20; // number of niches in the second dimension
 	public static double mutationRate = 0.1;
