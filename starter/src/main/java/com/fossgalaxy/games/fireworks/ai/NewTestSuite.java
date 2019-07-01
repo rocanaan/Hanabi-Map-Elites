@@ -286,10 +286,8 @@ public class NewTestSuite {
 
         Random random = new Random();
         Long seed = random.nextLong();
-
         for (AgentPlayer agent : population) {
             random.setSeed(seed);
-            
             Vector<Map<Integer, Vector<Double>>> playerResults = new Vector<Map<Integer, Vector<Double>>> ();
 
             for (AgentPlayer other : testPool) {

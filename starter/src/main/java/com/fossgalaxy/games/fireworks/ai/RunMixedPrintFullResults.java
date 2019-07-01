@@ -16,7 +16,7 @@ public class RunMixedPrintFullResults {
 	public static void main( String[] args ) {
 		int minNumPlayers = 2;
 		int maxNumPlayers = 5;
-		int numGames = 2000;
+		int numGames = 20000;
 		boolean includeBaselineAgents = false;
 		Rulebase rb = new Rulebase(false);
 		int[][] agentChromossomes = {
@@ -68,6 +68,25 @@ public class RunMixedPrintFullResults {
 			HistogramAgent agent = rb.makeAgent(rules);
 			population.add(new AgentPlayer ("Agent " + i, agent));
 		}
+		
+		//Mixed
+		int [] twoPlayerChromosomeMixed = {67, 69, 62, 57, 46, 8, 33, 36 ,19, 44, 54, 26}; 
+		int [] threePlusPlayerChromosomeMixed = {46, 10, 7, 67, 45, 29, 4, 71, 17, 43, 19 };
+		int [][] specializedChromosomeMixed = {twoPlayerChromosomeMixed,threePlusPlayerChromosomeMixed};
+		SpecializedAgent specializedMixed = new SpecializedAgent(specializedChromosomeMixed, rb);
+		
+
+
+		//Mirror
+		int [] twoPlayerChromosomeMirror = {68,7,63,8,67,66,52,35,36,51,33,13,54,16,48,37,69,19,4,5,44,61,27,49,34,39,18,46,0,59,65,29,3,23,70,24,58,38,42,32,6,56,9,14,41,30,11,45,43,21,2,15,1,50,26,62,28,57,22,64,20,10,31,55,40,47,60,71,17,53,12,25}; 
+		int [] threePlusPlayerChromosomeMirror = {63,41,50,7,67,29,32,0,39,35,54,38,13,45,16,40,55,19,46,12,58,25,24,14,56,49,61,28,44,2,53,20,60,27,43,66,68,33,15,23,1,3,71,30,21,69,52,59,6,36,31,51,9,11,37,17,10,5,70,62,42,22,8,48,18,34,65,4,47,26,64,57};
+		int [][] specializedChromosomeMirror = {twoPlayerChromosomeMirror,threePlusPlayerChromosomeMirror};
+		SpecializedAgent specializedMirror = new SpecializedAgent(specializedChromosomeMirror, rb);
+		
+		population.add(new AgentPlayer ("Specialized Mixed", specializedMixed));
+		population.add(new AgentPlayer ("Specialized Mirror", specializedMirror));
+
+		
 		
 		for(String other: testPoolNames) {
 			AgentPlayer otherAgent = new AgentPlayer(other, AgentUtils.buildAgent(other));

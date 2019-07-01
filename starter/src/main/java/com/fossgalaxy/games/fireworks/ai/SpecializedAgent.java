@@ -5,8 +5,11 @@
  */
 package com.fossgalaxy.games.fireworks.ai;
 
+import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.state.GameState;
 import com.fossgalaxy.games.fireworks.state.actions.Action;
+
+import Evolution.Rulebase;
 
 /**
  *
@@ -20,6 +23,18 @@ public class SpecializedAgent implements Agent{
     // if array size is 4: agents should be in order from 2-players to 5-players 
     public SpecializedAgent(Agent[] sp){
         specialists = sp;
+    }
+    
+    public SpecializedAgent(int[][] chromosomes, Rulebase rb) {
+    		specialists = new Agent[chromosomes.length];
+    		for (int i = 0; i< chromosomes.length; i++) {
+    			int[] c = chromosomes[i];
+    			Rule[] rules = new Rule[c.length];
+    			for (int j = 0; j< c.length; j++) {
+    				rules[j] = rb.ruleMapping(c[j]);
+    			}
+    			specialists[i] = rb.makeAgent(rules);
+    		}
     }
 
     @Override

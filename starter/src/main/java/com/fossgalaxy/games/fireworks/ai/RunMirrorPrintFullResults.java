@@ -17,7 +17,7 @@ public class RunMirrorPrintFullResults {
 		int minNumPlayers = 2;
 		int maxNumPlayers = 2; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
 		int numGames = 20000;
-		boolean includeBaselineAgents = true;
+		boolean includeBaselineAgents = false;
 		Rulebase rb = new Rulebase(false);
 		
 		int[][] agentChromossomes = {
@@ -53,6 +53,8 @@ public class RunMirrorPrintFullResults {
 			}
 		}
 		
+
+		
 		// Read agents from agentChromossomes and add them to the population
 		for (int i = 0; i < agentChromossomes.length; i++){
 			int[] chromossome = agentChromossomes[i];
@@ -63,6 +65,12 @@ public class RunMirrorPrintFullResults {
 			HistogramAgent agent = rb.makeAgent(rules);
 			population.add(new AgentPlayer ("Agent " + i, agent));
 		}
+		
+		int [] twoPlayerChromosomeMirror = {68,7,63,8,67,66,52,35,36,51,33,13,54,16,48,37,69,19,4,5,44,61,27,49,34,39,18,46,0,59,65,29,3,23,70,24,58,38,42,32,6,56,9,14,41,30,11,45,43,21,2,15,1,50,26,62,28,57,22,64,20,10,31,55,40,47,60,71,17,53,12,25}; 
+		int [] threePlusPlayerChromosomeMirror = {63,41,50,7,67,29,32,0,39,35,54,38,13,45,16,40,55,19,46,12,58,25,24,14,56,49,61,28,44,2,53,20,60,27,43,66,68,33,15,23,1,3,71,30,21,69,52,59,6,36,31,51,9,11,37,17,10,5,70,62,42,22,8,48,18,34,65,4,47,26,64,57};
+		int [][] specializedChromosomeMirror = {twoPlayerChromosomeMirror,threePlusPlayerChromosomeMirror};
+		SpecializedAgent specializedMirror = new SpecializedAgent(specializedChromosomeMirror, rb);
+		population.add(new AgentPlayer("Specialized Mirror",specializedMirror));
 		
 //		// Best agent on the GA
 //		int[] chromossome1 = {8,13,28,6,33,35,20,38,37,23,30,26,9,0,14,17,10,21,25,4,15,16,11,31,3,5,29,36,7,27,34,12,2,39,19,40,18,24,1,32,22};
