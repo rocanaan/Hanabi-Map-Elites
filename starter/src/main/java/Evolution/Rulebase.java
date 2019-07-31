@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.function.BiFunction;
 
+import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.HistogramAgent;
 import com.fossgalaxy.games.fireworks.ai.iggi.LegalRandom;
@@ -485,6 +486,19 @@ public class Rulebase {
         }
 
         return testPool;
+    }
+    
+    public static Vector<Agent> GetBaselinePolicies() {
+        String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal", "RuleBasedOuter", "SampleLegalRandom", "RuleBasedVanDeBergh", "RuleBasedFlawed", "RuleBasedPiers"};
+
+        Vector<Agent> policies = new Vector<Agent>();
+
+        for (String name : testPoolNames) {
+        		Agent a = AgentUtils.buildAgent(name);
+        		policies.add(a);
+        }
+
+        return policies;
     }
 
 }
