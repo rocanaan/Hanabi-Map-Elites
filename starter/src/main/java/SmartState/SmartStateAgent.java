@@ -20,7 +20,7 @@ public class SmartStateAgent implements Agent {
 		// TODO Auto-generated method stub
 		
 		double smartStateArray[] = smartState.getObservation(state, agentID);
-		System.out.println("Printing Smart State");
+		System.out.println("Printing Smart State of length " + smartStateArray.length);
 		System.out.print("{ ");
 		for (int i = 0; i<smartStateArray.length;i++) {
 			System.out.print(String.format("%.2f",smartStateArray[i]) + " ");

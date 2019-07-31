@@ -12,9 +12,15 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import com.fossgalaxy.stats.BasicStats;
 import com.fossgalaxy.stats.StatsSummary;
 
+import SmartState.Observations.BoardStateObservation;
 import SmartState.Observations.PartnerCardIsNecessaryObservation;
 import SmartState.Observations.PartnerCardIsPlayableObservation;
 import SmartState.Observations.PartnerCardIsUselessObservation;
+import SmartState.Observations.PartnerCardOneHotColorAndValueObservation;
+import SmartState.Observations.PartnerCardOneHotColorObservation;
+import SmartState.Observations.PartnerCardOneHotValueObservation;
+import SmartState.Observations.PartnerKnowsCardColorObservation;
+import SmartState.Observations.PartnerKnowsCardValueObservation;
 import SmartState.Observations.ProbabilityCardIsNecessaryObservation;
 import SmartState.Observations.ProbabilityCardIsPlayableObservation;
 import SmartState.Observations.ProbabilityCardIsUselessObservation;
@@ -35,12 +41,21 @@ public class RunGameSmartState {
      
     
 	    SmartStateObservation[] observations = {
+	    		new BoardStateObservation(),
 	    		new ProbabilityCardIsPlayableObservation(),
 	    		new ProbabilityCardIsUselessObservation(),
 	    		new ProbabilityCardIsNecessaryObservation(),
 	    		new PartnerCardIsPlayableObservation(),
 	    		new PartnerCardIsUselessObservation(),
-	    		new PartnerCardIsNecessaryObservation()
+	    		new PartnerCardIsNecessaryObservation(),  		
+	    		new PartnerKnowsCardColorObservation(),
+	    		new PartnerKnowsCardValueObservation(),
+	    		
+//	    		new PartnerCardOneHotColorObservation(),
+//	    		new PartnerCardOneHotValueObservation(),
+//	    		new PartnerCardOneHotColorAndValueObservation(),
+
+
 	    };
 	    SmartStateAgent ssa = new SmartStateAgent(new SmartGameState(observations), human);
 	    
