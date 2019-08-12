@@ -49,7 +49,7 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Competition/ChromosomesMapElites/5P";
+		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
 		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
 //		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
 		int sizeDim1 = 20;
@@ -57,11 +57,11 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 100;
-		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
+		int numGames = 1000;
+		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
-		Mode mode  = Mode.INTRAPOPULATION;
+		Mode mode  = Mode.CROSSPOPULATION;
 		
 		Vector<Map<Integer, Vector<Double>>> populationResults = null;
 		Vector<Vector<Map<Integer, Vector<Double>>>> gauntletResults = null;
@@ -430,23 +430,6 @@ public class EvaluatePopulationFromFile {
 				System.out.println("");
 			}
 			
-			String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Competition/IntrapopulationMatchups/" + numGames + mode.toString();
-			String dateTime = Utils.Utils.getDateTimeString();
-			try {
-				FileOutputStream file = new FileOutputStream(outputFileName+dateTime); // TODO: There should bbe a class just to serialize, another to gather the data
-				ObjectOutputStream out = new ObjectOutputStream(file);
-				out.writeObject(dim1BestPair);
-				out.writeObject(dim2BestPair);
-				out.close();
-				file.close();
-	            System.out.println("Object has been serialized"); 
-	
-			}
-		    catch(IOException ex) 
-	        { 
-	            System.err.println("Failed to serialize"); 
-	        } 
-			
 			System.out.println("Printing count best partner");
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j<sizeDim2; j++) {
@@ -474,37 +457,34 @@ public class EvaluatePopulationFromFile {
 				System.out.println("");
 			}
 			System.out.println((sum/count));
-			
-			
-			//TODO: Check if this section should be executed for other modes than Crosspopulation
-//			System.out.println("Across populations:");
-//			sum = 0;
-//			count = 0;
-//			Random random = new  Random();
-//			for (int i = 0; i < sizeDim1; i++) {
-//				for (int j = 0; j<sizeDim2; j++) {
-//					double thisScore = 0;
-//					int thisCount = 0;
-//					if (validMask[i][j]>0) {
-//						int dim1 = dim1BestPair[i][j];
-//						int dim2 = dim2BestPair[i][j];
-//						AgentPlayer bestPartner = agentPlayers.get(dim2 + sizeDim1*dim1);
-//						AgentPlayer alternateSubject = agentPlayers2.get(j+sizeDim1*i);
-//						Vector<Double> results = NewTestSuite.ConstantNumberPlayersTest(2, 1000, bestPartner, alternateSubject, random);
-//						for (double score:results) {
-//							thisScore+=score;
-//							thisCount+=1;
-//						}
-//						thisScore = thisScore/thisCount;
-//						sum+=thisScore;
-//						count+=1;
-//
-//					}
-//					System.out.print(thisScore + " ");
-//				}
-//				System.out.println("");
-//			}
-//			System.out.println((sum/count));
+			System.out.println("Across populations:");
+			sum = 0;
+			count = 0;
+			Random random = new  Random();
+			for (int i = 0; i < sizeDim1; i++) {
+				for (int j = 0; j<sizeDim2; j++) {
+					double thisScore = 0;
+					int thisCount = 0;
+					if (validMask[i][j]>0) {
+						int dim1 = dim1BestPair[i][j];
+						int dim2 = dim2BestPair[i][j];
+						AgentPlayer bestPartner = agentPlayers.get(dim2 + sizeDim1*dim1);
+						AgentPlayer alternateSubject = agentPlayers2.get(j+sizeDim1*i);
+						Vector<Double> results = NewTestSuite.ConstantNumberPlayersTest(2, 1000, bestPartner, alternateSubject, random);
+						for (double score:results) {
+							thisScore+=score;
+							thisCount+=1;
+						}
+						thisScore = thisScore/thisCount;
+						sum+=thisScore;
+						count+=1;
+
+					}
+					System.out.print(thisScore + " ");
+				}
+				System.out.println("");
+			}
+			System.out.println((sum/count));
 
 			
 			

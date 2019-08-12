@@ -109,14 +109,6 @@ public class ReportAgent implements Agent{
     public boolean isPlayable(Card card, GameState state) {
         return state.getTableValue(card.colour) + 1 == card.value;
     }
-    
-    public void resetStats() {
-    	possibleHints = 0;
-        hintsGiven = 0;
-        totalPlayability = 0.0;
-        countPlays = 0;
-        stateActionArchive = null;
-    }
  
     
    
