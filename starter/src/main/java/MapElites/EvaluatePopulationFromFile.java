@@ -54,10 +54,10 @@ public class EvaluatePopulationFromFile {
 //		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
-		int numPlayers = 2;
+		int numPlayers = 5;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 100;
+		int numGames = 80;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
@@ -425,7 +425,7 @@ public class EvaluatePopulationFromFile {
 			System.out.println("Printing best partner");
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j<sizeDim2; j++) {
-					System.out.print("["+dim1BestPair[i][j]+","+dim2BestPair[i][j]+"] ");
+					System.out.print("{"+dim1BestPair[i][j]+","+dim2BestPair[i][j]+"} ");
 				}
 				System.out.println("");
 			}
