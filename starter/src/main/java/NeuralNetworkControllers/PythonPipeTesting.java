@@ -35,12 +35,14 @@ public class PythonPipeTesting {
 
     String s;
     //String cmd = "c:\\programs\\python\\python.exe d:\\a.py";
-    String cmd = "python /Users/rodrigocanaan/Dev/HanabiMapElites/Hanabi-Map-Elites/starter/src/main/java/NeuralNetworkControllers/pythonpipe.py";
+//    String cmd = "python /Users/rodrigocanaan/Dev/HanabiMapElites/Hanabi-Map-Elites/starter/src/main/java/NeuralNetworkControllers/pythonpipe.py";
 
     try {
 
+
+        String dir = System.getProperty("user.dir");
+        String cmd = "python ".concat(dir.concat("/src/main/java/NeuralNetworkControllers/pythonpipe.py"));
         print(cmd);
-        print(System.getProperty("user.dir"));
         Process p = Runtime.getRuntime().exec(cmd);
 
         inp = new BufferedReader( new InputStreamReader(p.getInputStream()) );
