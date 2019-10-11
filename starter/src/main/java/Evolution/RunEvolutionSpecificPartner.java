@@ -29,6 +29,7 @@ public class RunEvolutionSpecificPartner {
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	static int minNumPlayers = 4;
 	static int maxNumPlayers = 4;
+
 	static boolean rulebaseStandard = false;
 	
 	private static String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
