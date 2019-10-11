@@ -34,7 +34,8 @@ public class PythonPipeTesting {
     public static void main(String[] args) {
 
     String s;
-    String cmd = "c:\\programs\\python\\python.exe d:\\a.py";
+    //String cmd = "c:\\programs\\python\\python.exe d:\\a.py";
+    String cmd = "python /Users/rodrigocanaan/Dev/HanabiMapElites/Hanabi-Map-Elites/starter/src/main/java/NeuralNetworkControllers/pythonpipe.py";
 
     try {
 
@@ -45,6 +46,7 @@ public class PythonPipeTesting {
         inp = new BufferedReader( new InputStreamReader(p.getInputStream()) );
         out = new BufferedWriter( new OutputStreamWriter(p.getOutputStream()) );
 
+        print("test1");
         print( pipe("AAAaaa") );
         print( pipe("RoteM") );
 
