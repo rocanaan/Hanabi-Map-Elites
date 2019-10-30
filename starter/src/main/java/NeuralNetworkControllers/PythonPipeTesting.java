@@ -19,12 +19,13 @@ public class PythonPipeTesting {
 
     try {
         out.write( msg + "\n" );
+        print("Sent message " + msg +"\n");
         out.flush();
         ret = inp.readLine();
         return ret;
     }
     catch (Exception err) {
-
+    	print(err.toString());
     }
     return "";
     }
@@ -41,15 +42,14 @@ public class PythonPipeTesting {
 
 
         String dir = System.getProperty("user.dir");
-        String cmd = "python ".concat(dir.concat("/src/main/java/NeuralNetworkControllers/pythonpipe.py"));
+        String cmd = "python ".concat(dir.concat("/src/main/java/NeuralNetworkControllers/ffnn.py"));
         print(cmd);
         Process p = Runtime.getRuntime().exec(cmd);
 
         inp = new BufferedReader( new InputStreamReader(p.getInputStream()) );
         out = new BufferedWriter( new OutputStreamWriter(p.getOutputStream()) );
 
-        print("test1");
-        print( pipe("AAAaaa") );
+        print( pipe("start 1 2 3") );
         print( pipe("RoteM") );
 
         pipe("quit");

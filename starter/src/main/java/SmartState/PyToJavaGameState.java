@@ -13,12 +13,16 @@ public class PyToJavaGameState {
 	
 
 	//If you want to parse directly from the strin
-	public GameState convertPyToJava(String descriptor) {
+	public static GameState convertPyToJava(String descriptor) {
 		return null;
 	}
 	
-	public GameState convertPyToJava(int[] array) {
+	public static GameState convertPyToJava(int[] array) {
 		return null;
+	}
+	
+	public static int getAgentIDFromPy(int[] array) {
+		return 0;
 	}
 	
 	public static void main (String[] args) {
