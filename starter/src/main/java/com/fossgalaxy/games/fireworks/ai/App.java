@@ -25,7 +25,7 @@ public class App
         int numPlayers = 2;
         int numGames = 1;
         //String agentName = "SampleAgent";
-        String agentName = "HistoryTestAgent";
+        String agentName = "RuleBasedPiers";
         String otherAgentName = "RuleBasedPiers";
         String modelName = "RuleBasedPiers";
 

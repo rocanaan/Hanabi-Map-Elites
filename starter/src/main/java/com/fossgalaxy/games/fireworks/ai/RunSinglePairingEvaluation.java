@@ -6,11 +6,11 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 public class RunSinglePairingEvaluation {
 	public static void main( String[] args ) {
 		int minNumPlayers = 2;
-		int maxNumPlayers = 5;
-		int numGames = 100;
+		int maxNumPlayers = 2;
+		int numGames = 1000;
 		
 		String yourAgentName = "RuleBasedIGGI";
-		String otherAgentName = "RuleBasedFlawed";
+		String otherAgentName = "RuleBasedIGGI";
 		
 		
 		

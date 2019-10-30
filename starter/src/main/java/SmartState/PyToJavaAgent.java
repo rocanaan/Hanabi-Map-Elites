@@ -57,7 +57,9 @@ public class PyToJavaAgent implements Agent{
 	
 // Simple template of a program that, when the communication is implemented, would simply return the action for each state until it is told to stop
 	public static void main(String[] args) {
-		String agentName = "RuleBasedPiers";
+		String agentName = "RuleBasedPiers"; // Scores 17.3 on average
+//		String agentName = "SampleLegalRandom"; // Scores 1.2 on average
+//		String agentName = "RuleBasedIGGI"; // Scores 16.4 on average
 		Agent agent = AgentUtils.buildAgent(agentName);
 		
 		PyToJavaAgent py_agent = new PyToJavaAgent(agent);
