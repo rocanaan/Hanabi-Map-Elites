@@ -1,5 +1,3 @@
 /Outputs
 /Executable\ Jars
-.DS_Store
-.DS_Store
-starter/.DS_Store
+*.DS_Store
