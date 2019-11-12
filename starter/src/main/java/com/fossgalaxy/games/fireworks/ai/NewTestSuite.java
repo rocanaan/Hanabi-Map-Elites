@@ -6,7 +6,7 @@ import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import com.fossgalaxy.games.fireworks.GameRunner;
+//import com.fossgalaxy.games.fireworks.GameRunner;
 import com.fossgalaxy.games.fireworks.GameStats;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;

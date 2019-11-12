@@ -59,6 +59,8 @@ public class PairingSummary {
 		return mean; 
 	}
 	
+
+	
 	public double getScoreByGameSize(int n) {
 		if (n <= maxPlayers && n >= minPlayers) {
 			int index = n-minPlayers;

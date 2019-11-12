@@ -3,6 +3,7 @@ package com.fossgalaxy.games.fireworks.ai;
 import java.util.Map;
 import java.util.Vector;
 
+import com.fossgalaxy.games.fireworks.ai.rule.ProductionRuleAgent;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 
@@ -16,8 +17,8 @@ public class RunMirrorPrintFullResults {
 	public static void main( String[] args ) {
 		int minNumPlayers = 2;
 		int maxNumPlayers = 2; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
-		int numGames = 20000;
-		boolean includeBaselineAgents = false;
+		int numGames = 10000;
+		boolean includeBaselineAgents = true;
 		Rulebase rb = new Rulebase(false);
 		
 		int[][] agentChromossomes = {
@@ -42,13 +43,13 @@ public class RunMirrorPrintFullResults {
 //				{8,47,2,13,35,36,37,15,45,18,23,39,28,41,33,0,26,1,16,10,44,42,22,38,6,48,14,27,31,34,25,40,46,19,9,7,43,49,20,3,32,12,4,24,30,11,29,17,21,5}
 		};
                 
-		String[] agentNames = { "RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
+		String[] agentNames = { "RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","RuleBasedLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
 		
 		Vector<AgentPlayer> population = new Vector<AgentPlayer>();
 		
 		if (includeBaselineAgents) {
 			for(String name: agentNames) {
-				AgentPlayer newAgent = new AgentPlayer(name, AgentUtils.buildAgent(name));
+				AgentPlayer newAgent = (new AgentPlayer(name, new HistogramAgent((ProductionRuleAgent) AgentUtils.buildAgent(name))));
 				population.add(newAgent);
 			}
 		}
@@ -154,7 +155,15 @@ public class RunMirrorPrintFullResults {
 			
 			System.out.println("Best overall player is " + bestPlayer + " with a mean score of " + maxScore + " over all game sizes");
 
+			for (AgentPlayer agent : population) {
+				Agent a = agent.policy;
+				if (a instanceof HistogramAgent) {
+					HistogramAgent h = (HistogramAgent)a;
+					h.printHistogram();
+				}
+			}
 		}
+		
 		
 
 		

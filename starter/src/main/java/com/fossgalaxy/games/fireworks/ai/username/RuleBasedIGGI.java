@@ -8,6 +8,7 @@ import com.fossgalaxy.games.fireworks.ai.rule.random.DiscardRandomly;
 import com.fossgalaxy.games.fireworks.ai.rule.random.TellRandomly;
 import com.fossgalaxy.games.fireworks.ai.rule.*;
 import com.fossgalaxy.games.fireworks.ai.osawa.rules.OsawaDiscard;
+import com.fossgalaxy.games.fireworks.ai.osawa.rules.TellPlayableCardOuter;
 import com.fossgalaxy.games.fireworks.ai.rule.simple.PlayIfCertain;
 import com.fossgalaxy.games.fireworks.annotations.AgentBuilderStatic;
 

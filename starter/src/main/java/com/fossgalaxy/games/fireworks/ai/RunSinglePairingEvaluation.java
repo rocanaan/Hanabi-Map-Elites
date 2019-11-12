@@ -9,8 +9,8 @@ public class RunSinglePairingEvaluation {
 		int maxNumPlayers = 2;
 		int numGames = 1000;
 		
-		String yourAgentName = "RuleBasedIGGI";
-		String otherAgentName = "RuleBasedIGGI";
+		String yourAgentName = "RuleBasedPiers";
+		String otherAgentName = "RuleBasedPiers";
 		
 		
 		

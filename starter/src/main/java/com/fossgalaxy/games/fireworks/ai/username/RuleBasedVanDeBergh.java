@@ -33,7 +33,7 @@ public class RuleBasedVanDeBergh {
 
         //you can add rules to your agent here
         pra.addRule(new IfRule(hasLives, new  PlayProbablySafeCard(0.6), new PlaySafeCard()));
-        pra.addRule(new DiscardProbablyUselessCard(1.0));
+        pra.addRule(new DiscardProbablyUselessCard(0.99));
         pra.addRule(new TellAnyoneAboutUsefulCard());
         pra.addRule(new TellAnyoneAboutUselessCard());
         pra.addRule(new TellMostInformation());

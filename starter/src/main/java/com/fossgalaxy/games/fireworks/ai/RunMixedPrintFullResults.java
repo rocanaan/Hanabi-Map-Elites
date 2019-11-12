@@ -15,9 +15,9 @@ import Evolution.Rulebase;
 public class RunMixedPrintFullResults {
 	public static void main( String[] args ) {
 		int minNumPlayers = 2;
-		int maxNumPlayers = 5;
-		int numGames = 20000;
-		boolean includeBaselineAgents = false;
+		int maxNumPlayers = 2;
+		int numGames = 1000;
+		boolean includeBaselineAgents = true;
 		Rulebase rb = new Rulebase(false);
 		int[][] agentChromossomes = {
 				//Best specialized 2p mirror agent

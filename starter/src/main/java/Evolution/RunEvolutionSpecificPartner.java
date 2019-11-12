@@ -27,8 +27,8 @@ public class RunEvolutionSpecificPartner {
     public static int elitismCount = 20;
 	public static  int tournamentSize = 5;
 	public static int numGames = 20; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
-	static int minNumPlayers = 4;
-	static int maxNumPlayers = 4;
+	static int minNumPlayers = 2;
+	static int maxNumPlayers = 2;
 
 	static boolean rulebaseStandard = false;
 	
@@ -38,7 +38,7 @@ public class RunEvolutionSpecificPartner {
 	public static void main(String[] args) {
 		Rulebase rb = new Rulebase(rulebaseStandard);
 		// Create cities
-		int numRules = 15;
+		int numRules = rb.getRuleset().length;
 //		City cities[] = new City[numRules];
 //		
 //		// Loop to create random cities

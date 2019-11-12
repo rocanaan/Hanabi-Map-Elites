@@ -127,7 +127,7 @@ public class FitnessEvaluation {
             } //TODO: create a class that returns the testpool
             else {
                 Vector<AgentPlayer> baselinePool;
-                baselinePool = rb.GetBaselineAgentPlayers();
+                baselinePool = Rulebase.GetBaselineAgentPlayers();
                 pes = TestSuite.mixedPopulationEvaluation(agents, baselinePool, minNumPlayers, maxNumPlayers, numGames);
             }
         } else {

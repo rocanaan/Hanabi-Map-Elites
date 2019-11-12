@@ -22,6 +22,8 @@ public class HistogramAgent extends ProductionRuleAgent implements Serializable{
         for (Rule rule : rules){
             histogram.add(0);
         }
+        // Fallback if none of the rules fire
+        histogram.add(0);
     }
     
     @Override
@@ -38,16 +40,33 @@ public class HistogramAgent extends ProductionRuleAgent implements Serializable{
                 index++;
             }
         }
-
+        histogram.set(index,histogram.get(index)+1 );
         return doDefaultBehaviour(agentID, state);
     }
     
     public void printHistogram(){
-        int index = 1;
+        int index = 0;
         System.out.println("Agent "+aID+":");
+        int totalFired = 0;
         for (Integer i : histogram){
-            System.out.println("Rule "+index+" fired "+i+" times.");
+            if (index < histogram.size()-1) {
+            	System.out.println("Rule "+index+  " " + rules.get(index) + " fired "+i+" times.");
+            }
+            else {
+            	System.out.println("Fallback fired "+i+" times.");
+            }
             index++;
+            totalFired += i;
+        }
+        if (totalFired >0) {
+        System.out.print("[");
+	        for (int i = 0; i<histogram.size();i++) {
+	        	System.out.print((double)histogram.get(i)/(double)totalFired);
+	        	if (i < histogram.size()-1) {
+	            	System.out.print(",");
+	        	}
+	        }
+	        System.out.println(']');
         }
     }
     

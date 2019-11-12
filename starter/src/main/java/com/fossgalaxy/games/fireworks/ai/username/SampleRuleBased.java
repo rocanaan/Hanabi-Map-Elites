@@ -1,6 +1,7 @@
 package com.fossgalaxy.games.fireworks.ai.username;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
+import com.fossgalaxy.games.fireworks.ai.iggi.LegalRandom;
 import com.fossgalaxy.games.fireworks.ai.rule.PlaySafeCard;
 import com.fossgalaxy.games.fireworks.ai.rule.ProductionRuleAgent;
 import com.fossgalaxy.games.fireworks.ai.rule.random.DiscardRandomly;
@@ -14,17 +15,14 @@ import com.fossgalaxy.games.fireworks.annotations.AgentBuilderStatic;
  */
 public class SampleRuleBased {
 
-    @AgentBuilderStatic("RuleBasedInternal")
+    @AgentBuilderStatic("RuleBasedLegalRandom")
     public static Agent buildRuleBased() {
         ProductionRuleAgent pra = new ProductionRuleAgent();
 
         //you can add rules to your agent here
-        pra.addRule(new PlaySafeCard());
-        pra.addRule(new TellRandomly());
-        pra.addRule(new DiscardRandomly());
+        pra.addRule(new LegalRandom());
+		return pra;
 
-
-        return pra;
     }
 
 }
