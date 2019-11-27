@@ -57,13 +57,10 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 5;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-<<<<<<< HEAD
 		int numGames = 80;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
-=======
-		int numGames = 1000;
-		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
->>>>>>> 75fdc552deab0169847f717814d934f16b860354
+//		int numGames = 1000;
+//		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
 		Mode mode  = Mode.CROSSPOPULATION;

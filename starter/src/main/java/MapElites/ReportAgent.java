@@ -6,7 +6,9 @@ import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.ai.rule.logic.DeckUtils;
 import com.fossgalaxy.games.fireworks.state.Card;
 import com.fossgalaxy.games.fireworks.state.GameState;
+import com.fossgalaxy.games.fireworks.state.TimedHand;
 import com.fossgalaxy.games.fireworks.state.actions.Action;
+import com.fossgalaxy.games.fireworks.state.actions.DiscardCard;
 import com.fossgalaxy.games.fireworks.state.actions.PlayCard;
 import com.fossgalaxy.games.fireworks.state.actions.TellColour;
 import com.fossgalaxy.games.fireworks.state.actions.TellValue;
@@ -26,7 +28,11 @@ public class ReportAgent implements Agent{
 	public int hintsGiven;
 	public double totalPlayability;
 	public int countPlays;
+	public int totalInformationPlays;
 	public boolean recordPlays;
+	
+	public double totalDiscardSlot;
+	public int countDiscards;
 	private ArrayList<StateActionPair> stateActionArchive;
 	
 
@@ -37,6 +43,9 @@ public class ReportAgent implements Agent{
         hintsGiven = 0;
         totalPlayability = 0.0;
         countPlays = 0;
+        totalInformationPlays = 0;
+    	totalDiscardSlot = 0.0;
+    	countDiscards = 0;
         recordPlays = false;
         stateActionArchive = null;
     }
@@ -46,6 +55,7 @@ public class ReportAgent implements Agent{
         hintsGiven = 0;
         totalPlayability = 0.0;
         countPlays = 0;
+        totalInformationPlays = 0;
         this.recordPlays = recordPlays;
         if (recordPlays) {
         		stateActionArchive = new ArrayList<StateActionPair>();
@@ -62,8 +72,14 @@ public class ReportAgent implements Agent{
 //        System.out.println(action.getClass().getName());
         if (action instanceof PlayCard) {
         		updatePlayability(state, agentID, (PlayCard)action);
+
         }
         updateHints(state, action);
+        if (action instanceof DiscardCard) {
+        	DiscardCard dAction = (DiscardCard)action;
+        	totalDiscardSlot += (double)dAction.slot/((double)state.getHandSize()-1);
+        	countDiscards++;
+        }
         
         if (recordPlays) {
         		stateActionArchive.add(new StateActionPair(state,action, agentID));
@@ -81,12 +97,20 @@ public class ReportAgent implements Agent{
     		int slot = action.slot;
     		double probability = 0;
     		Map<Integer, List<Card>> possibleCards = DeckUtils.bindBlindCard(playerID, state.getHand(playerID), state.getDeck().toList());
-        for (Map.Entry<Integer, List<Card>> entry : possibleCards.entrySet()) {
+    		for (Map.Entry<Integer, List<Card>> entry : possibleCards.entrySet()) {
         		if (entry.getKey() == slot) {
         			probability = DeckUtils.getProbablity(entry.getValue(), x -> isPlayable(x, state));
-            }
-        }
-//        System.out.println("Probability is " + probability);
+        		}
+    		}
+//        	System.out.println("Probability is " + probability);
+    		int knownInformation = 0;
+    		if (state.getHand(playerID).getKnownColour(slot) != null) {
+    			knownInformation ++;
+    		}
+    		if (state.getHand(playerID).getKnownValue(slot)!=null) {
+    			knownInformation ++;
+    		}
+    		totalInformationPlays += knownInformation;
         	totalPlayability += probability;
         	countPlays++;
 //        	System.out.println("Total playability: " + totalPlayability);
@@ -110,6 +134,20 @@ public class ReportAgent implements Agent{
         return state.getTableValue(card.colour) + 1 == card.value;
     }
  
+    public double getRiskAversion() {
+    	return totalPlayability / (double) countPlays;
+    }
     
+    public double getCommunicativeness() {
+    	return (double) hintsGiven / (double) possibleHints;
+    }
+    
+    public double getInformationPlays() {
+    	return (double) totalInformationPlays / (2 * (double) countPlays);
+    }
+    
+    public double getAverageDiscardSlot() {
+    	return totalDiscardSlot / (double) countDiscards;
+    }
    
 }

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
+import java.util.function.Function;
 
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.HistogramAgent;
@@ -37,24 +38,26 @@ import javassist.compiler.ast.Pair;
  *
  */
 public class RunMapElites {
-	public static int G = 10000; //number of random individuals
-	public static int I = 1000000 - G; // number of mutations after initial random individuals
+	public static int G = 1000; //number of random individuals
+	public static int I = 10000 - G; // number of mutations after initial random individuals
 	public static int d1 = 20; // number of niches in the first dimension
 	public static int d2 = 20; // number of niches in the second dimension
 	public static double mutationRate = 0.1;
-	public static double crossoverRate = 0.5;
-	public static int numGames = 100; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
+	public static double crossoverRate = 0.1;
+	public static int numGames = 5; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
-	static int minNumPlayers = 5;
-	static int maxNumPlayers = 5;
+	static int minNumPlayers = 2;
+	static int maxNumPlayers = 2;
 	static boolean rulebaseStandard = false;
 	static int chromosomeLength = 15;
 	static Vector<AgentPlayer> testPool = null;
 	static double[][] map = new double[d1][d2];
 	static int[][][] population = new int[d1][d2][chromosomeLength];
 
-	static String filePath = "/Users/rodrigocanaan/Dev/HanabiResults/Evolution";
-	static String directory = "/20190801VariablePlayers/5p/";
+	static String filePath = "/Users/rodrigocanaan/Dev/MapElitesResults/";
+	static String directory = "test/";
+
+
 	
 	public static void printParameters() {
 		System.out.println("Parameters for this run: ");
@@ -375,42 +378,42 @@ public class RunMapElites {
 	        
 	        
 	        double fitness = pes.getScoreIndividualAgent(0);
-	        double dim1 = (double)agent.hintsGiven/(double)agent.possibleHints;
-    			double dim2 = agent.totalPlayability/(double)agent.countPlays;
+	        double dim1 = agent.getCommunicativeness();
+			double dim2 = agent.getInformationPlays();
 //    			System.out.println("Agent " + individual + " has fitness " + fitness + " dim 1 " + dim1 + " dim 2 " + dim2);
-    			
-    			ArrayList<Integer> niches = getNiche(dim1, dim2);
+			
+			ArrayList<Integer> niches = getNiche(dim1, dim2);
 //    			System.out.println(dim1);
 //    			System.out.println(dim2);
 //    			System.out.println(niches.get(0));
 //    			System.out.println(niches.get(1));
 
 
-    			updateMap(fitness,  niches.get(0), niches.get(1), chromosome);
+			updateMap(fitness,  niches.get(0), niches.get(1), chromosome);
 
-    			if (individual % 1000 == 0) {
-        			System.out.println("Printing Map for initial iteration " + individual);
-    				printParameters();
-        			printMap();
-     			printChromosomes();
-        			AvgMaxNumGood s = getStats(12);
-        			stats.add(s);
-        			printStats(stats);
-         		System.out.println("");
-        			if (!sanityCheck(s.max)) {
-        				numFailsSanityCheck +=1;
-        			}
-           		System.out.println("Number of batches that failed sanity check =  " + numFailsSanityCheck );
-           		
-           		String mapFileName = filePath+directory+"map"+individual;
-           		String populationFileName = filePath+directory+"population"+individual; 		
-           		serialize(map, mapFileName,population,populationFileName);
-           		
-           		
-           		
+			if (individual % 1000 == 0) {
+    			System.out.println("Printing Map for initial iteration " + individual);
+				printParameters();
+    			printMap();
+ 			printChromosomes();
+    			AvgMaxNumGood s = getStats(12);
+    			stats.add(s);
+    			printStats(stats);
+     		System.out.println("");
+    			if (!sanityCheck(s.max)) {
+    				numFailsSanityCheck +=1;
     			}
+       		System.out.println("Number of batches that failed sanity check =  " + numFailsSanityCheck );
+       		
+       		String mapFileName = filePath+directory+"map"+individual;
+       		String populationFileName = filePath+directory+"population"+individual; 		
+       		serialize(map, mapFileName,population,populationFileName);
+       		
+       		
+       		
+			}
 
-	        
+        
 		}
 		
 		for (int individual = 0; individual < I; individual++) {
@@ -467,39 +470,39 @@ public class RunMapElites {
 	        }
 	        
 	        double fitness = pes.getScoreIndividualAgent(0);
-	        double dim1 = (double)agent.hintsGiven/(double)agent.possibleHints;
-    			double dim2 = agent.totalPlayability/(double)agent.countPlays;
+	        double dim1 = agent.getCommunicativeness();
+			double dim2 = agent.getInformationPlays();
 //    			System.out.println("Agent " + individual + " has fitness " + fitness + " dim 1 " + dim1 + " dim 2 " + dim2);
-    			
-    			ArrayList<Integer> niches = getNiche(dim1, dim2);
+			
+			ArrayList<Integer> niches = getNiche(dim1, dim2);
 //    			System.out.println(dim1);
 //    			System.out.println(dim2);
 //    			System.out.println(niches.get(0));
 //    			System.out.println(niches.get(1));
 
 
-    			updateMap(fitness,  niches.get(0), niches.get(1), chromosome);
+			updateMap(fitness,  niches.get(0), niches.get(1), chromosome);
 
 
-    			if (individual % 5000 == 0 || individual == (I-1)) {
-        			System.out.println("Printing Map for mutation iteration " + individual);
-    				printParameters();
-        			printMap();
-     			printChromosomes();
-        			AvgMaxNumGood s = getStats(12);
-        			stats.add(s);
-        			printStats(stats);
-         		System.out.println("");
-        			if (!sanityCheck(s.max)) {
-        				numFailsSanityCheck +=1;
-        			}
+			if (individual % 5000 == 0 || individual == (I-1)) {
+    			System.out.println("Printing Map for mutation iteration " + individual);
+				printParameters();
+    			printMap();
+    			printChromosomes();
+    			AvgMaxNumGood s = getStats(12);
+    			stats.add(s);
+    			printStats(stats);
+    			System.out.println("");
+    			if (!sanityCheck(s.max)) {
+    				numFailsSanityCheck +=1;
+    			}
            		System.out.println("Number of batches that failed sanity check =  " + numFailsSanityCheck );
          		int ind = individual+G;
          		String mapFileName = filePath+directory+"map"+ind;
            		String populationFileName = filePath+directory+"population"+ind; 		
            		serialize(map, mapFileName,population,populationFileName);
 
-    			}
+			}
 //    			if ( (individual % 10000) == 0) {
 //    				printChromosomes();
 //    			}
