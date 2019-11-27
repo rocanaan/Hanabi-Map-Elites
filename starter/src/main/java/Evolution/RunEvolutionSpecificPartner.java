@@ -33,7 +33,7 @@ public class RunEvolutionSpecificPartner {
 	static boolean rulebaseStandard = false;
 	
 	private static String[] testPoolNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
-	private static int testIndex = 6; // Change this parameter to use each of the agents (index goes from 0 - 6)
+	private static int testIndex = 0; // Change this parameter to use each of the agents (index goes from 0 - 6)
 	
 	public static void main(String[] args) {
 		Rulebase rb = new Rulebase(rulebaseStandard);

@@ -26,22 +26,22 @@ public class PopulationEvaluationSummary implements java.io.Serializable{
 	public Vector<AgentMultiPairingSummary> pairings;
 	
 	public String toString() {
-		String text = "";
-		
-		if (mirror) {
-			text += "Results of evaluating a population of  " + population.size() + " agents in mirror mode:\n";
-		}
-		else {
-			text += "Results of evaluating a population of  " + population.size() + " agents with a test pool of " +testPool.size() + " test agents:\n";
-		}
+//		String text = "";
+//		
+//		if (mirror) {
+//			text += "Results of evaluating a population of  " + population.size() + " agents in mirror mode:\n";
+//		}
+//		else {
+//			text += "Results of evaluating a population of  " + population.size() + " agents with a test pool of " +testPool.size() + " test agents:\n";
+//		}
 
-		for (AgentMultiPairingSummary p: pairings) {
-			text += p.toString();
-		}
+//		for (AgentMultiPairingSummary p: pairings) {
+//			text += p.toString();
+//		}
 		
-		text += "Fittest agent is " + getBestAgent() + " with a mean score of " + getBestScore();
+//		text += "Fittest agent is " + getBestAgent() + " with a mean score of " + getBestScore();
 		
-		return text;
+		return "";
 	}
 	
 	

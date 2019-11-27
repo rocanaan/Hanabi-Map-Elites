@@ -44,11 +44,11 @@ public class AgentMultiPairingSummary {
 		for (int n = 2; n<=5; n++) {
 			double mean = getMeanByGameSize(n);
 			//if (mean != -1) {
-				text += "	Mean accross all pairings for game size of " +n + " is " + getMeanByGameSize(n) +"\n";
+//				text += "	Mean accross all pairings for game size of " +n + " is " + getMeanByGameSize(n) +"\n";
 			//}
 		}
 		
-		text += "Mean accross all pairings and game sizes for agent " + agent.getName() + " = " + getMean() + "\n";
+//		text += "Mean accross all pairings and game sizes for agent " + agent.getName() + " = " + getMean() + "\n";
 		return text;
 	}
 	
