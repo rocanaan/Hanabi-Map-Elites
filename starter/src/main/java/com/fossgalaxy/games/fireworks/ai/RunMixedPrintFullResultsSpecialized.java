@@ -14,8 +14,8 @@ import Evolution.Rulebase;
 
 public class RunMixedPrintFullResultsSpecialized {
 	public static void main( String[] args ) {
-		int minNumPlayers = 2;
-		int maxNumPlayers = 2;
+		int minNumPlayers = 4;
+		int maxNumPlayers = 4;
 		int numGames = 2000;
 		boolean includeBaselineAgents = false;
 		Rulebase rb = new Rulebase(false);

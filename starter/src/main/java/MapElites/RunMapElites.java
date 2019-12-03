@@ -52,9 +52,9 @@ public class RunMapElites {
 	static Vector<AgentPlayer> testPool = null;
 	static double[][] map = new double[d1][d2];
 	static int[][][] population = new int[d1][d2][chromosomeLength];
-
-	static String filePath = "/Users/rodrigocanaan/Dev/HanabiResults/Evolution";
-	static String directory = "/20190801VariablePlayers/5p/";
+//
+//	static String filePath = "/Users/rodrigocanaan/Dev/HanabiResults/Evolution";
+//	static String directory = "/20190801VariablePlayers/5p/";
 	
 	public static void printParameters() {
 		System.out.println("Parameters for this run: ");

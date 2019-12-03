@@ -1,0 +1,9 @@
+MODE,Pairwise,,,,,,,,,,,,,,
+minNumPlayers,2,,,,,,,,,,,,,,
+maxNumPlayers,2,,,,,,,,,,,,,,
+numGames,20000,,,,,,,,,,,,,,
+includeBaselineAgents,FALSE,,,,,,,,,,,,,,
+rb,FALSE,,,,,,,,,,,,,,
+numChromossomes,2,,,,,,,,,,,,,,
+agentChromossomes,67,21,8,52,33,53,36,93,96,34,27,6,19,62,21
+agentChromossomes,67,21,8,52,33,53,36,93,96,51,27,6,19,62,21
