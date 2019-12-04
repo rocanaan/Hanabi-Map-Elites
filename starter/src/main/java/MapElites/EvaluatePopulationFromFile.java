@@ -49,27 +49,31 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
+//		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
+		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/3p/population999999";
+		String fileName2 = fileName;
 //		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
-		int numPlayers = 5;
+		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 80;
+		int numGames = 100;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
-		Mode mode  = Mode.CROSSPOPULATION;
+		Mode mode  = Mode.SIMPLE;
 		
 		Vector<Map<Integer, Vector<Double>>> populationResults = null;
 		Vector<Vector<Map<Integer, Vector<Double>>>> gauntletResults = null;
 
 		Vector<AgentPlayer> agentPlayers  = makeAgentsFromFile(fileName, sizeDim1, sizeDim2, rulebaseStandard);
-		Vector<AgentPlayer> agentPlayers2 = makeAgentsFromFile(fileName2, sizeDim1, sizeDim2, rulebaseStandard);
+		Vector<AgentPlayer> agentPlayers2 = null;
+		if (mode == Mode.CROSSPOPULATION || mode == Mode.INTRAPOPULATION) {
+			agentPlayers2 = makeAgentsFromFile(fileName2, sizeDim1, sizeDim2, rulebaseStandard);
+		}
 		
 		//Precomputed
 		if (usePrecomputedResults) {
@@ -551,39 +555,83 @@ public class EvaluatePopulationFromFile {
         Rulebase rb = new Rulebase(rulebaseStandard);
         String thisLine;
         ArrayList<HistogramAgent> agents = new ArrayList<HistogramAgent>();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
-            while ((thisLine = br.readLine()) != null) {
-                //thisLine = thisLine.substring(1, thisLine.length() - 2);
-            		thisLine = thisLine.replaceAll(" ", "");
-            		thisLine = thisLine.replaceAll("\t", "");
-            		String[] c = thisLine.split(",");
-            		int[] chromossome = new int[c.length];
-                for (int i = 0; i < c.length; i++) {
-                    chromossome[i] = Integer.parseInt(c[i]);    
-                }
-               
-                Rule[] rules1 = new Rule[chromossome.length];
-                for (int i = 0; i < chromossome.length; i++) {
+//        try {
+//            BufferedReader br = new BufferedReader(new FileReader(fileName));
+//            while ((thisLine = br.readLine()) != null) {
+//                //thisLine = thisLine.substring(1, thisLine.length() - 2);
+//            		thisLine = thisLine.replaceAll(" ", "");
+//            		thisLine = thisLine.replaceAll("\t", "");
+//            		String[] c = thisLine.split(",");
+//            		int[] chromossome = new int[c.length];
+//                for (int i = 0; i < c.length; i++) {
+//                    chromossome[i] = Integer.parseInt(c[i]);    
+//                }
+//               
+//                Rule[] rules1 = new Rule[chromossome.length];
+//                for (int i = 0; i < chromossome.length; i++) {
+//
+//                    if (rulebaseStandard) {
+//                        rules1[i] = rb.ruleMapping(chromossome[i]);
+//                    } else {
+//                        rules1[i] = rb.ruleMapping(chromossome[i]);
+//
+//                    }
+//
+//                }
+//                if (rulebaseStandard) {
+//                    agents.add(rb.makeAgent(rules1));
+//                } else {
+//                    agents.add(rb.makeAgent(rules1));
+//               }
+//            }
+//            br.close();
+//        } catch (Exception e) {
+//        		System.err.println(e);;
+//        }
+		try
+        {    
 
-                    if (rulebaseStandard) {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
-                    } else {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
+            // Reading the object from a file 
+            FileInputStream file = new FileInputStream(fileName); 
+            
+            ObjectInputStream in = new ObjectInputStream(file); 
+              
+            // Method for deserialization of object 
+            int[][][] chromosomes  = (int[][][])in.readObject(); 
+            
+            for (int[][] v : chromosomes) {
+            	for (int[] c : v) {
 
-                    }
-
-                }
-                if (rulebaseStandard) {
-                    agents.add(rb.makeAgent(rules1));
-                } else {
-                    agents.add(rb.makeAgent(rules1));
-               }
+                  
+                   Rule[] rules1 = new Rule[c.length];
+                   for (int i = 0; i < c.length; i++) {
+                       rules1[i] = rb.ruleMapping(c[i]);
+                       System.out.print(c[i] + " ");
+                   }
+                   agents.add(rb.makeAgent(rules1));
+                   System.out.println("");
+            	}
+            
             }
-            br.close();
-        } catch (Exception e) {
-        		System.err.println(e);;
-        }
+            
+            System.out.println(chromosomes);
+              
+            in.close(); 
+            file.close(); 
+              
+            System.out.println("Object has been deserialized "); 
+
+        } 
+          
+        catch(IOException ex) 
+        { 
+            System.out.println(ex); 
+        } 
+          
+        catch(ClassNotFoundException ex) 
+        { 
+            System.out.println("ClassNotFoundException is caught"); 
+        } 
       
 //        return agents;
 //        ArrayList<HistogramAgent> agents = makeAgentsFromFile(fileName, rulebaseStandard);
