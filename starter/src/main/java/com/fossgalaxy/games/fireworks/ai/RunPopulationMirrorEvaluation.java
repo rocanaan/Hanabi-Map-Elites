@@ -13,6 +13,7 @@ import Evolution.Rulebase;
 
 public class RunPopulationMirrorEvaluation {
 	public static void main( String[] args ) {
+		
 		int minNumPlayers = 2;
 		int maxNumPlayers = 2; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
 		int numGames = 500 ;
