@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.function.BiFunction;
 
+import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.HistogramAgent;
 import com.fossgalaxy.games.fireworks.ai.iggi.LegalRandom;
@@ -294,6 +295,16 @@ public class Rulebase {
         return agent;
 
     }
+    
+	public HistogramAgent makeAgent(int[] chromosome) {
+		// TODO Auto-generated method stub
+		Rule[] rules = new Rule[chromosome.length];
+		for (int i = 0; i<chromosome.length; ++i) {
+			rules[i] = ruleMapping(chromosome[i]);
+		}
+		 
+		return makeAgent("Agent", rules);
+	}
 
     public HistogramAgent makeAgent(Rule[] agentRules) {
         ProductionRuleAgent pra = new ProductionRuleAgent();
@@ -486,5 +497,7 @@ public class Rulebase {
 
         return testPool;
     }
+
+
 
 }
