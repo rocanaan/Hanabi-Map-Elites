@@ -19,7 +19,7 @@ public class RunMirrorPrintFullResults {
 	public static void main( String[] args ) {
 		int minNumPlayers = 2;
 		int maxNumPlayers = 2; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
-		int numGames = 10000;
+		int numGames = 20;
 		boolean includeBaselineAgents = false;
 		Rulebase rb = new Rulebase(false);
 		

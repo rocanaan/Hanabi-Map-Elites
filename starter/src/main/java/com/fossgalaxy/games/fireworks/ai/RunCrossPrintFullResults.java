@@ -20,7 +20,7 @@ public class RunCrossPrintFullResults {
 		
 		int minNumPlayers = 2;
 		int maxNumPlayers = 2; // Will play games of 2, 3, 4 and 5 players with a value of maxNumPlayers = 5
-		int numGames = 10000;
+		int numGames = 20;
 		boolean includeBaselineAgents = true;
 		Rulebase rb = new Rulebase(false);
 		
@@ -66,8 +66,6 @@ public class RunCrossPrintFullResults {
 				evolvedPopulation.add(newAgent);
 			}
 		}
-		
-
 		
 		// Read agents from agentChromossomes and add them to the population
 		for (int i = 0; i < agentChromossomes.length; i++){

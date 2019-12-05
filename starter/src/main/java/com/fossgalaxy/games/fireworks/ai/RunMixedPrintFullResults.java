@@ -16,7 +16,7 @@ public class RunMixedPrintFullResults {
 	public static void main( String[] args ) {
 		int minNumPlayers = 2;
 		int maxNumPlayers = 2;
-		int numGames = 1000;
+		int numGames = 20;
 		boolean includeBaselineAgents = true;
 		Rulebase rb = new Rulebase(false);
 		int[][] agentChromossomes = {
