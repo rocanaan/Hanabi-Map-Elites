@@ -2,6 +2,7 @@ package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -24,30 +25,60 @@ public class AppLearning {
 	 */
 	public static Player[] buildPool() {
 		
+		
 		// the player pool size is not revealed to the agents.
 		Player[] pool = new Player[] {
-				new AgentPlayer("A", AgentUtils.buildAgent("iggi")),
-				new AgentPlayer("B", AgentUtils.buildAgent("piers")),
-				new AgentPlayer("C", AgentUtils.buildAgent("internal")),
-				new AgentPlayer("D", AgentUtils.buildAgent("outer")),
+				new AgentPlayer("0", AgentUtils.buildAgent("iggi")),
+				new AgentPlayer("1", AgentUtils.buildAgent("piers")),
+				new AgentPlayer("2", AgentUtils.buildAgent("internal")),
+				new AgentPlayer("3", AgentUtils.buildAgent("outer")),
 				
 				// weak players
-				new AgentPlayer("E", AgentUtils.buildAgent("legal_random")),
-				new AgentPlayer("F", AgentUtils.buildAgent("flawed")),
+				new AgentPlayer("4", AgentUtils.buildAgent("legal_random")),
+				new AgentPlayer("5", AgentUtils.buildAgent("flawed")),
 				
 				// there may be multiple agents using the same technique
-				new AgentPlayer("G", AgentUtils.buildAgent("iggi")),
-				new AgentPlayer("H", AgentUtils.buildAgent("piers")),
+				new AgentPlayer("6", AgentUtils.buildAgent("iggi")),
+				new AgentPlayer("7", AgentUtils.buildAgent("piers")),
 				
-//				new AgentPlayer("I", AgentUtils.buildAgent("mctsND"))
+//				new AgentPlayer("8", AgentUtils.buildAgent("mctsND"))
 		};
 		
 		return pool;
 	}
+	
 
 	
     public static void main( String[] args )
     {
+    	//The arraylist and iterator is used for output only.
+    	//After we disable logger we could remove these.
+    	ArrayList<StatsSummary> statsSummary = new ArrayList<StatsSummary>();
+    	for(int i = 0; i<8; i++) {
+    		statsSummary.add(runTestGames(String.valueOf(i)));
+    		
+    	}
+    	
+    	Iterator<StatsSummary> iter = statsSummary.iterator(); 
+    	
+    	StatsSummary currentSummary;
+    	int i = 0;
+    	while (iter.hasNext()) { 
+    		currentSummary = iter.next();
+            System.out.println(String.format("Our agent with agent %s : Avg: %f, min: %f, max: %f",
+            		String.valueOf(i),
+                    currentSummary.getMean(),
+                    currentSummary.getMin(),
+                    currentSummary.getMax()));
+            i+=1;
+    	} 
+    	//if you want random agents without duplicates, use the following code instead
+    	//runTestGames("random");
+
+
+    }
+    
+    public static StatsSummary runTestGames(String name) {
     	// the parameters for the test
         int numPlayers = 5;
         int numGames = 100;
@@ -58,14 +89,22 @@ public class AppLearning {
         StatsSummary statsSummary = new BasicStats();
         
         //build players (persistent across games)
+        numPlayers = 5;
         Player you = new AgentPlayer("you", AgentUtils.buildAgent(agentName));
-
+        
         // run the test games
         for (int i=0; i<numGames; i++) {
             GameRunner runner = new GameRunner("test-game", numPlayers);
             
             // add the players to the game
-            List<Player> others = getRandomPlayers(pool, numPlayers - 1, random);
+            List<Player> others;
+            if(name == "random"){
+            	others = getRandomPlayers(pool, numPlayers - 1, random);
+            }
+            else {
+            	others = getSpecificPlayers(numPlayers - 1, name);
+            }          
+            
             addPlayers(runner, others, you, random.nextInt(numPlayers));
             
             //play the game
@@ -75,11 +114,16 @@ public class AppLearning {
         }
 
         //print out the stats
-        System.out.println(String.format("Our agent: Avg: %f, min: %f, max: %f",
+        /*
+        System.out.println(String.format("Our agent with agent %s : Avg: %f, min: %f, max: %f",
+        		name,
                 statsSummary.getMean(),
                 statsSummary.getMin(),
                 statsSummary.getMax()));
+        */
+        return statsSummary;
     }
+    
     
     // UTILITY METHODS PAST THIS POINT
     
@@ -99,6 +143,51 @@ public class AppLearning {
 		Collections.shuffle(order, random);
 		
 		return order.subList(0, numPlayers);
+	}
+	
+	public static List<Player> getSpecificPlayers(int numPlayers, String name){
+		List<Player> order = new ArrayList<>();
+		for (int i=0; i<numPlayers; i++) {
+			order.add(buildSpecificAgent(name));
+		}
+		order = order.subList(0, numPlayers);
+		return order.subList(0, numPlayers);
+	}
+	
+	public static Player buildSpecificAgent(String name) {
+		switch(name) {
+			case "0" :{
+				return new AgentPlayer("0", AgentUtils.buildAgent("iggi"));
+			}
+			case "1" :{
+				return new AgentPlayer("1", AgentUtils.buildAgent("piers"));
+			}
+			case "2" :{
+				return new AgentPlayer("2", AgentUtils.buildAgent("internal"));
+			}
+			case "3" :{
+				return new AgentPlayer("3", AgentUtils.buildAgent("outer"));
+			}
+			case "4" :{
+				return new AgentPlayer("4", AgentUtils.buildAgent("legal_random"));
+			}
+			case "5" :{
+				return new AgentPlayer("5", AgentUtils.buildAgent("flawed"));
+			}
+			case "6" :{
+				return new AgentPlayer("6", AgentUtils.buildAgent("iggi"));
+			}
+			case "7" :{
+				return new AgentPlayer("7", AgentUtils.buildAgent("piers"));
+			}
+			case "8" :{
+				return new AgentPlayer("8", AgentUtils.buildAgent("mctsND"));
+			}
+			default:
+				return null;
+	
+		}
+		
 	}
     
 	/**
