@@ -195,12 +195,14 @@ public class GameRunner {
                     }
                 }
             }
-            if(state.getLives()==0) {
-                return new GameStats(gameID, players.length, 0, state.getLives(), moves, state.getInfomation(), strikes);
-            }
-            else {
-            	return new GameStats(gameID, players.length, state.getScore(), state.getLives(), moves, state.getInfomation(), strikes);
-            }
+//            if(state.getLives()==0) {
+//                return new GameStats(gameID, players.length, 0, state.getLives(), moves, state.getInfomation(), strikes);
+//            }
+//            else {
+//            	return new GameStats(gameID, players.length, state.getScore(), state.getLives(), moves, state.getInfomation(), strikes);
+//            }
+        	return new GameStats(gameID, players.length, state.getScore(), state.getLives(), moves, state.getInfomation(), strikes);
+
         } catch (Exception ex) {
             logger.error("the game went bang", ex);
             return new GameStats(gameID, players.length, state.getScore(), state.getLives(), moves, state.getInfomation(), 1);
