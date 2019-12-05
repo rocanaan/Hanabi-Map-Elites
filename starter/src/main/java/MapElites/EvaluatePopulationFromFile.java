@@ -50,7 +50,7 @@ public class EvaluatePopulationFromFile {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
 //		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/3p/population999999";
+		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/5p/population999999";
 		String fileName2 = fileName;
 //		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
 		int sizeDim1 = 20;
