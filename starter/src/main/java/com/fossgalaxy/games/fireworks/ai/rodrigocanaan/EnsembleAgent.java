@@ -39,7 +39,7 @@ import Evolution.Rulebase;
  * You can see more agents online at:
  * https://git.fossgalaxy.com/iggi/hanabi/tree/master/src/main/java/com/fossgalaxy/games/fireworks/ai
  */
-public class Rodrigocanaan implements Agent {
+public class EnsembleAgent implements Agent {
 
 	private Map<String, Map<Action, Integer>> actionHistory;
 	
@@ -67,7 +67,7 @@ public class Rodrigocanaan implements Agent {
 	
 	Agent[] defaultAgentByNumPlayers;
  	
-	public Rodrigocanaan() {
+	public EnsembleAgent() {
 		this.actionHistory = new HashMap<>();
 		this.playerStatsRecord = new HashMap<>();
 		totalmoves = 0;
@@ -249,6 +249,7 @@ public class Rodrigocanaan implements Agent {
 		PlayerStats partnerStats = playerStatsRecord.get(currentPlayers[(agentID+1)%numPlayers]);
 		double communicativeness = partnerStats.getCommunicativeness();
 		double riskAversion = partnerStats.getRiskAversion();
+		riskAversion = 0.8;
 		int threshold = 0;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
@@ -256,11 +257,18 @@ public class Rodrigocanaan implements Agent {
 			int [][][] matchups = MatchupTables.getMatchups(numPlayers);
 			int myDim1 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][0];
 			int myDim2 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][1];
+			System.out.println(myDim1);
+			System.out.println(myDim2);
 	        Agent agent = agents.get(myDim2 + 20*myDim1);
 	        try {
+        			System.out.println("Trying to get Action");
 	        		action = agent.doMove(agentID, state);
+	        		System.out.println(action);
+//	        		System.exit(-1)
 	        }
 	        catch(Exception e) {
+	        		System.err.println("oops");
+	        		System.err.println(e);
 	        		action = null;
 	        }
 		}

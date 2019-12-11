@@ -82,7 +82,7 @@ public class AppLearning {
     	// the parameters for the test
         int numPlayers = 5;
         int numGames = 100;
-        String agentName = "Rodrigocanaan";
+        String agentName = "EnsembleAgent";
         Player[] pool = buildPool();
 
         Random random = new Random();
