@@ -61,6 +61,7 @@ public class Rodrigocanaan implements Agent {
 	private double[][] playabilityMask;
 	
 	int totalmoves;
+	int specializedmoves;
 	int defaultmoves;
 	int randommoves;
 	
@@ -263,37 +264,37 @@ public class Rodrigocanaan implements Agent {
 	        		action = null;
 	        }
 		}
-		if (action == null) { // if threshold hasn't been achieved, default to the action that our initial agent would take
+		if (action != null) {
+			specializedmoves++;
+		}
+		else {   // if threshold hasn't been achieved, default to the action that our initial agent would take
 	        try {
         			action = defaultAgentByNumPlayers[numPlayers-2].doMove(agentID, state);
 	        }
 	        catch(Exception e) {
         			action = null;
 	        }
-	        defaultmoves++;
-		}
-		if (numPlayers == 2 || numPlayers == 5) { // Agent seems to be consistently scoring lower on 2player
-	        try {
-        			action = defaultAgentByNumPlayers[numPlayers-2].doMove(agentID, state);
+	        if (action != null) {
+	        	defaultmoves++;
 	        }
-	        catch(Exception e) {
-        			action = null;
-	        }
-		}
-		if (action == null) { // if action is still null for some reason, such as the agent returning an invalid action, default to our initial agent
-	        List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
+	        else { // if action is still null for some reason, such as the agent returning an invalid action, default to our initial agent
+		        List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
 
-	        //choose a random item from that list and return it
-	        int moveToMake = random.nextInt(possibleMoves.size());
-	        action = possibleMoves.get(moveToMake);
-	        randommoves++;
+		        //choose a random item from that list and return it
+		        int moveToMake = random.nextInt(possibleMoves.size());
+		        action = possibleMoves.get(moveToMake);
+		        randommoves++;
+			}
 		}
+		
 		totalmoves++;
+		double specializedRatio = (double)specializedmoves/(double)totalmoves;
 		double defaultRatio = (double)defaultmoves/(double)totalmoves;
 		double randomRatio = (double)randommoves/(double)totalmoves;
 
-		//System.out.out.println("Default moves " + defaultRatio);
-		//System.out.println("Random moves " + randomRatio);
+		System.out.println("Specialized moves " + specializedRatio);
+		System.out.println("Default moves " + defaultRatio);
+		System.out.println("Random moves " + randomRatio);
 
 		return action;
 
