@@ -45,7 +45,7 @@ public class Rodrigocanaan implements Agent {
 	
 	private Map<String, PlayerStats> playerStatsRecord;
 
-	private  ArrayList<HistogramAgent>  agents;
+	private  ArrayList<Agent>  agents;
 	
 	private Random random;
 	private int myID;
@@ -249,6 +249,9 @@ public class Rodrigocanaan implements Agent {
 		PlayerStats partnerStats = playerStatsRecord.get(currentPlayers[(agentID+1)%numPlayers]);
 		double communicativeness = partnerStats.getCommunicativeness();
 		double riskAversion = partnerStats.getRiskAversion();
+		System.out.println("Communicativeness " + communicativeness);
+		System.out.println("Risk Aversion " + riskAversion);
+
 		int threshold = 0;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
@@ -256,7 +259,10 @@ public class Rodrigocanaan implements Agent {
 			int [][][] matchups = MatchupTables.getMatchups(numPlayers);
 			int myDim1 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][0];
 			int myDim2 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][1];
-	        HistogramAgent agent = agents.get(myDim2 + 20*myDim1);
+			System.out.println(myDim1);
+			System.out.println(myDim2);
+
+	        Agent agent = agents.get(myDim2 + 20*myDim1);
 	        try {
 	        		action = agent.doMove(agentID, state);
 	        }
