@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.ensembleagent;
+package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,7 +82,7 @@ public class AppLearning {
     	// the parameters for the test
         int numPlayers = 5;
         int numGames = 100;
-        String agentName = "EnsembleAgent";
+        String agentName = "Rodrigocanaan";
         Player[] pool = buildPool();
 
         Random random = new Random();

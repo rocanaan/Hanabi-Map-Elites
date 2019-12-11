@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
-=======
-package com.fossgalaxy.games.fireworks.ai.ensembleagent;
->>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,17 +12,10 @@ import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
-<<<<<<< HEAD
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
 import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.HistogramAgent;
 import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.MatchupTables;
 import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.PlayerStats;
-=======
-import com.fossgalaxy.games.fireworks.ai.ensembleagent.HistogramAgent;
-import com.fossgalaxy.games.fireworks.ai.ensembleagent.MatchupTables;
-import com.fossgalaxy.games.fireworks.ai.ensembleagent.PlayerStats;
-import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
->>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.ai.rule.logic.DeckUtils;
 import com.fossgalaxy.games.fireworks.state.Card;
@@ -50,13 +39,13 @@ import Evolution.Rulebase;
  * You can see more agents online at:
  * https://git.fossgalaxy.com/iggi/hanabi/tree/master/src/main/java/com/fossgalaxy/games/fireworks/ai
  */
-public class EnsembleAgent implements Agent {
+public class Rodrigocanaan implements Agent {
 
 	private Map<String, Map<Action, Integer>> actionHistory;
 	
 	private Map<String, PlayerStats> playerStatsRecord;
 
-	private  ArrayList<Agent>  agents;
+	private  ArrayList<HistogramAgent>  agents;
 	
 	private Random random;
 	private int myID;
@@ -72,13 +61,12 @@ public class EnsembleAgent implements Agent {
 	private double[][] playabilityMask;
 	
 	int totalmoves;
-	int specializedmoves;
 	int defaultmoves;
 	int randommoves;
 	
 	Agent[] defaultAgentByNumPlayers;
  	
-	public EnsembleAgent() {
+	public Rodrigocanaan() {
 		this.actionHistory = new HashMap<>();
 		this.playerStatsRecord = new HashMap<>();
 		totalmoves = 0;
@@ -260,10 +248,6 @@ public class EnsembleAgent implements Agent {
 		PlayerStats partnerStats = playerStatsRecord.get(currentPlayers[(agentID+1)%numPlayers]);
 		double communicativeness = partnerStats.getCommunicativeness();
 		double riskAversion = partnerStats.getRiskAversion();
-<<<<<<< HEAD
-		riskAversion = 0.8;
-=======
->>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 		int threshold = 0;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
@@ -271,71 +255,45 @@ public class EnsembleAgent implements Agent {
 			int [][][] matchups = MatchupTables.getMatchups(numPlayers);
 			int myDim1 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][0];
 			int myDim2 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][1];
-<<<<<<< HEAD
-			System.out.println(myDim1);
-			System.out.println(myDim2);
-	        Agent agent = agents.get(myDim2 + 20*myDim1);
-	        try {
-        			System.out.println("Trying to get Action");
-	        		action = agent.doMove(agentID, state);
-	        		System.out.println(action);
-//	        		System.exit(-1)
-	        }
-	        catch(Exception e) {
-	        		System.err.println("oops");
-	        		System.err.println(e);
-=======
-	        Agent agent = agents.get(myDim2 + 20*myDim1);
+	        HistogramAgent agent = agents.get(myDim2 + 20*myDim1);
 	        try {
 	        		action = agent.doMove(agentID, state);
 	        }
 	        catch(Exception e) {
->>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 	        		action = null;
 	        }
 		}
-		
-		if (action != null) {
-			specializedmoves++;
-		}
-<<<<<<< HEAD
-=======
-<<<<<<<< HEAD:starter/src/main/java/com/fossgalaxy/games/fireworks/ai/rodrigocanaan/Rodrigocanaan.java
->>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
-		else {// if threshold hasn't been achieved, default to the action that our initial agent would take
+		if (action == null) { // if threshold hasn't been achieved, default to the action that our initial agent would take
 	        try {
         			action = defaultAgentByNumPlayers[numPlayers-2].doMove(agentID, state);
 	        }
 	        catch(Exception e) {
         			action = null;
 	        }
-	        if (action!=null){
-	        	defaultmoves++;
+	        defaultmoves++;
+		}
+		if (numPlayers == 2 || numPlayers == 5) { // Agent seems to be consistently scoring lower on 2player
+	        try {
+        			action = defaultAgentByNumPlayers[numPlayers-2].doMove(agentID, state);
 	        }
-	        else {
-	        	 List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
-<<<<<<< HEAD
-=======
-========
-		if (action == null) { // if action is still null for some reason, such as the agent returning an invalid action, default to our initial agent
-	        List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
->>>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0:starter/src/main/java/com/fossgalaxy/games/fireworks/ai/ensembleagent/EnsembleAgent.java
->>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
-
-	 	        //choose a random item from that list and return it
-	 	        int moveToMake = random.nextInt(possibleMoves.size());
-	 	        action = possibleMoves.get(moveToMake);
-	 	        randommoves++;
+	        catch(Exception e) {
+        			action = null;
 	        }
 		}
+		if (action == null) { // if action is still null for some reason, such as the agent returning an invalid action, default to our initial agent
+	        List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
+
+	        //choose a random item from that list and return it
+	        int moveToMake = random.nextInt(possibleMoves.size());
+	        action = possibleMoves.get(moveToMake);
+	        randommoves++;
+		}
 		totalmoves++;
-		double specializedRatio = (double)specializedmoves/(double)totalmoves;
 		double defaultRatio = (double)defaultmoves/(double)totalmoves;
 		double randomRatio = (double)randommoves/(double)totalmoves;
 
-		System.out.println("Specialized moves " + specializedRatio);
-		System.out.println("Default moves " + defaultRatio);
-		System.out.println("Random moves " + randomRatio);
+		//System.out.out.println("Default moves " + defaultRatio);
+		//System.out.println("Random moves " + randomRatio);
 
 		return action;
 

@@ -12,11 +12,11 @@ import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
-import com.fossgalaxy.games.fireworks.ai.ensembleagent.AgentLoaderFromFile;
-import com.fossgalaxy.games.fireworks.ai.ensembleagent.HistogramAgent;
-import com.fossgalaxy.games.fireworks.ai.ensembleagent.MatchupTables;
-import com.fossgalaxy.games.fireworks.ai.ensembleagent.PlayerStats;
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
+import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.AgentLoaderFromFile;
+import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.HistogramAgent;
+import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.MatchupTables;
+import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.PlayerStats;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.ai.rule.logic.DeckUtils;
 import com.fossgalaxy.games.fireworks.state.Card;

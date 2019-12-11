@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.ensembleagent;
+package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
 
 public class PlayerStats {
 		

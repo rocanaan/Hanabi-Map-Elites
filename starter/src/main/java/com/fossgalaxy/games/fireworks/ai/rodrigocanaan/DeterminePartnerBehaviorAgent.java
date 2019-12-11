@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.ensembleagent;
+package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
