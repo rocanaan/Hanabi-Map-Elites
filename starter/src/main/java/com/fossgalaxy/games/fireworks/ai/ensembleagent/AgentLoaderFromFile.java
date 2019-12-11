@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+package com.fossgalaxy.games.fireworks.ai.ensembleagent;
 
 import java.io.BufferedReader;
 import java.io.File;

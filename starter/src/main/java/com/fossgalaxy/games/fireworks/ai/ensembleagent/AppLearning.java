@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+package com.fossgalaxy.games.fireworks.ai.ensembleagent;
 
 import java.util.ArrayList;
 import java.util.Collections;

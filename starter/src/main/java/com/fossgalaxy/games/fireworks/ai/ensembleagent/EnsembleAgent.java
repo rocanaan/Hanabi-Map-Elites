@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+=======
+package com.fossgalaxy.games.fireworks.ai.ensembleagent;
+>>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,10 +16,17 @@ import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
+<<<<<<< HEAD
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
 import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.HistogramAgent;
 import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.MatchupTables;
 import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.PlayerStats;
+=======
+import com.fossgalaxy.games.fireworks.ai.ensembleagent.HistogramAgent;
+import com.fossgalaxy.games.fireworks.ai.ensembleagent.MatchupTables;
+import com.fossgalaxy.games.fireworks.ai.ensembleagent.PlayerStats;
+import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
+>>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.ai.rule.logic.DeckUtils;
 import com.fossgalaxy.games.fireworks.state.Card;
@@ -249,7 +260,10 @@ public class EnsembleAgent implements Agent {
 		PlayerStats partnerStats = playerStatsRecord.get(currentPlayers[(agentID+1)%numPlayers]);
 		double communicativeness = partnerStats.getCommunicativeness();
 		double riskAversion = partnerStats.getRiskAversion();
+<<<<<<< HEAD
 		riskAversion = 0.8;
+=======
+>>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 		int threshold = 0;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
@@ -257,6 +271,7 @@ public class EnsembleAgent implements Agent {
 			int [][][] matchups = MatchupTables.getMatchups(numPlayers);
 			int myDim1 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][0];
 			int myDim2 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][1];
+<<<<<<< HEAD
 			System.out.println(myDim1);
 			System.out.println(myDim2);
 	        Agent agent = agents.get(myDim2 + 20*myDim1);
@@ -269,6 +284,13 @@ public class EnsembleAgent implements Agent {
 	        catch(Exception e) {
 	        		System.err.println("oops");
 	        		System.err.println(e);
+=======
+	        Agent agent = agents.get(myDim2 + 20*myDim1);
+	        try {
+	        		action = agent.doMove(agentID, state);
+	        }
+	        catch(Exception e) {
+>>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 	        		action = null;
 	        }
 		}
@@ -276,6 +298,10 @@ public class EnsembleAgent implements Agent {
 		if (action != null) {
 			specializedmoves++;
 		}
+<<<<<<< HEAD
+=======
+<<<<<<<< HEAD:starter/src/main/java/com/fossgalaxy/games/fireworks/ai/rodrigocanaan/Rodrigocanaan.java
+>>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 		else {// if threshold hasn't been achieved, default to the action that our initial agent would take
 	        try {
         			action = defaultAgentByNumPlayers[numPlayers-2].doMove(agentID, state);
@@ -288,6 +314,13 @@ public class EnsembleAgent implements Agent {
 	        }
 	        else {
 	        	 List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
+<<<<<<< HEAD
+=======
+========
+		if (action == null) { // if action is still null for some reason, such as the agent returning an invalid action, default to our initial agent
+	        List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
+>>>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0:starter/src/main/java/com/fossgalaxy/games/fireworks/ai/ensembleagent/EnsembleAgent.java
+>>>>>>> c0b8e0190f2eed135c290160ea52fed1ad7c3ce0
 
 	 	        //choose a random item from that list and return it
 	 	        int moveToMake = random.nextInt(possibleMoves.size());
