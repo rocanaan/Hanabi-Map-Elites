@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+package com.fossgalaxy.games.fireworks.ai.ensembleagent;
 
 public class MatchupTables {
 	private static int [][][][] matchups = 

@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+package com.fossgalaxy.games.fireworks.ai.ensembleagent;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,10 +12,10 @@ import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
+import com.fossgalaxy.games.fireworks.ai.ensembleagent.HistogramAgent;
+import com.fossgalaxy.games.fireworks.ai.ensembleagent.MatchupTables;
+import com.fossgalaxy.games.fireworks.ai.ensembleagent.PlayerStats;
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.HistogramAgent;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.MatchupTables;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.PlayerStats;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.ai.rule.logic.DeckUtils;
 import com.fossgalaxy.games.fireworks.state.Card;
@@ -39,7 +39,7 @@ import Evolution.Rulebase;
  * You can see more agents online at:
  * https://git.fossgalaxy.com/iggi/hanabi/tree/master/src/main/java/com/fossgalaxy/games/fireworks/ai
  */
-public class Rodrigocanaan implements Agent {
+public class EnsembleAgent implements Agent {
 
 	private Map<String, Map<Action, Integer>> actionHistory;
 	
@@ -66,7 +66,7 @@ public class Rodrigocanaan implements Agent {
 	
 	Agent[] defaultAgentByNumPlayers;
  	
-	public Rodrigocanaan() {
+	public EnsembleAgent() {
 		this.actionHistory = new HashMap<>();
 		this.playerStatsRecord = new HashMap<>();
 		totalmoves = 0;
@@ -271,14 +271,6 @@ public class Rodrigocanaan implements Agent {
         			action = null;
 	        }
 	        defaultmoves++;
-		}
-		if (numPlayers == 2 || numPlayers == 5) { // Agent seems to be consistently scoring lower on 2player
-	        try {
-        			action = defaultAgentByNumPlayers[numPlayers-2].doMove(agentID, state);
-	        }
-	        catch(Exception e) {
-        			action = null;
-	        }
 		}
 		if (action == null) { // if action is still null for some reason, such as the agent returning an invalid action, default to our initial agent
 	        List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));

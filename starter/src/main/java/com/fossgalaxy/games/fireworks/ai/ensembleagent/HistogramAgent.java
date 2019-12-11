@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+package com.fossgalaxy.games.fireworks.ai.ensembleagent;
 
 import com.fossgalaxy.games.fireworks.ai.rule.ProductionRuleAgent;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
