@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 
+import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 
 import Evolution.Rulebase;
@@ -14,11 +15,11 @@ public class AgentLoaderFromFile {
 
 
 	//TODO: Extract into a class that gets the integers from file, then one that builds the agents. See chromosome similarity analyzer
-	public static ArrayList<HistogramAgent> makeAgentsFromFile(String fileName, int sizeDim1, int sizeDim2, boolean rulebaseStandard) {
+	public static ArrayList<Agent> makeAgentsFromFile(String fileName, int sizeDim1, int sizeDim2, boolean rulebaseStandard) {
 		fileName = System.getProperty("user.dir")+File.separator+fileName;
         Rulebase rb = new Rulebase(rulebaseStandard);
         String thisLine;
-        ArrayList<HistogramAgent> agents = new ArrayList<HistogramAgent>();
+        ArrayList<Agent> agents = new ArrayList<Agent>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
             while ((thisLine = br.readLine()) != null) {
@@ -31,18 +32,19 @@ public class AgentLoaderFromFile {
                     chromossome[i] = Integer.parseInt(c[i]);   
                 }
                
-                Rule[] rules1 = new Rule[chromossome.length];
-                for (int i = 0; i < chromossome.length; i++) {
-
-                    if (rulebaseStandard) {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
-                    } else {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
-
-                    }
-
-                }
-                agents.add(new HistogramAgent(rb.makeAgent(rules1)));
+//                Rule[] rules1 = new Rule[chromossome.length];
+//                for (int i = 0; i < chromossome.length; i++) {
+//
+//                    if (rulebaseStandard) {
+//                        rules1[i] = rb.ruleMapping(chromossome[i]);
+//                    } else {
+//                        rules1[i] = rb.ruleMapping(chromossome[i]);
+//
+//                    }
+//
+//                }
+//                agents.add(new HistogramAgent(rb.makeAgent(rules1)));
+                agents.add(rb.makeAgent(chromossome));
 
             }
             br.close();

@@ -81,7 +81,7 @@ public class AppLearning {
     public static StatsSummary runTestGames(String name) {
     	// the parameters for the test
         int numPlayers = 5;
-        int numGames = 100;
+        int numGames = 2;
         String agentName = "Rodrigocanaan";
         Player[] pool = buildPool();
 
