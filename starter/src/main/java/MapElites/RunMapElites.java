@@ -38,13 +38,13 @@ import javassist.compiler.ast.Pair;
  *
  */
 public class RunMapElites {
-	public static int G = 10000; //number of random individuals
-	public static int I = 1000000 - G; // number of mutations after initial random individuals
+	public static int G = 1000; //number of random individuals
+	public static int I = 10000 - G; // number of mutations after initial random individuals
 	public static int d1 = 20; // number of niches in the first dimension
 	public static int d2 = 20; // number of niches in the second dimension
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.1;
-	public static int numGames = 100; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
+	public static int numGames = 5; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
 	static int minNumPlayers = 3;
 	static int maxNumPlayers = 3;
@@ -55,7 +55,7 @@ public class RunMapElites {
 	static int[][][] population = new int[d1][d2][chromosomeLength];
 
 	static String filePath = "/Users/rodrigocanaan/Dev/MapElitesResults/";
-	static String directory = "5p/";
+	static String directory = "WorkflowTest/";
 
 
 	
