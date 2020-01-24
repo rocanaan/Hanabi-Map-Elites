@@ -51,22 +51,16 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-<<<<<<< HEAD
-		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
+		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/MapElites/population9999";
 //		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/5p/population999999";
-=======
 //		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName = "/Users/EUGENE/Documents/Hanabi/Agents/2p1explicit";
->>>>>>> 686b16eaedd690e0f1cc0b7e8dc8ab419837ee69
 		String fileName2 = fileName;
-//		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-<<<<<<< HEAD
-		int numGames = 400;
+		int numGames = 1;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
@@ -74,17 +68,8 @@ public class EvaluatePopulationFromFile {
 		
 		Mode mode  = Mode.INTRAPOPULATION;
 		
-=======
-		int numGames = 100;
-		boolean usePrecomputedResults = false; // If true, will read precomputed results from result file. If false,
-												// will load agents from agents file and compute.
-//		int numGames = 1000;
-//		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
-		// TODO: This should bb extracted
 
-		Mode mode = Mode.SIMPLE;
 
->>>>>>> 686b16eaedd690e0f1cc0b7e8dc8ab419837ee69
 		Vector<Map<Integer, Vector<Double>>> populationResults = null;
 		Vector<Vector<Map<Integer, Vector<Double>>>> gauntletResults = null;
 
@@ -157,9 +142,9 @@ public class EvaluatePopulationFromFile {
 			}
 
 			// Serialize results
-//			String outputFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Reevaluation" + numGames
+			String outputFileName = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/EvaluateFromFile/" + numGames;
 //					+ mode.toString();
-			String outputFileName = "/Users/EUGENE/Documents/Hanabi/Agents/Reevaluation" + numGames + mode.toString();
+//			String outputFileName = "/Users/EUGENE/Documents/Hanabi/Agents/Reevaluation" + numGames + mode.toString();
 			String dateTime = Utils.Utils.getDateTimeString();
 			try {
 				FileOutputStream file = new FileOutputStream(outputFileName + dateTime); // TODO: There should bbe a
@@ -565,92 +550,92 @@ public class EvaluatePopulationFromFile {
 		}
 		return agentPlayers;
 	}
-<<<<<<< HEAD
-	
-	//TODO: Extract into a class that gets the integers from file, then one that builds the agents. See chromosome similarity analyzer
-	public static Vector<AgentPlayer> makeAgentsFromFile(String fileName, int sizeDim1, int sizeDim2, boolean rulebaseStandard) {
-        Rulebase rb = new Rulebase(rulebaseStandard);
-        String thisLine;
-        ArrayList<HistogramAgent> agents = new ArrayList<HistogramAgent>();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
-            while ((thisLine = br.readLine()) != null) {
-                //thisLine = thisLine.substring(1, thisLine.length() - 2);
-            		thisLine = thisLine.replaceAll(" ", "");
-            		thisLine = thisLine.replaceAll("\t", "");
-            		String[] c = thisLine.split(",");
-            		int[] chromossome = new int[c.length];
-                for (int i = 0; i < c.length; i++) {
-                    chromossome[i] = Integer.parseInt(c[i]);    
-                }
-               
-                Rule[] rules1 = new Rule[chromossome.length];
-                for (int i = 0; i < chromossome.length; i++) {
-
-                    if (rulebaseStandard) {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
-                    } else {
-                        rules1[i] = rb.ruleMapping(chromossome[i]);
-
-                    }
-
-                }
-                if (rulebaseStandard) {
-                    agents.add(rb.makeAgent(rules1));
-                } else {
-                    agents.add(rb.makeAgent(rules1));
-               }
-            }
-            br.close();
-        } catch (Exception e) {
-        		System.err.println(e);;
-        }
-//		try
-//        {    
+//<<<<<<< HEAD
+//	
+//	//TODO: Extract into a class that gets the integers from file, then one that builds the agents. See chromosome similarity analyzer
+//	public static Vector<AgentPlayer> makeAgentsFromFile(String fileName, int sizeDim1, int sizeDim2, boolean rulebaseStandard) {
+//        Rulebase rb = new Rulebase(rulebaseStandard);
+//        String thisLine;
+//        ArrayList<HistogramAgent> agents = new ArrayList<HistogramAgent>();
+//        try {
+//            BufferedReader br = new BufferedReader(new FileReader(fileName));
+//            while ((thisLine = br.readLine()) != null) {
+//                //thisLine = thisLine.substring(1, thisLine.length() - 2);
+//            		thisLine = thisLine.replaceAll(" ", "");
+//            		thisLine = thisLine.replaceAll("\t", "");
+//            		String[] c = thisLine.split(",");
+//            		int[] chromossome = new int[c.length];
+//                for (int i = 0; i < c.length; i++) {
+//                    chromossome[i] = Integer.parseInt(c[i]);    
+//                }
+//               
+//                Rule[] rules1 = new Rule[chromossome.length];
+//                for (int i = 0; i < chromossome.length; i++) {
 //
-//            // Reading the object from a file 
-//            FileInputStream file = new FileInputStream(fileName); 
+//                    if (rulebaseStandard) {
+//                        rules1[i] = rb.ruleMapping(chromossome[i]);
+//                    } else {
+//                        rules1[i] = rb.ruleMapping(chromossome[i]);
 //
-//            ObjectInputStream in = new ObjectInputStream(file); 
+//                    }
 //
-//            // Method for deserialization of object 
-//            int[][][] chromosomes  = (int[][][])in.readObject(); 
-//            
-//            for (int[][] v : chromosomes) {
-//            	for (int[] c : v) {
-//
-//                  
-//                   Rule[] rules1 = new Rule[c.length];
-//                   for (int i = 0; i < c.length; i++) {
-//                       rules1[i] = rb.ruleMapping(c[i]);
-//                       System.out.print(c[i] + " ");
-//                   }
-//                   agents.add(rb.makeAgent(rules1));
-//                   System.out.println("");
-//            	}
-//            
+//                }
+//                if (rulebaseStandard) {
+//                    agents.add(rb.makeAgent(rules1));
+//                } else {
+//                    agents.add(rb.makeAgent(rules1));
+//               }
 //            }
-//            
-//            System.out.println(chromosomes);
-//              
-//            in.close(); 
-//            file.close(); 
-//              
-//            System.out.println("Object has been deserialized "); 
-//
-//        } 
-//          
-//        catch(IOException ex) 
-//        { 
-//            System.out.println(ex); 
-//        } 
-//          
-//        catch(ClassNotFoundException ex) 
-//        { 
-//            System.out.println("ClassNotFoundException is caught"); 
-//        } 
-      
-=======
+//            br.close();
+//        } catch (Exception e) {
+//        		System.err.println(e);;
+//        }
+////		try
+////        {    
+////
+////            // Reading the object from a file 
+////            FileInputStream file = new FileInputStream(fileName); 
+////
+////            ObjectInputStream in = new ObjectInputStream(file); 
+////
+////            // Method for deserialization of object 
+////            int[][][] chromosomes  = (int[][][])in.readObject(); 
+////            
+////            for (int[][] v : chromosomes) {
+////            	for (int[] c : v) {
+////
+////                  
+////                   Rule[] rules1 = new Rule[c.length];
+////                   for (int i = 0; i < c.length; i++) {
+////                       rules1[i] = rb.ruleMapping(c[i]);
+////                       System.out.print(c[i] + " ");
+////                   }
+////                   agents.add(rb.makeAgent(rules1));
+////                   System.out.println("");
+////            	}
+////            
+////            }
+////            
+////            System.out.println(chromosomes);
+////              
+////            in.close(); 
+////            file.close(); 
+////              
+////            System.out.println("Object has been deserialized "); 
+////
+////        } 
+////          
+////        catch(IOException ex) 
+////        { 
+////            System.out.println(ex); 
+////        } 
+////          
+////        catch(ClassNotFoundException ex) 
+////        { 
+////            System.out.println("ClassNotFoundException is caught"); 
+////        } 
+//      
+//=======
 
 	// TODO: Extract into a class that gets the integers from file, then one that
 	// builds the agents. See chromosome similarity analyzer
@@ -678,7 +663,6 @@ public class EvaluatePopulationFromFile {
 		}
 
 
->>>>>>> 686b16eaedd690e0f1cc0b7e8dc8ab419837ee69
 //        return agents;
 //        ArrayList<HistogramAgent> agents = makeAgentsFromFile(fileName, rulebaseStandard);
 		if (agents != null) {
