@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+package MetaAgent;
 
 import com.fossgalaxy.games.fireworks.GameRunner;
 import com.fossgalaxy.games.fireworks.GameStats;

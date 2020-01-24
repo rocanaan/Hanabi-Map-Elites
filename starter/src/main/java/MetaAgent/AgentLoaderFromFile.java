@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+package MetaAgent;
 
 import java.io.BufferedReader;
 import java.io.File;

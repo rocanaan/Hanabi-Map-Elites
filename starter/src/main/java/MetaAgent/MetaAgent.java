@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+package MetaAgent;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,9 +13,6 @@ import java.util.Vector;
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.HistogramAgent;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.MatchupTables;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.PlayerStats;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.ai.rule.logic.DeckUtils;
 import com.fossgalaxy.games.fireworks.state.Card;
@@ -29,6 +26,9 @@ import com.fossgalaxy.games.fireworks.state.actions.TellColour;
 import com.fossgalaxy.games.fireworks.state.actions.TellValue;
 
 import Evolution.Rulebase;
+import MetaAgent.HistogramAgent;
+import MetaAgent.MatchupTables;
+import MetaAgent.PlayerStats;
 
 /**
  * A sample agent for the learning track.
@@ -39,7 +39,7 @@ import Evolution.Rulebase;
  * You can see more agents online at:
  * https://git.fossgalaxy.com/iggi/hanabi/tree/master/src/main/java/com/fossgalaxy/games/fireworks/ai
  */
-public class Rodrigocanaan implements Agent {
+public class MetaAgent implements Agent {
 
 	private Map<String, Map<Action, Integer>> actionHistory;
 	
@@ -67,7 +67,7 @@ public class Rodrigocanaan implements Agent {
 	
 	Agent[] defaultAgentByNumPlayers;
  	
-	public Rodrigocanaan() {
+	public MetaAgent() {
 		this.actionHistory = new HashMap<>();
 		this.playerStatsRecord = new HashMap<>();
 		totalmoves = 0;
@@ -252,7 +252,7 @@ public class Rodrigocanaan implements Agent {
 		System.out.println("Communicativeness " + communicativeness);
 		System.out.println("Risk Aversion " + riskAversion);
 
-		int threshold = 0;
+		int threshold = 999999999;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
 			ArrayList<Integer> partnerDimensions = getNiche(communicativeness,riskAversion);

@@ -1,4 +1,4 @@
-package com.fossgalaxy.games.fireworks.ai.rodrigocanaan;
+package MetaAgent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,9 +80,9 @@ public class AppLearning {
     
     public static StatsSummary runTestGames(String name) {
     	// the parameters for the test
-        int numPlayers = 5;
-        int numGames = 2;
-        String agentName = "Rodrigocanaan";
+        int numPlayers = 2;
+        int numGames = 10000;
+        String agentName = "MetaAgent";
         Player[] pool = buildPool();
 
         Random random = new Random();

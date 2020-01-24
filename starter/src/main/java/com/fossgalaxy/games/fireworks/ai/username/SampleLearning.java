@@ -13,10 +13,6 @@ import java.util.Vector;
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.AgentLoaderFromFile;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.HistogramAgent;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.MatchupTables;
-import com.fossgalaxy.games.fireworks.ai.rodrigocanaan.PlayerStats;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.ai.rule.logic.DeckUtils;
 import com.fossgalaxy.games.fireworks.state.Card;
@@ -29,6 +25,10 @@ import com.fossgalaxy.games.fireworks.state.actions.PlayCard;
 import com.fossgalaxy.games.fireworks.state.actions.TellColour;
 import com.fossgalaxy.games.fireworks.state.actions.TellValue;
 
+import MetaAgent.AgentLoaderFromFile;
+import MetaAgent.HistogramAgent;
+import MetaAgent.MatchupTables;
+import MetaAgent.PlayerStats;
 import evolution.Rulebase;
 
 /**
