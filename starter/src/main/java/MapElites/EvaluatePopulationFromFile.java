@@ -51,16 +51,16 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/MapElites/population9999";
+		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/2p1";
 //		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/5p/population999999";
 //		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName2 = fileName;
+		String fileName2 = "/Users/rodrigocanaan/Dev/MapElitesResults/2p2";
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 1;
+		int numGames = 400;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
@@ -142,7 +142,7 @@ public class EvaluatePopulationFromFile {
 			}
 
 			// Serialize results
-			String outputFileName = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/EvaluateFromFile/" + numGames;
+			String outputFileName = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/EvaluateFromFile/ToG/" + numGames;
 //					+ mode.toString();
 //			String outputFileName = "/Users/EUGENE/Documents/Hanabi/Agents/Reevaluation" + numGames + mode.toString();
 			String dateTime = Utils.Utils.getDateTimeString();

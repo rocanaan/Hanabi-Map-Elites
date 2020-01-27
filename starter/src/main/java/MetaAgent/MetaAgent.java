@@ -16,6 +16,7 @@ import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.ai.rule.logic.DeckUtils;
 import com.fossgalaxy.games.fireworks.state.Card;
+import com.fossgalaxy.games.fireworks.state.CardColour;
 import com.fossgalaxy.games.fireworks.state.GameState;
 import com.fossgalaxy.games.fireworks.state.Hand;
 import com.fossgalaxy.games.fireworks.state.HistoryEntry;
@@ -59,6 +60,8 @@ public class MetaAgent implements Agent {
 	int numCards;
 	private Card[][] playerHands;
 	private double[][] playabilityMask;
+	private boolean[][] knowsColorMask;
+	private boolean [][] knowsRankMask;
 	
 	int totalmoves;
 	int specializedmoves;
@@ -102,7 +105,7 @@ public class MetaAgent implements Agent {
 		for (String name:currentPlayers) {
 			if (name != "you") {
 				if (!playerStatsRecord.containsKey(name)) {
-					playerStatsRecord.put(name, new PlayerStats(0.0, 0.0, 0.0, 0.0, 0));
+					playerStatsRecord.put(name, new PlayerStats(0.0, 0.0, 0.0, 0.0, 0.0, 0));
 				}
 			}
 		}
@@ -125,7 +128,9 @@ public class MetaAgent implements Agent {
 			//System.out.println("Setup " + numPlayers +  "  " + numCards + " Turn count " + myTurnCount);
 			playerHands = new Card[numPlayers][numCards];
 			playabilityMask = new double[numPlayers][numCards];
-			
+			knowsColorMask = new boolean[numPlayers][numCards];
+			knowsRankMask = new boolean[numPlayers][numCards];
+
 		
 			
 			for (int playerIndex = 0; playerIndex<numPlayers; ++playerIndex) {
@@ -157,13 +162,47 @@ public class MetaAgent implements Agent {
 		if (myTurnCount !=0 ) { //skipping a possibly incomplete first round in order to not have to deal with edge cases
 			Collections.reverse(lastMoves);
 			for(HistoryEntry move:lastMoves) {
+				
+
 				int activePlayerID = move.playerID;
 				if (activePlayerID!=agentID) {
 					// Update player specific information;
 					PlayerStats currentPlayerStats = playerStatsRecord.get(currentPlayers[activePlayerID]);
 					
-					if (move.action instanceof TellColour || move.action instanceof TellValue) {
+					
+					if (move.action instanceof TellColour) {
 						currentPlayerStats.numHints = currentPlayerStats.numHints+1;
+						
+						TellColour tc = (TellColour)move.action;
+						CardColour color = tc.colour;
+						int targetPlayerID = tc.player;
+						if (targetPlayerID != agentID) {
+							int cardIndex = 0;
+							for (Card card:playerHands[targetPlayerID]) {
+								if (card.colour == color) {
+									knowsColorMask[targetPlayerID][cardIndex] = true;
+								}
+								++cardIndex;
+							}
+						}
+						
+					}
+					if (move.action instanceof TellValue) {
+						currentPlayerStats.numHints = currentPlayerStats.numHints+1;
+						
+						TellValue tv = (TellValue)move.action;
+						int rank = tv.value;
+						int targetPlayerID = tv.player;
+						if (targetPlayerID != agentID) {
+							int cardIndex = 0;
+							for (Card card:playerHands[targetPlayerID]) {
+								if (card.value == rank) {
+									knowsRankMask[targetPlayerID][cardIndex] = true;
+								}
+								++cardIndex;
+							}
+						}
+						
 					}
 					if (hintsAvailable>0) {
 						currentPlayerStats.numPossibleHints = currentPlayerStats.numPossibleHints+1;
@@ -171,7 +210,19 @@ public class MetaAgent implements Agent {
 					if (move.action instanceof PlayCard) {
 						PlayCard play = (PlayCard)move.action;
 						currentPlayerStats.numPlays = currentPlayerStats.numPlays+1;
-						//currentPlayerStats.totalPlayability = currentPlayerStats.totalPlayability + playabilityMask[activePlayerID][play.slot];
+						
+						
+						currentPlayerStats.totalPlayability = currentPlayerStats.totalPlayability + playabilityMask[activePlayerID][play.slot];
+						
+						
+						int informationPlay = 0;
+						if (knowsColorMask[activePlayerID][play.slot]) {
+							informationPlay +=1;
+						}
+						if (knowsRankMask[activePlayerID][play.slot]) {
+							informationPlay +=1;
+						}
+						currentPlayerStats.totalInformationPlays+=informationPlay;
 					}
 					currentPlayerStats.totalInteractions+=1;
 					//System.out.println("Total Interactions with player " + currentPlayers[activePlayerID] + " is "  + playerStatsRecord.get(currentPlayers[activePlayerID]).totalInteractions);
@@ -201,7 +252,29 @@ public class MetaAgent implements Agent {
 					--hintsAvailable;
 				}
 			}
+			
+			
 		
+		}
+		
+		// Update what each player knows about their hand
+		for (int playerID = 0; playerID < numPlayers; ++playerID) {
+			Hand hand = state.getHand(playerID);
+			for (int cardIndex = 0; cardIndex<hand.getSize(); ++cardIndex) {
+				playerHands[playerID][cardIndex] = hand.getCard(cardIndex);
+				if (hand.getKnownColour(cardIndex)!=null) {
+					knowsColorMask[playerID][cardIndex] = true;
+				}
+				else {
+					knowsColorMask[playerID][cardIndex] = false;
+				}
+				if (hand.getKnownValue(cardIndex)!=null) {
+					knowsRankMask[playerID][cardIndex] = true;
+				}
+				else {
+					knowsRankMask[playerID][cardIndex] = false;
+				}
+			}
 		}
 		
 		
@@ -249,8 +322,11 @@ public class MetaAgent implements Agent {
 		PlayerStats partnerStats = playerStatsRecord.get(currentPlayers[(agentID+1)%numPlayers]);
 		double communicativeness = partnerStats.getCommunicativeness();
 		double riskAversion = partnerStats.getRiskAversion();
+		double informationPlays = partnerStats.getInformationPlays();
 		System.out.println("Communicativeness " + communicativeness);
 		System.out.println("Risk Aversion " + riskAversion);
+		System.out.println("Average Information per play " + informationPlays);
+
 
 		int threshold = 999999999;
 		Action action = null;

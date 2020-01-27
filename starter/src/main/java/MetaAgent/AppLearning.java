@@ -36,9 +36,11 @@ public class AppLearning {
 				// weak players
 				new AgentPlayer("4", AgentUtils.buildAgent("legal_random")),
 				new AgentPlayer("5", AgentUtils.buildAgent("flawed")),
+//				new AgentPlayer("6", AgentUtils.buildAgent("RuleBasedVanDeBergh")),
+
 				
 				// there may be multiple agents using the same technique
-				new AgentPlayer("6", AgentUtils.buildAgent("iggi")),
+				new AgentPlayer("6", AgentUtils.buildAgent("RuleBasedVanDeBergh")),
 				new AgentPlayer("7", AgentUtils.buildAgent("piers")),
 				
 //				new AgentPlayer("8", AgentUtils.buildAgent("mctsND"))
@@ -81,7 +83,7 @@ public class AppLearning {
     public static StatsSummary runTestGames(String name) {
     	// the parameters for the test
         int numPlayers = 2;
-        int numGames = 10000;
+        int numGames = 1000;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 
@@ -175,7 +177,9 @@ public class AppLearning {
 				return new AgentPlayer("5", AgentUtils.buildAgent("flawed"));
 			}
 			case "6" :{
-				return new AgentPlayer("6", AgentUtils.buildAgent("iggi"));
+//				return new AgentPlayer("6", AgentUtils.buildAgent("iggi"));
+				return new AgentPlayer("6", AgentUtils.buildAgent("RuleBasedVanDeBergh"));
+
 			}
 			case "7" :{
 				return new AgentPlayer("7", AgentUtils.buildAgent("piers"));
