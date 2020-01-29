@@ -74,12 +74,18 @@ public class MetaWithEachAgent {
     	int i = 0;
     	while (iter.hasNext()) { 
     		currentSummary = iter.next();
+    		/*
             System.out.println(String.format("Our agent with agent %s : Avg: %f, min: %f, max: %f",
             		String.valueOf(i),
                     currentSummary.getMean(),
                     currentSummary.getMin(),
                     currentSummary.getMax()));
+            */
+    		System.out.print(currentSummary.getMean()+" ");
             i+=1;
+            if((i)%20==0) {
+                System.out.println("");
+            }
     	} 
     	//if you want random agents without duplicates, use the following code instead
     	//runTestGames("random");
@@ -90,7 +96,7 @@ public class MetaWithEachAgent {
     public static StatsSummary runTestGames(String name) {
     	// the parameters for the test
         int numPlayers = 2;
-        int numGames = 5;
+        int numGames = 100;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 
