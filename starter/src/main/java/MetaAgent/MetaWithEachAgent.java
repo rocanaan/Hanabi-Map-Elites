@@ -63,8 +63,9 @@ public class MetaWithEachAgent {
     	//The arraylist and iterator is used for output only.
     	//After we disable logger we could remove these.
     	ArrayList<StatsSummary> statsSummary = new ArrayList<StatsSummary>();
+        MetaAgent agent = new MetaAgent();
     	for(int i = 0; i<400; i++) {
-    		statsSummary.add(runTestGames(String.valueOf(i)));
+    		statsSummary.add(runTestGames(String.valueOf(i),agent));
     		
     	}
     	
@@ -87,16 +88,17 @@ public class MetaWithEachAgent {
                 System.out.println("");
             }
     	} 
+        agent.printPlayerStats();
+
     	//if you want random agents without duplicates, use the following code instead
     	//runTestGames("random");
 
-
     }
     
-    public static StatsSummary runTestGames(String name) {
+    public static StatsSummary runTestGames(String name, Agent agent) {
     	// the parameters for the test
         int numPlayers = 2;
-        int numGames = 100;
+        int numGames = 10;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 
@@ -105,7 +107,7 @@ public class MetaWithEachAgent {
         
         //build players (persistent across games)
         numPlayers = 2;
-        Player you = new AgentPlayer("you", AgentUtils.buildAgent(agentName));
+        Player you = new AgentPlayer("you", agent);
         
         // run the test games
         for (int i=0; i<numGames; i++) {
@@ -127,6 +129,7 @@ public class MetaWithEachAgent {
             long deckOrderingSeed = random.nextLong();
             GameStats stats = runner.playGame(deckOrderingSeed);
             statsSummary.add(stats.score);
+            
         }
 
         //print out the stats
@@ -201,7 +204,7 @@ public class MetaWithEachAgent {
 				return new AgentPlayer("5", AgentUtils.buildAgent("flawed"));
 			}
 			case "6" :{
-				return new AgentPlayer("6", AgentUtils.buildAgent("iggi"));
+				return new AgentPlayer("6", AgentUtils.buildAgent("RuleBasedVanDeBergh"));
 			}
 			case "7" :{
 				return new AgentPlayer("7", AgentUtils.buildAgent("piers"));

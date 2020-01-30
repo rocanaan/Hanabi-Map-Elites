@@ -328,7 +328,7 @@ public class MetaAgent implements Agent {
 		System.out.println("Average Information per play " + informationPlays);
 
 
-		int threshold = 999999999;
+		int threshold = 0;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
 			ArrayList<Integer> partnerDimensions = getNiche(communicativeness,riskAversion);
@@ -527,6 +527,16 @@ public class MetaAgent implements Agent {
 	        return state.getTableValue(card.colour) + 1 == card.value;
 	    }
 	    
+	    
+	    public void printPlayerStats() {
+	        int i = 0;
+	        for(String key:playerStatsRecord.keySet()) {
+	            PlayerStats stats = playerStatsRecord.get(key);
+	            
+	            String message =  "I estimate partner "  + key + " to have communicativeness of " +  String.valueOf(stats.getCommunicativeness()) + " , risk aversion of " + String.valueOf(stats.getRiskAversion())  +  " and information per plays of " + String.valueOf(stats.getInformationPlays()) + " after number of interactions " + String.valueOf(stats.totalInteractions); 
+	            System.out.println(message);
+	        }
+	    }
 	    
 
 		
