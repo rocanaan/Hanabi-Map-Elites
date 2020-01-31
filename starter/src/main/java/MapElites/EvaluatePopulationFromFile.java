@@ -29,6 +29,13 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import Evolution.Rulebase;
 
 public class EvaluatePopulationFromFile {
+	
+	private class EstimatedBehavior{
+		private double[] behaviorVector;
+		public EstimatedBehavior(double[] behaviorVector) {
+			this.behaviorVector = behaviorVector;
+		}
+	}
 
 	public enum Mode {
 		SIMPLE, CROSSPOPULATION, INTRAPOPULATION, GAUNTLET
@@ -60,7 +67,7 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 400;
+		int numGames = 5;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
@@ -466,35 +473,36 @@ public class EvaluatePopulationFromFile {
 				System.out.println("");
 			}
 			System.out.println((sum / count));
-			System.out.println("Across populations:");
-			sum = 0;
-			count = 0;
-			Random random = new Random();
-			for (int i = 0; i < sizeDim1; i++) {
-				for (int j = 0; j < sizeDim2; j++) {
-					double thisScore = 0;
-					int thisCount = 0;
-					if (validMask[i][j] > 0) {
-						int dim1 = dim1BestPair[i][j];
-						int dim2 = dim2BestPair[i][j];
-						AgentPlayer bestPartner = agentPlayers.get(dim2 + sizeDim1 * dim1);
-						AgentPlayer alternateSubject = agentPlayers2.get(j + sizeDim1 * i);
-						Vector<Double> results = NewTestSuite.ConstantNumberPlayersTest(2, 1000, bestPartner,
-								alternateSubject, random);
-						for (double score : results) {
-							thisScore += score;
-							thisCount += 1;
-						}
-						thisScore = thisScore / thisCount;
-						sum += thisScore;
-						count += 1;
-
-					}
-					System.out.print(thisScore + " ");
-				}
-				System.out.println("");
-			}
-			System.out.println((sum / count));
+			//TODO: extract this out into an across populations method
+//			System.out.println("Across populations:");
+//			sum = 0;
+//			count = 0;
+//			Random random = new Random();
+//			for (int i = 0; i < sizeDim1; i++) {
+//				for (int j = 0; j < sizeDim2; j++) {
+//					double thisScore = 0;
+//					int thisCount = 0;
+//					if (validMask[i][j] > 0) {
+//						int dim1 = dim1BestPair[i][j];
+//						int dim2 = dim2BestPair[i][j];
+//						AgentPlayer bestPartner = agentPlayers.get(dim2 + sizeDim1 * dim1);
+//						AgentPlayer alternateSubject = agentPlayers2.get(j + sizeDim1 * i);
+//						Vector<Double> results = NewTestSuite.ConstantNumberPlayersTest(2, numGames, bestPartner,
+//								alternateSubject, random);
+//						for (double score : results) {
+//							thisScore += score;
+//							thisCount += 1;
+//						}
+//						thisScore = thisScore / thisCount;
+//						sum += thisScore;
+//						count += 1;
+//
+//					}
+//					System.out.print(thisScore + " ");
+//				}
+//				System.out.println("");
+//			}
+//			System.out.println((sum / count));
 
 		}
 //		
@@ -676,7 +684,8 @@ public class EvaluatePopulationFromFile {
 			for (int j = 0; j < sizeDim2; j++) {
 
 				HistogramAgent ha = agents.get(j + sizeDim1 * i);
-				agentPlayers.add(new AgentPlayer("report agent [ " + i + " , " + j + "]", ha));
+				ReportAgent ra = new ReportAgent(ha);
+				agentPlayers.add(new AgentPlayer("report agent [ " + i + " , " + j + "]", ra));
 			}
 		}
 		return agentPlayers;

@@ -149,5 +149,16 @@ public class ReportAgent implements Agent{
     public double getAverageDiscardSlot() {
     	return totalDiscardSlot / (double) countDiscards;
     }
+    
+    public void resetStats() {
+    	possibleHints = 0;
+        hintsGiven = 0;
+        totalPlayability = 0.0;
+        countPlays = 0;
+        totalInformationPlays = 0;
+    	totalDiscardSlot = 0.0;
+    	countDiscards = 0;
+        stateActionArchive = null;
+    }
    
 }

@@ -68,6 +68,8 @@ public class MetaAgent implements Agent {
 	int defaultmoves;
 	int randommoves;
 	
+	private static boolean useRiskAversion = false;
+	
 	Agent[] defaultAgentByNumPlayers;
  	
 	public MetaAgent() {
@@ -328,10 +330,16 @@ public class MetaAgent implements Agent {
 		System.out.println("Average Information per play " + informationPlays);
 
 
-		int threshold = 0;
+		int threshold = 400;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
-			ArrayList<Integer> partnerDimensions = getNiche(communicativeness,riskAversion);
+			ArrayList<Integer> partnerDimensions;
+			if (useRiskAversion) {
+				partnerDimensions = getNiche(communicativeness,riskAversion);
+			}
+			else {
+				partnerDimensions = getNiche(communicativeness,informationPlays);
+			}
 			int [][][] matchups = MatchupTables.getMatchups(numPlayers);
 			int myDim1 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][0];
 			int myDim2 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][1];

@@ -35,10 +35,10 @@ public class PlayerStats {
 	}
 	
 	public double getInformationPlays() {
-		double riskAversion = 0.0;
+		double informationPlays = 0.0;
 		if (numPlays >0) {
 			return totalInformationPlays/(2*numPlays);
 		}
-		return riskAversion;
+		return informationPlays;
 	}
 }
