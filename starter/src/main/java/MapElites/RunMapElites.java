@@ -38,16 +38,16 @@ import javassist.compiler.ast.Pair;
  *
  */
 public class RunMapElites {
-	public static int G = 1000; //number of random individuals
-	public static int I = 10000 - G; // number of mutations after initial random individuals
+	public static int G = 10000; //number of random individuals
+	public static int I = 1000000 - G; // number of mutations after initial random individuals
 	public static int d1 = 20; // number of niches in the first dimension
 	public static int d2 = 20; // number of niches in the second dimension
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.1;
-	public static int numGames = 5; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
+	public static int numGames = 100; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
-	static int minNumPlayers = 3;
-	static int maxNumPlayers = 3;
+	static int minNumPlayers = 2;
+	static int maxNumPlayers = 2;
 	static boolean rulebaseStandard = false;
 	static int chromosomeLength = 15;
 	static Vector<AgentPlayer> testPool = null;
@@ -55,7 +55,7 @@ public class RunMapElites {
 	static int[][][] population = new int[d1][d2][chromosomeLength];
 
 	static String filePath = "/Users/rodrigocanaan/Dev/MapElitesResults/";
-	static String directory = "WorkflowTest/";
+	static String directory = "WorkflowTest/MapElites/2pFinal2/";
 
 
 	
@@ -378,8 +378,8 @@ public class RunMapElites {
 	        
 	        
 	        double fitness = pes.getScoreIndividualAgent(0);
-	        double dim1 = agent.getInformationPlays();
-			double dim2 = agent.getAverageDiscardSlot();
+	        double dim1 = agent.getCommunicativeness();
+			double dim2 = agent.getInformationPlays();
 //    			System.out.println("Agent " + individual + " has fitness " + fitness + " dim 1 " + dim1 + " dim 2 " + dim2);
 			
 			ArrayList<Integer> niches = getNiche(dim1, dim2);
@@ -470,8 +470,8 @@ public class RunMapElites {
 	        }
 	        
 	        double fitness = pes.getScoreIndividualAgent(0);
-	        double dim1 = agent.getInformationPlays();
-			double dim2 = agent.getAverageDiscardSlot();
+	        double dim1 = agent.getCommunicativeness();
+			double dim2 = agent.getInformationPlays();
 //    			System.out.println("Agent " + individual + " has fitness " + fitness + " dim 1 " + dim1 + " dim 2 " + dim2);
 			
 			ArrayList<Integer> niches = getNiche(dim1, dim2);

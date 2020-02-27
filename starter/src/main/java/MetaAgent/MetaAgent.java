@@ -68,7 +68,7 @@ public class MetaAgent implements Agent {
 	int defaultmoves;
 	int randommoves;
 	
-	private static boolean useRiskAversion = false;
+	private static boolean useRiskAversion = true;
 	
 	Agent[] defaultAgentByNumPlayers;
  	
@@ -80,7 +80,8 @@ public class MetaAgent implements Agent {
 		randommoves = 0;
 		
    		//Best agent evolved with Map-Elites for 2 players. Communicativeness is about 0.5 and risk aversion is about 0.8. In my testing, this scores around 20.5 in Mirror
-		int [] twoPlayerChromosome = {67,103,7,35,100,52,77,20,16,28,23,27,37,43,101} ; 
+		int [] twoPlayerChromosome = {67,103,7,35,100,52,77,20,16,28,23,27,37,43,101} ; // old rules
+//		int [] twoPlayerChromosome = {58,52,10,32,65,75,12,20,20,26,69,94,55,36,19}; //new rules
 		//Agent with overall best pairings in Map-Elites for 3 players. Communicativeness is about 0.55 and risk aversion is about 0.85. 
 		int [] threePlayerChromosome = {7,33,50,50,67,36,51,50,41,3,82,103,55,31,83};
 		//Agent with overall best pairings in Map-Elites for 4 players. Communicativeness is about 0.6 and risk aversion is about 0.75. 
@@ -149,7 +150,7 @@ public class MetaAgent implements Agent {
 				}
 				
 			}
-			String file = numPlayers+"P";
+			String file = numPlayers+"POldMetrics";
 
 		    agents = AgentLoaderFromFile.makeAgentsFromFile(file, 20, 20, false);
 
@@ -330,7 +331,7 @@ public class MetaAgent implements Agent {
 		System.out.println("Average Information per play " + informationPlays);
 
 
-		int threshold = 400;
+		int threshold = 0;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
 			ArrayList<Integer> partnerDimensions;

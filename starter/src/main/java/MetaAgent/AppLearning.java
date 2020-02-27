@@ -91,7 +91,7 @@ public class AppLearning {
         StatsSummary statsSummary = new BasicStats();
         
         //build players (persistent across games)
-        numPlayers = 5;
+        numPlayers = 2;
         Player you = new AgentPlayer("you", AgentUtils.buildAgent(agentName));
         
         // run the test games

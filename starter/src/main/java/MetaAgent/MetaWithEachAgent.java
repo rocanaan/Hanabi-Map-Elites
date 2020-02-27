@@ -26,7 +26,7 @@ public class MetaWithEachAgent {
 	 */
 	public static Player[] buildPool() {
 		
-        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2p", 20, 20, false);
+        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2POldMetrics", 20, 20, false);
         Player[] pool = new Player[agents.size()];
         int i = 0;
         for (Agent a:agents) {
