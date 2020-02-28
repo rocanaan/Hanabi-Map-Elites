@@ -15,7 +15,7 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import com.fossgalaxy.stats.BasicStats;
 import com.fossgalaxy.stats.StatsSummary;
 
-public class MetaWithEachAgent {
+public class MisleadingOracleWithEachAgent {
 
 	/**
 	 * The pool of other players the player can play against.
@@ -65,10 +65,14 @@ public class MetaWithEachAgent {
     	ArrayList<StatsSummary> statsSummary = new ArrayList<StatsSummary>();
         MetaAgent agent = new MetaAgent();
     	for(int i = 0; i<400; i++) {
-//    		int d1 = i/20;
-////    		int d2 = i%20;
-//    		System.out.println(d1 + " " + d2);
-//    		agent.setGivenDimensions(d1, d2);
+    		int d1 = i/20;
+    		int d2 = i%20;
+    		
+//    		d1 = addNoise(d1);
+//    		d2 = addNoise(d2);
+
+    		System.out.println(d1 + " " + d2);
+    		agent.setGivenDimensions(d1, d2);
     		statsSummary.add(runTestGames(String.valueOf(i),agent));
     		
     	}

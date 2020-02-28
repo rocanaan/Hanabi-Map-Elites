@@ -68,7 +68,10 @@ public class MetaAgent implements Agent {
 	int defaultmoves;
 	int randommoves;
 	
-	private static boolean useRiskAversion = true;
+	private int givenDim1;
+	private int givenDim2;
+	
+	private static boolean useRiskAversion = false;
 	
 	Agent[] defaultAgentByNumPlayers;
  	
@@ -95,6 +98,9 @@ public class MetaAgent implements Agent {
 		defaultAgentByNumPlayers[1] = rb.makeAgent(threePlayerChromosome);
 		defaultAgentByNumPlayers[2] = rb.makeAgent(fourPlayerChromosome);
 		defaultAgentByNumPlayers[3] = rb.makeAgent(fivePlayerChromosome);
+		
+		this.setGivenDimensions(-1, -1);
+
 	}
 	
 	@Override
@@ -113,7 +119,14 @@ public class MetaAgent implements Agent {
 			}
 		}
 		
+		
 
+	}
+	
+	public void setGivenDimensions(int d1, int d2) {
+		this.givenDim1=d1;
+		this.givenDim2=d2;
+				
 	}
 
 
@@ -122,6 +135,8 @@ public class MetaAgent implements Agent {
 	public Action doMove(int agentID, GameState state) {
 		// this is where you make decisions on your turn.
 		updateHistogram(state);
+		
+		System.out.println("Starting move with agent ID " + agentID);
 		
 		
 		
@@ -150,9 +165,10 @@ public class MetaAgent implements Agent {
 				}
 				
 			}
-			String file = numPlayers+"POldMetrics";
+			String file = numPlayers+"P";
 
 		    agents = AgentLoaderFromFile.makeAgentsFromFile(file, 20, 20, false);
+		    
 
 		}
 		
@@ -341,13 +357,41 @@ public class MetaAgent implements Agent {
 			else {
 				partnerDimensions = getNiche(communicativeness,informationPlays);
 			}
+
+			
+			
 			int [][][] matchups = MatchupTables.getMatchups(numPlayers);
+			
+			int theirDim1 = partnerDimensions.get(0);
+			int theirDim2 = partnerDimensions.get(1);
+			
+			System.out.println("Inferred Partner Indexes: " + theirDim1 + " " + theirDim2);
+			
+			if (this.givenDim1 >= 0) {
+				theirDim1 = this.givenDim1;
+			}
+			if (this.givenDim2 >= 0) {
+				theirDim2 = this.givenDim2;
+			}
+			
+			System.out.println("Partner Indexes given by Oracle: " + givenDim1 + " " + givenDim2);
+
+			System.out.println("Final Partner Indexes: " + theirDim1 + " " + theirDim2);
+
+
 			int myDim1 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][0];
 			int myDim2 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][1];
+			System.out.println(givenDim1 + " " + givenDim2) ;
+			if (this.givenDim1 >= 0) {
+				myDim1 = this.givenDim1;
+			}
+			if (this.givenDim2 >= 0) {
+				myDim2 = this.givenDim2;
+			}
 			System.out.println(myDim1);
 			System.out.println(myDim2);
 
-	        Agent agent = agents.get(myDim2 + 20*myDim1);
+	        Agent agent = agents.get(myDim1 + 20*myDim2);
 	        try {
 	        		action = agent.doMove(agentID, state);
 	        }

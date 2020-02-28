@@ -29,7 +29,7 @@ public class AgentLoaderFromFile {
             		String[] c = thisLine.split(",");
             		int[] chromossome = new int[c.length];
                 for (int i = 0; i < c.length; i++) {
-                    chromossome[i] = Integer.parseInt(c[i]);   
+                    chromossome[i] = Integer.parseInt(c[i]);
                 }
                
 //                Rule[] rules1 = new Rule[chromossome.length];
