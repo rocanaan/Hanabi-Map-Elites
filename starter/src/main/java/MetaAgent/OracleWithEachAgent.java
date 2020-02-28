@@ -68,7 +68,7 @@ public class OracleWithEachAgent {
     		int d1 = i/20;
     		int d2 = i%20;
     		System.out.println(d1 + " " + d2);
-    		agent.setGivenDimensions(d2, d1);
+    		agent.setGivenDimensions(d1, d2, 8, 16);
     		statsSummary.add(runTestGames(String.valueOf(i),agent));
     		
     	}

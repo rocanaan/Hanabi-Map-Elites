@@ -68,8 +68,10 @@ public class MetaAgent implements Agent {
 	int defaultmoves;
 	int randommoves;
 	
-	private int givenDim1;
-	private int givenDim2;
+	private int theirGivenDim1;
+	private int theirGivenDim2;
+	private int myGivenDim1;
+	private int myGivenDim2;
 	
 	private static boolean useRiskAversion = false;
 	
@@ -82,8 +84,10 @@ public class MetaAgent implements Agent {
 		defaultmoves = 0;
 		randommoves = 0;
 		
-   		//Best agent evolved with Map-Elites for 2 players. Communicativeness is about 0.5 and risk aversion is about 0.8. In my testing, this scores around 20.5 in Mirror
-		int [] twoPlayerChromosome = {67,103,7,35,100,52,77,20,16,28,23,27,37,43,101} ; // old rules
+   		//TODO: This should be the coordinates of the generalist agent, not its chromosome, which is outdated
+		//Best agent evolved with Map-Elites for 2 players. Communicativeness is about 0.5 and risk aversion is about 0.8. In my testing, this scores around 20.5 in Mirror
+//		int [] twoPlayerChromosome = {67,103,7,35,100,52,77,20,16,28,23,27,37,43,101} ; // old rules
+		int [] twoPlayerChromosome = {56,61,8,68,57,33,63,65,28,104,34,37,102,19,101};
 //		int [] twoPlayerChromosome = {58,52,10,32,65,75,12,20,20,26,69,94,55,36,19}; //new rules
 		//Agent with overall best pairings in Map-Elites for 3 players. Communicativeness is about 0.55 and risk aversion is about 0.85. 
 		int [] threePlayerChromosome = {7,33,50,50,67,36,51,50,41,3,82,103,55,31,83};
@@ -99,7 +103,7 @@ public class MetaAgent implements Agent {
 		defaultAgentByNumPlayers[2] = rb.makeAgent(fourPlayerChromosome);
 		defaultAgentByNumPlayers[3] = rb.makeAgent(fivePlayerChromosome);
 		
-		this.setGivenDimensions(-1, -1);
+		this.setGivenDimensions(-1,-1,-1,-1);
 
 	}
 	
@@ -123,9 +127,11 @@ public class MetaAgent implements Agent {
 
 	}
 	
-	public void setGivenDimensions(int d1, int d2) {
-		this.givenDim1=d1;
-		this.givenDim2=d2;
+	public void setGivenDimensions(int theirD1, int theirD2, int myD1, int myD2) {
+		this.theirGivenDim1=theirD1;
+		this.theirGivenDim2=theirD2;
+		this.myGivenDim1=myD1;
+		this.myGivenDim2=myD2;
 				
 	}
 
@@ -347,7 +353,7 @@ public class MetaAgent implements Agent {
 		System.out.println("Average Information per play " + informationPlays);
 
 
-		int threshold = 0;
+		int threshold = 9999999;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
 			ArrayList<Integer> partnerDimensions;
@@ -367,31 +373,37 @@ public class MetaAgent implements Agent {
 			
 			System.out.println("Inferred Partner Indexes: " + theirDim1 + " " + theirDim2);
 			
-			if (this.givenDim1 >= 0) {
-				theirDim1 = this.givenDim1;
+			if (this.theirGivenDim1 >= 0) {
+				theirDim1 = this.theirGivenDim1;
 			}
-			if (this.givenDim2 >= 0) {
-				theirDim2 = this.givenDim2;
+			if (this.theirGivenDim2 >= 0) {
+				theirDim2 = this.theirGivenDim2;
 			}
 			
-			System.out.println("Partner Indexes given by Oracle: " + givenDim1 + " " + givenDim2);
+			System.out.println("Partner Indexes given by Oracle: " + theirGivenDim1 + " " + theirGivenDim2);
 
 			System.out.println("Final Partner Indexes: " + theirDim1 + " " + theirDim2);
 
 
-			int myDim1 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][0];
-			int myDim2 = matchups[partnerDimensions.get(0)][partnerDimensions.get(1)][1];
-			System.out.println(givenDim1 + " " + givenDim2) ;
-			if (this.givenDim1 >= 0) {
-				myDim1 = this.givenDim1;
-			}
-			if (this.givenDim2 >= 0) {
-				myDim2 = this.givenDim2;
-			}
-			System.out.println(myDim1);
-			System.out.println(myDim2);
+			int myDim1 = matchups[theirDim1][theirDim2][0];
+			int myDim2 = matchups[theirDim1][theirDim2][1];
+			
+			System.out.println("My dimensions calculated by Match-up Tables: " + myDim1 + " " + myDim2);
+			System.out.println("My dimensions Given by the oracle: " + myGivenDim1 + " " + myGivenDim2);
 
-	        Agent agent = agents.get(myDim1 + 20*myDim2);
+			
+			if (myGivenDim1 >= 0) {
+				myDim1 = myGivenDim1;
+			}
+			if (myGivenDim2 >= 0) {
+				myDim2 = myGivenDim2;
+			}
+			
+			System.out.println("My final dimensions :" + myDim1 + " " + myDim2);
+
+
+			//TODO: check correct order of dimensions
+	        Agent agent = agents.get(20*myDim1 + myDim2);
 	        try {
 	        		action = agent.doMove(agentID, state);
 	        }

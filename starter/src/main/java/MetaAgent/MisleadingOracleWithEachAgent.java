@@ -72,7 +72,7 @@ public class MisleadingOracleWithEachAgent {
 //    		d2 = addNoise(d2);
 
     		System.out.println(d1 + " " + d2);
-    		agent.setGivenDimensions(d1, d2);
+    		agent.setGivenDimensions(d1, d2, -1, -1);
     		statsSummary.add(runTestGames(String.valueOf(i),agent));
     		
     	}

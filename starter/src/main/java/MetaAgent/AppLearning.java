@@ -41,7 +41,7 @@ public class AppLearning {
 				
 				// there may be multiple agents using the same technique
 				new AgentPlayer("6", AgentUtils.buildAgent("RuleBasedVanDeBergh")),
-				new AgentPlayer("7", AgentUtils.buildAgent("piers")),
+//				new AgentPlayer("7", AgentUtils.buildAgent("piers")),
 				
 //				new AgentPlayer("8", AgentUtils.buildAgent("mctsND"))
 		};
