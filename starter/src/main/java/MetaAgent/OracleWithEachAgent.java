@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.GameRunner;
 import com.fossgalaxy.games.fireworks.GameStats;
@@ -14,6 +15,8 @@ import com.fossgalaxy.games.fireworks.players.Player;
 import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import com.fossgalaxy.stats.BasicStats;
 import com.fossgalaxy.stats.StatsSummary;
+
+import MapElites.EvaluatePopulationFromFile;
 
 public class OracleWithEachAgent {
 
@@ -26,14 +29,17 @@ public class OracleWithEachAgent {
 	 */
 	public static Player[] buildPool() {
 		
-        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P", 20, 20, false);
-        Player[] pool = new Player[agents.size()];
+        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P2", 20, 20, false);
+//		final Vector<Agent>  agents = EvaluatePopulationFromFile.deserializeAgents("Pop2");
+		Player[] pool = new Player[agents.size()];
         int i = 0;
         for (Agent a:agents) {
             pool[i] = new AgentPlayer(String.valueOf(i), a);
             i+=1;
         }
         
+        
+
 		// the player pool size is not revealed to the agents.
         /*
 		Player[] pool = new Player[] {
@@ -67,8 +73,10 @@ public class OracleWithEachAgent {
     	for(int i = 0; i<400; i++) {
     		int d1 = i/20;
     		int d2 = i%20;
+    		
+    		
     		System.out.println(d1 + " " + d2);
-    		agent.setGivenDimensions(d1, d2, 8, 16);
+    		agent.setGivenDimensions(d1, d2, -1, -1);
     		statsSummary.add(runTestGames(String.valueOf(i),agent));
     		
     	}
@@ -102,7 +110,7 @@ public class OracleWithEachAgent {
     public static StatsSummary runTestGames(String name, Agent agent) {
     	// the parameters for the test
         int numPlayers = 2;
-        int numGames = 100;
+        int numGames = 1000;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 

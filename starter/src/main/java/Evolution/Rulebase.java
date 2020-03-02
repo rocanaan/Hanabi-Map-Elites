@@ -71,7 +71,201 @@ public class Rulebase {
     };
 
     private Rule[] ruleset;
+    
+      
+    
+    private static  Rule[] completeRuleset = {
+            // Play rules
+            new PlayFinesse(),
+            new PlayFinesseTold(),
+            new PlayIfCertain(),
+            new PlayProbablySafeCard(0.0),
+            new PlayProbablySafeCard(0.2),
+            new PlayProbablySafeCard(0.4),
+            new PlayProbablySafeCard(0.6),
+            new PlayProbablySafeCard(0.8),
+            //new PlayProbablySafeCard(1.0),
+            new PlaySafeCard(),
+            new PlayUniquePossibleCard(),
+            // Tell rules
+            new CompleteTellUsefulCard(), //rule no 10
+            new TellAboutOnes(),
+            new TellAnyoneAboutOldestUsefulCard(),
+            new TellAnyoneAboutUsefulCard(),
+            new TellAnyoneAboutUselessCard(),
+            new TellDispensable(),
+            new TellFinesse(),
+            new TellFives(),
+            new TellIllInformed(),
+            new TellMostInformation(),
+            new TellPlayableCard(),  //20
+            new TellPlayableCardOuter(),
+            new TellRandomly(), // Random rule
+            new TellUnknown(),
+            // Discard rules
+            new DiscardHighest(),
+            new DiscardIfCertain(),
+            new DiscardLeastLikelyToBeNecessary(),
+            new DiscardOldestFirst(),
+            new DiscardOldestNoInfoFirst(),
+            new DiscardProbablyUselessCard(0.0), // Parametrized rule
+            new DiscardProbablyUselessCard(0.2), // Parametrized rule  //30
+            new DiscardProbablyUselessCard(0.4), // Parametrized rule
+            new DiscardProbablyUselessCard(0.6), // Parametrized rule
+            new DiscardProbablyUselessCard(0.8), // Parametrized rule
+            //new DiscardProbablyUselessCard(1.0), // Parametrized rule
+            new DiscardRandomly(),
+            new DiscardSafeCard(),
+            new DiscardUnidentifiedCard(),
+            new DiscardUselessCard(),
+            new OsawaDiscard(),
+            // Other rules
+            new LegalRandom(), // Bad rule
+            new TryToUnBlock(), //40
+            // Conditional rules
+            new IfRule(hailMary, new PlayProbablySafeCard(0.0)), //hail mary
+            new IfRule(hailMary, new PlayProbablySafeCard(0.1)), // slightly smarter hail mary
 
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.0)),
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.2)),
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.4)),
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.6)),
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.8)), // Used by Piers
+
+            new IfRule(informationLessThan4, new TellDispensable()), //Used by Piers
+
+            new PlayProbablySafeCard(0.25), // Used by Flawed
+
+            // New, more complex rules
+            new PlayJustHinted(), //50
+            new PlayJustHinted(true, true, 2, 0),
+            new PlayJustHinted(true, false, 2, 0),
+            new PlayJustHinted(false, true, 2, 0),
+            new PlayJustHinted(false, false, 2, 0),
+            new PlayJustHinted(true, true, 2, 0.6),
+            new PlayJustHinted(true, false, 2, 0.6),
+            new PlayJustHinted(false, true, 2, 0.6),
+            new PlayJustHinted(false, false, 2, 0.6),
+            new PlayJustHinted(true, true, 2, 0.8),
+            new PlayJustHinted(true, false, 2, 0.8), //60
+            new PlayJustHinted(false, true, 2, 0.8),
+            new PlayJustHinted(false, false, 2, 0.8),
+            new PlayJustHinted(true, true, 2, 1),
+            new PlayJustHinted(true, false, 2, 1),
+            new PlayJustHinted(false, true, 2, 1),
+            new PlayJustHinted(false, false, 2, 1),
+            new TellUnambiguous(true),
+            new TellUnambiguous(false),
+            new TellUnambiguous2(1, 0),
+            new TellUnambiguous2(10, -1), //70
+            new TellUnambiguous2(2, -1),
+            new TellUnambiguous3(1,0),
+            new TellUnambiguous3(0,-1),
+            new TellUnambiguous3(2,-1),
+            new TellUnambiguous3(1,-2),
+            new TellUnambiguous3(10,-1),
+            new TellUnambiguous3(1,-10),
+            new TellAtLeastNUseless(1),
+            new TellAtLeastNUseless(2),
+            new TellAtLeastNUseless(3),
+            new TellAtLeastNUseless(4),
+            new TellAtLeastNUseless(5),
+            new TellHighProbabilityMistake(true, 0),
+            new TellHighProbabilityMistake(true, 0.1),
+            new TellHighProbabilityMistake(true, 0.2),
+            new TellHighProbabilityMistake(true, 0.3),
+            new TellHighProbabilityMistake(true, 0.4),
+            new TellHighProbabilityMistake(true, 0.5),
+            new TellHighProbabilityMistake(true, 0.6),
+            new TellHighProbabilityMistake(true, 0.7),
+            new TellHighProbabilityMistake(true, 0.8),
+            new TellHighProbabilityMistake(true, 0.9),
+            new TellHighProbabilityMistake(true, 1),
+            new TellHighProbabilityMistake(false, 0),
+            new TellHighProbabilityMistake(false, 0.1),
+            new TellHighProbabilityMistake(false, 0.2),
+            new TellHighProbabilityMistake(false, 0.3),
+            new TellHighProbabilityMistake(false, 0.4),
+            new TellHighProbabilityMistake(false, 0.5),
+            new TellHighProbabilityMistake(false, 0.6),
+            new TellHighProbabilityMistake(false, 0.7),
+            new TellHighProbabilityMistake(false, 0.8),
+            new TellHighProbabilityMistake(false, 0.9),
+            new TellHighProbabilityMistake(false, 1),
+
+            
+     };
+    
+    private static Rule[] originalRuleset = {
+            // Play rules
+            new PlayFinesse(),
+            new PlayFinesseTold(),
+            new PlayIfCertain(),
+            new PlayProbablySafeCard(0.0),
+            new PlayProbablySafeCard(0.2),
+            new PlayProbablySafeCard(0.4),
+            new PlayProbablySafeCard(0.6),
+            new PlayProbablySafeCard(0.8),
+            //new PlayProbablySafeCard(1.0),
+            new PlaySafeCard(),
+            new PlayUniquePossibleCard(),
+            // Tell rules
+            new CompleteTellUsefulCard(),
+            new TellAboutOnes(),
+            new TellAnyoneAboutOldestUsefulCard(),
+            new TellAnyoneAboutUsefulCard(),
+            new TellAnyoneAboutUselessCard(),
+            new TellDispensable(),
+            new TellFinesse(),
+            new TellFives(),
+            new TellIllInformed(),
+            new TellMostInformation(),
+            new TellPlayableCard(),
+            new TellPlayableCardOuter(),
+            new TellRandomly(), // Random rule
+            new TellUnknown(),
+            // Discard rules
+            new DiscardHighest(),
+            new DiscardIfCertain(),
+            new DiscardLeastLikelyToBeNecessary(),
+            new DiscardOldestFirst(),
+            new DiscardOldestNoInfoFirst(),
+            new DiscardProbablyUselessCard(0.0), // Parametrized rule
+            new DiscardProbablyUselessCard(0.2), // Parametrized rule
+            new DiscardProbablyUselessCard(0.4), // Parametrized rule
+            new DiscardProbablyUselessCard(0.6), // Parametrized rule
+            new DiscardProbablyUselessCard(0.8), // Parametrized rule
+            //new DiscardProbablyUselessCard(1.0), // Parametrized rule
+            new DiscardRandomly(),
+            new DiscardSafeCard(),
+            new DiscardUnidentifiedCard(),
+            new DiscardUselessCard(),
+            new OsawaDiscard(),
+            // Other rules
+            new LegalRandom(), // Bad rule
+            new TryToUnBlock(),
+            // Conditional rules
+            new IfRule(hailMary, new PlayProbablySafeCard(0.0)), //hail mary
+            new IfRule(hailMary, new PlayProbablySafeCard(0.1)), // slightly smarter hail mary
+
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.0)),
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.2)),
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.4)),
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.6)),
+            new IfRule(hasMoreThanOneLife, new PlayProbablySafeCard(0.8)), // Used by Piers
+
+            new IfRule(informationLessThan4, new TellDispensable()), //Used by Piers
+
+            new PlayProbablySafeCard(0.25), // Used by Flawed
+                    
+    };
+    
+    public Rulebase() {
+    	this.ruleset = completeRuleset;
+    }
+    
+
+    //TODO: reimplement this using the static variables or, more generally, defining a mask
     public Rulebase(boolean standardRulebase) {
         if (standardRulebase) {
             Rule[] ruleset = {

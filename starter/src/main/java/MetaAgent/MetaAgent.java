@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
+import org.apache.commons.configuration2.XMLConfiguration;
+
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
@@ -76,6 +78,8 @@ public class MetaAgent implements Agent {
 	private static boolean useRiskAversion = false;
 	
 	Agent[] defaultAgentByNumPlayers;
+	
+	
  	
 	public MetaAgent() {
 		this.actionHistory = new HashMap<>();
@@ -171,7 +175,7 @@ public class MetaAgent implements Agent {
 				}
 				
 			}
-			String file = numPlayers+"P";
+			String file = numPlayers+"P3";
 
 		    agents = AgentLoaderFromFile.makeAgentsFromFile(file, 20, 20, false);
 		    
@@ -353,7 +357,7 @@ public class MetaAgent implements Agent {
 		System.out.println("Average Information per play " + informationPlays);
 
 
-		int threshold = 9999999;
+		int threshold = 0;
 		Action action = null;
 		if (partnerStats.totalInteractions>=threshold){
 			ArrayList<Integer> partnerDimensions;
@@ -603,6 +607,18 @@ public class MetaAgent implements Agent {
 	        }
 	    }
 	    
+	    
+	    public  void toXML(int[] generalist,int[][][]matchups,String file) {
+	    	XMLConfiguration configCreate = new XMLConfiguration();
+	    	
+	    	configCreate.addProperty("generalist",generalist);
+	    	configCreate.addProperty("matchups",matchups);
+	    	configCreate.addProperty("file", file);
+	    }
+	    
+	    public void readFile(String file) {
+	    	
+	    }
 
 		
 }

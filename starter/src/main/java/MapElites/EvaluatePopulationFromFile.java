@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
+import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.HistogramAgent;
 import com.fossgalaxy.games.fireworks.ai.NewTestSuite;
@@ -539,13 +540,13 @@ public class EvaluatePopulationFromFile {
 		return (n + sizeDim1 * m + sizeDim2 * sizeDim1 * j + sizeDim1 * sizeDim2 * sizeDim1 * i);
 	}
 
-	public static Vector<AgentPlayer> deserializeAgents(String fileName) {
+	public static Vector<AgentPlayer> deserializeAgentPlayers(String fileName) {
 		Rulebase rb = new Rulebase(false);
 		Vector<AgentPlayer> agentPlayers = null;
-		int[][][] agents = PostSimulationAnalyses.GenerationAnalyzer.readPopulationsFromFile(fileName);
+		int[][][] chromosomes = PostSimulationAnalyses.GenerationAnalyzer.readPopulationsFromFile(fileName);
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 20; j++) {
-				int[] chromosome = agents[i][j];
+				int[] chromosome = chromosomes[i][j];
 				Rule[] agentRules = new Rule[chromosome.length];
 				for (int geneIndex = 0; geneIndex < chromosome.length; geneIndex++) {
 					agentRules[geneIndex] = rb.ruleMapping(chromosome[geneIndex]);
@@ -557,6 +558,26 @@ public class EvaluatePopulationFromFile {
 			}
 		}
 		return agentPlayers;
+	}
+	
+	public static Vector<Agent> deserializeAgents(String fileName) {
+		Rulebase rb = new Rulebase(false);
+		Vector<Agent> agents = null;
+		int[][][] chromosomes = PostSimulationAnalyses.GenerationAnalyzer.readPopulationsFromFile(fileName);
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 20; j++) {
+				int[] chromosome = chromosomes[i][j];
+				Rule[] agentRules = new Rule[chromosome.length];
+				for (int geneIndex = 0; geneIndex < chromosome.length; geneIndex++) {
+					agentRules[geneIndex] = rb.ruleMapping(chromosome[geneIndex]);
+				}
+				HistogramAgent histo;
+				histo = rb.makeAgent(agentRules);
+				ReportAgent agent = new ReportAgent(histo);
+				agents.add(agent);
+			}
+		}
+		return agents;
 	}
 //<<<<<<< HEAD
 //	
@@ -690,6 +711,7 @@ public class EvaluatePopulationFromFile {
 		}
 		return agentPlayers;
 	}
+	
 
 	static void binaryFileParse(String fileName, ArrayList<HistogramAgent> agents, Rulebase rb) {
 		try {
