@@ -175,7 +175,8 @@ public class MetaAgent implements Agent {
 				}
 				
 			}
-			String file = numPlayers+"P3";
+			//TODO: Currently, does not generalize to other numbers of players
+			String file = "2P3";
 
 		    agents = AgentLoaderFromFile.makeAgentsFromFile(file, 20, 20, false);
 		    

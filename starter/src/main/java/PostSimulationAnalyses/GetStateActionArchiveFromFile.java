@@ -54,14 +54,14 @@ public class GetStateActionArchiveFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run2";
+		String fileName = "Pop1";
+		String fileName2 = "Pop2C";
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 10;
+		int numGames = 100;
 		boolean useSameSeed = false; //TODO:
 		
 		Mode mode  = Mode.SIMPLE;

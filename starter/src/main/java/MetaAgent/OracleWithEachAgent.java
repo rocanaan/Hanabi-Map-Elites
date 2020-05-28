@@ -29,7 +29,7 @@ public class OracleWithEachAgent {
 	 */
 	public static Player[] buildPool() {
 		
-        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P2", 20, 20, false);
+        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P3", 20, 20, false);
 //		final Vector<Agent>  agents = EvaluatePopulationFromFile.deserializeAgents("Pop2");
 		Player[] pool = new Player[agents.size()];
         int i = 0;

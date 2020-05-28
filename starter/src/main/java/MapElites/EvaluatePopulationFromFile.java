@@ -59,10 +59,10 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/2p1";
+		String fileName = "Pop2";
 //		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/5p/population999999";
 //		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName2 = "/Users/rodrigocanaan/Dev/MapElitesResults/2p2";
+		String fileName2 = "Pop3";
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
 		int numPlayers = 2;
@@ -74,7 +74,7 @@ public class EvaluatePopulationFromFile {
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
-		Mode mode  = Mode.SIMPLE;
+		Mode mode  = Mode.CROSSPOPULATION;
 		
 
 

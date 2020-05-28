@@ -4,7 +4,7 @@ import Evolution.Rulebase;
 import java.util.Random;
 import java.util.Vector;
 
-//import com.fossgalaxy.games.fireworks.GameRunner;
+import com.fossgalaxy.games.fireworks.GameRunner;
 import com.fossgalaxy.games.fireworks.GameStats;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.stats.BasicStats;

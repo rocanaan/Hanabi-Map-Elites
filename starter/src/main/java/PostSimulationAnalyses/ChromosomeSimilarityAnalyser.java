@@ -20,21 +20,25 @@ public class ChromosomeSimilarityAnalyser {
 //		ArrayList<int[]> chromosomes = getChromosomesFromFile();
 		
 //		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
-		String chromosomeFileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
+		String chromosomeFileName = "Pop2C";
+		String chromosomeFileName2 = "Pop3C";
 
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
 
+		System.out.println("Getting valid mask");
 		int[][] validMask = GetStateActionArchiveFromFile.getValidMaskFromFile(chromosomeFileName,sizeDim1,sizeDim2);
 		ArrayList<int[]> chromosomes = getChromosomesFromFile(chromosomeFileName);
 		
 		
 		//Intra
+		System.out.println("Intra");
+
 		int[][][][] pairwiseHamming = getPairwiseHammingDistances (chromosomes, validMask, sizeDim1, sizeDim2);
 		CalculateActionSimilarity.printHistogram(pairwiseHamming, validMask, sizeDim1, sizeDim2, 1);
 		
 		//Cross
+		System.out.println("Cross");
 		int[][] validMask2 = GetStateActionArchiveFromFile.getValidMaskFromFile(chromosomeFileName2,sizeDim1,sizeDim2);
 		ArrayList<int[]> chromosomes2 = getChromosomesFromFile(chromosomeFileName2);
 		getCrossHammingDistance(chromosomes,validMask,chromosomes2,validMask2,sizeDim1,sizeDim2);

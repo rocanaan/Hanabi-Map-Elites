@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
@@ -17,15 +18,15 @@ import MapElites.ReportAgent;
 public class CalculateActionSimilarity {
 	
 	public static void main(String[] args) {
-		String inputFileNameDatabase = "/Users/rodrigocanaan/Dev/HanabiResults/ActionDatabase/1M20190511_054448";
+		String inputFileNameDatabase = "/Users/rodrigocanaan/Dev/HanabiResults/ActionDatabase/1M20200406_200414";
 //		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String chromosomeFileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun750k";
-		String chromosomeFileName2 = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/Run1Copy";
+		String chromosomeFileName = "Pop2C";
+		String chromosomeFileName2 = "Pop3C";
 
 		int sizeDim1 = 20;
 		int sizeDim2 = 20;
 
-		
+		//TODO: This should get the mask for both populations, then do the logical AND of each mask
 		int[][] validMask = GetStateActionArchiveFromFile.getValidMaskFromFile(chromosomeFileName,sizeDim1,sizeDim2);
 		ArrayList<ReportAgent> agents = GetStateActionArchiveFromFile.makeReportAgentsFromFile(chromosomeFileName, sizeDim1, sizeDim2, false);
 		Agent[][] a = new Agent[sizeDim1][sizeDim2];
@@ -55,8 +56,8 @@ public class CalculateActionSimilarity {
 		}
 		if (countStates >0) {
 			System.out.println(sumLegal);
-			System.out.println(sumLegal/countStates);
-			System.out.println(countStates/sumLegal);
+			System.out.println((float)sumLegal/(float)countStates);
+			System.out.println((float)countStates/(float)sumLegal);
 		}
 		
 		// Intra
@@ -202,8 +203,15 @@ public class CalculateActionSimilarity {
 			int sizeDim1, int sizeDim2){
 		int[][] crossSimilarityMatchups = new int[sizeDim1][sizeDim2];
 		
+		
 		for (ActionDatabaseEntry entry:database) {
-			System.out.println("Checking gamestates collected by entry "+ entry.dim1 + " " + entry.dim2);
+			long start = System.currentTimeMillis();
+			System.out.println("Checking " + entry.stateActionArchive.size() + " gamestates collected by entry "+ entry.dim1 + " " + entry.dim2);
+			Runtime rt = Runtime.getRuntime();
+		    long total =  rt.totalMemory();
+			long free =  rt.freeMemory();
+			long used = total - free;
+			System.out.println("Memory usage: total:  " +total + " used: " + used + " free: " + free);
 			if(validMask1[entry.dim1][entry.dim2]==1 && validMask2[entry.dim1][entry.dim2]==1) {	
 				for(StateActionPair sap:entry.stateActionArchive) {
 					GameState state = sap.state;
@@ -234,6 +242,13 @@ public class CalculateActionSimilarity {
 					}
 				}	
 			}
+			long end = System.currentTimeMillis();
+			long elapsed = end-start;
+			System.out.println("Took " + elapsed + " miliseconds");
+			if (entry.stateActionArchive.size() >0){
+				long average = elapsed / entry.stateActionArchive.size();
+				System.out.println(average + " miliseconds per state");
+			}
 		}
 		return crossSimilarityMatchups;
 	}
@@ -256,7 +271,7 @@ public class CalculateActionSimilarity {
 								agentActions[i][j] = agents[i][j].doMove(agentID,state);
 							}
 							catch (Exception e){
-								agentActions[i][i] = null;
+								agentActions[i][j] = null; 
 							}
 						}
 					}
