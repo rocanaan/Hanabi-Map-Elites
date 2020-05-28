@@ -91,7 +91,8 @@ public class MetaAgent implements Agent {
    		//TODO: This should be the coordinates of the generalist agent, not its chromosome, which is outdated
 		//Best agent evolved with Map-Elites for 2 players. Communicativeness is about 0.5 and risk aversion is about 0.8. In my testing, this scores around 20.5 in Mirror
 //		int [] twoPlayerChromosome = {67,103,7,35,100,52,77,20,16,28,23,27,37,43,101} ; // old rules
-		int [] twoPlayerChromosome = {56,61,8,68,57,33,63,65,28,104,34,37,102,19,101};
+//		int [] twoPlayerChromosome = {56,61,8,68,57,33,63,65,28,104,34,37,102,19,101}; // ToG 2P
+		int [] twoPlayerChromosome = {8,10,67,61,101,38,33,37,2,102,36,93,27,23,19}; //ToG 2P2, niche 9,16
 //		int [] twoPlayerChromosome = {58,52,10,32,65,75,12,20,20,26,69,94,55,36,19}; //new rules
 		//Agent with overall best pairings in Map-Elites for 3 players. Communicativeness is about 0.55 and risk aversion is about 0.85. 
 		int [] threePlayerChromosome = {7,33,50,50,67,36,51,50,41,3,82,103,55,31,83};
@@ -175,7 +176,10 @@ public class MetaAgent implements Agent {
 				}
 				
 			}
+<<<<<<< HEAD
 			//TODO: Currently, does not generalize to other numbers of players
+=======
+>>>>>>> d4e8dcf686f20a7df3ea84c085571586e231fa39
 			String file = "2P3";
 
 		    agents = AgentLoaderFromFile.makeAgentsFromFile(file, 20, 20, false);

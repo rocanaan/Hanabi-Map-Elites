@@ -11,7 +11,7 @@ public class printChromosomes {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		String fileName = "Pop3";
+		String fileName = "Pop2";
 		
 		try {
 			// Reading the object from a file

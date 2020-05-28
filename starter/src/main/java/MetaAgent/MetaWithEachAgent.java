@@ -102,7 +102,7 @@ public class MetaWithEachAgent {
     public static StatsSummary runTestGames(String name, Agent agent) {
     	// the parameters for the test
         int numPlayers = 2;
-        int numGames = 100;
+        int numGames = 1000;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 
