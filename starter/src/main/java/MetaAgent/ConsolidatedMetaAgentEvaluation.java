@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.GameRunner;
 import com.fossgalaxy.games.fireworks.GameStats;
@@ -16,30 +15,27 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import com.fossgalaxy.stats.BasicStats;
 import com.fossgalaxy.stats.StatsSummary;
 
-import MapElites.EvaluatePopulationFromFile;
-
-public class OracleWithEachAgent {
+public class ConsolidatedMetaAgentEvaluation {
 
 	/**
-	 * The pool of other players the player can play against.
-	 * 
-	 * These are not actually the ones used for the competition, they are here for testing :).
-	 * 
-	 * @return all of the possible players the player can play against.
+	 * This class allows for the evaluation of the meta agent in a variety of scenarios:
+	 * Adaptive: agent attempts to adapt after a certain number of interactions TODO set threshold as parameter
+	 * Generalist: agent always plays the generalist strategy according TODO: set threshold as parameter or create generatlist flag
+	 * Forced Match-up: higher level controller forces agent to play a particular strategy
+	 * Oracle: higher level controller forces agent to play as if facing a particular strategy
+	 * Misleading Oracle: like Oracle, but controler passes misleading identity of partner
+	 * All matchups: forcing all numAgents*numAgents matchups 
 	 */
 	public static Player[] buildPool() {
 		
-        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P3", 20, 20, false);
-//		final Vector<Agent>  agents = EvaluatePopulationFromFile.deserializeAgents("Pop2");
-		Player[] pool = new Player[agents.size()];
+        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P2", 20, 20, false);
+        Player[] pool = new Player[agents.size()];
         int i = 0;
         for (Agent a:agents) {
             pool[i] = new AgentPlayer(String.valueOf(i), a);
             i+=1;
         }
         
-        
-
 		// the player pool size is not revealed to the agents.
         /*
 		Player[] pool = new Player[] {
@@ -63,6 +59,13 @@ public class OracleWithEachAgent {
 	}
 	
 
+	private static boolean isValidPartner(int dim1, int dim2) {
+		
+		if (MatchupTables.getMatchups(2)[dim1][dim2][0] !=0 || MatchupTables.getMatchups(2)[dim1][dim2][1] !=0){
+			return true;
+		}
+		return false;
+	}
 	
     public static void main( String[] args )
     {
@@ -71,16 +74,28 @@ public class OracleWithEachAgent {
     	ArrayList<StatsSummary> statsSummary = new ArrayList<StatsSummary>();
         MetaAgent agent = new MetaAgent();
     	for(int i = 0; i<400; i++) {
-    		int d1 = i/20;
-    		int d2 = i%20;
     		
+    		int theirDim1 = i/20;
+    		int theirDim2 = i%20;
     		
-    		System.out.println(d1 + " " + d2);
+    		boolean oracle = true;
     		
+    		if (oracle) {
+    			agent.setGivenDimensions(theirDim1, theirDim2, -1, -1);
+    		}
 
     		
-    		//Note: for population 2, best generalist is 9,18. For 3, it's 9,16
-    		agent.setGivenDimensions(d1, d2, -1, -1);
+//    		TODO: check whether matchup is valid before playing games - need to account for it when printing
+//    		if (isValidPartner(theirDim1,theirDim2)) {
+//    			statsSummary.add(runTestGames(String.valueOf(i),agent));
+//    		}
+    		
+    	
+    		
+//    		int d1 = i/20;
+////    		int d2 = i%20;
+//    		System.out.println(d1 + " " + d2);
+//    		agent.setGivenDimensions(d1, d2);
     		statsSummary.add(runTestGames(String.valueOf(i),agent));
     		
     	}
@@ -111,10 +126,10 @@ public class OracleWithEachAgent {
 
     }
     
-    public static StatsSummary runTestGames(String name, MetaAgent agent) {
+    public static StatsSummary runTestGames(String name, Agent agent) {
     	// the parameters for the test
         int numPlayers = 2;
-        int numGames = 10;
+        int numGames = 50;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 
@@ -123,37 +138,10 @@ public class OracleWithEachAgent {
         
         //build players (persistent across games)
         numPlayers = 2;
-//        Player you = new AgentPlayer("you", agent);
+        Player you = new AgentPlayer("you", agent);
         
         // run the test games
         for (int i=0; i<numGames; i++) {
-        		//TODO: Extract random passing of matchups as separate method
-			Random r = new Random();
-			int r1 = r.nextInt(20);
-			int r2 = r.nextInt(20);
-			
-			boolean valid = false;
-			
-			while (!valid) {
-				if (MatchupTables.getMatchups(2)[r1][r2][0] !=0 || MatchupTables.getMatchups(2)[r1][r2][1] !=0){
-					valid = true;
-				}
-				else {
-					r1 = r.nextInt(20);
-					r2 = r.nextInt(20);
-				}
-			}
-			
-			
-//			TODO: Original code from repo has reversed order of parameters for setGivenDimensions
-//			agent.setGivenDimensions(-1, -1, r1, r2);
-//			
-			
-			
-	        Player you = new AgentPlayer("you", agent);
-
-        	
-        	
             GameRunner runner = new GameRunner("test-game", numPlayers);
             
             // add the players to the game
@@ -165,8 +153,6 @@ public class OracleWithEachAgent {
             else {
             	others = getSpecificPlayers(pool, numPlayers - 1, name);
             }          
-            
-            
             
             addPlayers(runner, others, you, random.nextInt(numPlayers));
             

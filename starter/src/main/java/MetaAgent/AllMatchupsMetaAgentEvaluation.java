@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 
 import com.fossgalaxy.games.fireworks.GameRunner;
 import com.fossgalaxy.games.fireworks.GameStats;
@@ -16,30 +15,34 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import com.fossgalaxy.stats.BasicStats;
 import com.fossgalaxy.stats.StatsSummary;
 
-import MapElites.EvaluatePopulationFromFile;
-
-public class OracleWithEachAgent {
+public class AllMatchupsMetaAgentEvaluation {
 
 	/**
-	 * The pool of other players the player can play against.
-	 * 
-	 * These are not actually the ones used for the competition, they are here for testing :).
-	 * 
-	 * @return all of the possible players the player can play against.
+	 * This class allows for the evaluation of the meta agent in a variety of scenarios:
+	 * Adaptive: agent attempts to adapt after a certain number of interactions TODO set threshold as parameter
+	 * Generalist: agent always plays the generalist strategy according TODO: set threshold as parameter or create generatlist flag
+	 * Forced Match-up: higher level controller forces agent to play a particular strategy
+	 * Oracle: higher level controller forces agent to play as if facing a particular strategy
+	 * Misleading Oracle: like Oracle, but controler passes misleading identity of partner
+	 * All matchups: forcing all numAgents*numAgents matchups 
 	 */
+	
+
+	/** TODO 
+	 * Consolidate chromosome and matchup selection?
+	 * @return
+	 */
+	
 	public static Player[] buildPool() {
 		
         final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P3", 20, 20, false);
-//		final Vector<Agent>  agents = EvaluatePopulationFromFile.deserializeAgents("Pop2");
-		Player[] pool = new Player[agents.size()];
+        Player[] pool = new Player[agents.size()];
         int i = 0;
         for (Agent a:agents) {
             pool[i] = new AgentPlayer(String.valueOf(i), a);
             i+=1;
         }
         
-        
-
 		// the player pool size is not revealed to the agents.
         /*
 		Player[] pool = new Player[] {
@@ -63,6 +66,13 @@ public class OracleWithEachAgent {
 	}
 	
 
+	private static boolean isValidPartner(int dim1, int dim2) {
+		
+		if (MatchupTables.getMatchups(2)[dim1][dim2][0] !=0 || MatchupTables.getMatchups(2)[dim1][dim2][1] !=0){
+			return true;
+		}
+		return false;
+	}
 	
     public static void main( String[] args )
     {
@@ -70,51 +80,38 @@ public class OracleWithEachAgent {
     	//After we disable logger we could remove these.
     	ArrayList<StatsSummary> statsSummary = new ArrayList<StatsSummary>();
         MetaAgent agent = new MetaAgent();
+        String results = "";
     	for(int i = 0; i<400; i++) {
-    		int d1 = i/20;
-    		int d2 = i%20;
     		
+    		int theirDim1 = i/20;
+    		int theirDim2 = i%20;
     		
-    		System.out.println(d1 + " " + d2);
-    		
-
-    		
-    		//Note: for population 2, best generalist is 9,18. For 3, it's 9,16
-    		agent.setGivenDimensions(d1, d2, -1, -1);
-    		statsSummary.add(runTestGames(String.valueOf(i),agent));
+    		for (int j = 0; j<400; j++) {
+        		int myDim1 = j/20;
+        		int myDim2 = j%20;
+        		
+        		agent.setGivenDimensions(-1, -1, myDim1, myDim2);
+        		
+        		double score = runTestGames(String.valueOf(i), agent).getMean();
+        		
+        		double estimatedDim1 = agent.getEstimatedDimensions(String.valueOf(i), MetaAgent.BehaviorCharacteristic.COMMUNICATIVENESS);
+        		double estimatedDim2 = agent.getEstimatedDimensions(String.valueOf(i), MetaAgent.BehaviorCharacteristic.IPP);
+        		
+        		String r = String.format("%d %d %d %d %f %f %f\n",myDim1,myDim2,theirDim1,theirDim2,estimatedDim1,estimatedDim2,score);
+        		System.out.println(r);
+        		results.concat(r);
+        		
+    		}
     		
     	}
-    	
-    	Iterator<StatsSummary> iter = statsSummary.iterator(); 
-    	
-    	StatsSummary currentSummary;
-    	int i = 0;
-    	while (iter.hasNext()) { 
-    		currentSummary = iter.next();
-    		/*
-            System.out.println(String.format("Our agent with agent %s : Avg: %f, min: %f, max: %f",
-            		String.valueOf(i),
-                    currentSummary.getMean(),
-                    currentSummary.getMin(),
-                    currentSummary.getMax()));
-            */
-    		System.out.print(currentSummary.getMean()+" ");
-            i+=1;
-            if((i)%20==0) {
-                System.out.println("");
-            }
-    	} 
-        agent.printPlayerStats();
-
-    	//if you want random agents without duplicates, use the following code instead
-    	//runTestGames("random");
+    	System.out.print(results);
 
     }
     
-    public static StatsSummary runTestGames(String name, MetaAgent agent) {
-    	// the parameters for the test
+    public static StatsSummary runTestGames(String name, Agent agent) {
+    	// the parameters for the st
         int numPlayers = 2;
-        int numGames = 10;
+        int numGames = 2;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 
@@ -123,37 +120,10 @@ public class OracleWithEachAgent {
         
         //build players (persistent across games)
         numPlayers = 2;
-//        Player you = new AgentPlayer("you", agent);
+        Player you = new AgentPlayer("you", agent);
         
         // run the test games
         for (int i=0; i<numGames; i++) {
-        		//TODO: Extract random passing of matchups as separate method
-			Random r = new Random();
-			int r1 = r.nextInt(20);
-			int r2 = r.nextInt(20);
-			
-			boolean valid = false;
-			
-			while (!valid) {
-				if (MatchupTables.getMatchups(2)[r1][r2][0] !=0 || MatchupTables.getMatchups(2)[r1][r2][1] !=0){
-					valid = true;
-				}
-				else {
-					r1 = r.nextInt(20);
-					r2 = r.nextInt(20);
-				}
-			}
-			
-			
-//			TODO: Original code from repo has reversed order of parameters for setGivenDimensions
-//			agent.setGivenDimensions(-1, -1, r1, r2);
-//			
-			
-			
-	        Player you = new AgentPlayer("you", agent);
-
-        	
-        	
             GameRunner runner = new GameRunner("test-game", numPlayers);
             
             // add the players to the game
@@ -165,8 +135,6 @@ public class OracleWithEachAgent {
             else {
             	others = getSpecificPlayers(pool, numPlayers - 1, name);
             }          
-            
-            
             
             addPlayers(runner, others, you, random.nextInt(numPlayers));
             

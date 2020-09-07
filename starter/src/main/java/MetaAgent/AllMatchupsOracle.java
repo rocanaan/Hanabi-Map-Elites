@@ -18,7 +18,7 @@ import com.fossgalaxy.stats.StatsSummary;
 
 import MapElites.EvaluatePopulationFromFile;
 
-public class OracleWithEachAgent {
+public class AllMatchupsOracle {
 
 	/**
 	 * The pool of other players the player can play against.
@@ -114,7 +114,7 @@ public class OracleWithEachAgent {
     public static StatsSummary runTestGames(String name, MetaAgent agent) {
     	// the parameters for the test
         int numPlayers = 2;
-        int numGames = 10;
+        int numGames = 1000;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 

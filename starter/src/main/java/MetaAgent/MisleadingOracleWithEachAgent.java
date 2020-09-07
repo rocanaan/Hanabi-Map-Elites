@@ -26,7 +26,7 @@ public class MisleadingOracleWithEachAgent {
 	 */
 	public static Player[] buildPool() {
 		
-        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P", 20, 20, false);
+        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P3", 20, 20, false);
         Player[] pool = new Player[agents.size()];
         int i = 0;
         for (Agent a:agents) {
@@ -106,7 +106,7 @@ public class MisleadingOracleWithEachAgent {
     public static StatsSummary runTestGames(String name, Agent agent) {
     	// the parameters for the test
         int numPlayers = 2;
-        int numGames = 100;
+        int numGames = 1000;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 

@@ -33,6 +33,8 @@ import MetaAgent.HistogramAgent;
 import MetaAgent.MatchupTables;
 import MetaAgent.PlayerStats;
 
+
+
 /**
  * A sample agent for the learning track.
  * 
@@ -43,6 +45,10 @@ import MetaAgent.PlayerStats;
  * https://git.fossgalaxy.com/iggi/hanabi/tree/master/src/main/java/com/fossgalaxy/games/fireworks/ai
  */
 public class MetaAgent implements Agent {
+	
+	public enum BehaviorCharacteristic{
+		COMMUNICATIVENESS, RISKAVERSION, IPP
+	}
 
 	private Map<String, Map<Action, Integer>> actionHistory;
 	
@@ -75,7 +81,7 @@ public class MetaAgent implements Agent {
 	private int myGivenDim1;
 	private int myGivenDim2;
 	
-	private static boolean useRiskAversion = false;
+	private static boolean useRiskAversion = true;
 	
 	Agent[] defaultAgentByNumPlayers;
 	
@@ -176,11 +182,9 @@ public class MetaAgent implements Agent {
 				}
 				
 			}
-<<<<<<< HEAD
 			//TODO: Currently, does not generalize to other numbers of players
-=======
->>>>>>> d4e8dcf686f20a7df3ea84c085571586e231fa39
-			String file = "2P3";
+
+			String file = "2P2";
 
 		    agents = AgentLoaderFromFile.makeAgentsFromFile(file, 20, 20, false);
 		    
@@ -610,6 +614,19 @@ public class MetaAgent implements Agent {
 	            String message =  "I estimate partner "  + key + " to have communicativeness of " +  String.valueOf(stats.getCommunicativeness()) + " , risk aversion of " + String.valueOf(stats.getRiskAversion())  +  " and information per plays of " + String.valueOf(stats.getInformationPlays()) + " after number of interactions " + String.valueOf(stats.totalInteractions); 
 	            System.out.println(message);
 	        }
+	    }
+	    
+	    public double getEstimatedDimensions(String key,BehaviorCharacteristic bc) {
+	    	if (bc==BehaviorCharacteristic.COMMUNICATIVENESS){
+	    		return playerStatsRecord.get(key).getCommunicativeness();
+	    	}
+	    	else if (bc==BehaviorCharacteristic.RISKAVERSION){
+	    		return playerStatsRecord.get(key).getRiskAversion();
+	    	}
+	    	else if (bc==BehaviorCharacteristic.IPP){
+	    		return playerStatsRecord.get(key).getInformationPlays();
+	    	}
+	    	return 0;
 	    }
 	    
 	    
