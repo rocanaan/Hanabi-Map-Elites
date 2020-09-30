@@ -23,6 +23,7 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <!--Hanabi framework. Use 0.2.4 for Meta-Agent experiments, 0.2.1 for evolution and MAP-Elites experiments-->
     <dependency>
       <groupId>com.fossgalaxy.games</groupId>
       <artifactId>fireworks</artifactId>
@@ -32,6 +33,18 @@
 	  <groupId>org.apache.commons</groupId>
 	  <artifactId>commons-configuration2</artifactId>
 	  <version>2.6</version>
+	</dependency>
+	<!--JSON basic parsing-->
+	<dependency>
+	    <groupId>com.googlecode.json-simple</groupId>
+	    <artifactId>json-simple</artifactId>
+	    <version>1.1.1</version>
+	</dependency>
+	<!--Mapping from Json to Map-->
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>2.9.8</version>
 	</dependency>
   </dependencies>
   

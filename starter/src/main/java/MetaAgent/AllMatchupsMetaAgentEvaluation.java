@@ -1,5 +1,8 @@
 package MetaAgent;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -80,7 +83,10 @@ public class AllMatchupsMetaAgentEvaluation {
     	//After we disable logger we could remove these.
     	ArrayList<StatsSummary> statsSummary = new ArrayList<StatsSummary>();
         MetaAgent agent = new MetaAgent();
-        String results = "";
+        String results = "";    
+        
+  
+        
     	for(int i = 0; i<400; i++) {
     		
     		int theirDim1 = i/20;
@@ -99,19 +105,34 @@ public class AllMatchupsMetaAgentEvaluation {
         		
         		String r = String.format("%d %d %d %d %f %f %f\n",myDim1,myDim2,theirDim1,theirDim2,estimatedDim1,estimatedDim2,score);
         		System.out.println(r);
-        		results.concat(r);
-        		
+        		results += r;
+//        		try {
+//					fw.write(r);
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+
     		}
     		
     	}
     	System.out.print(results);
 
+        FileWriter fw = null;
+        try {
+			fw = new FileWriter("matchup_estimations_and_scores2p3_20_games.txt");
+			fw.write(results);
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public static StatsSummary runTestGames(String name, Agent agent) {
     	// the parameters for the st
         int numPlayers = 2;
-        int numGames = 2;
+        int numGames = 20;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 

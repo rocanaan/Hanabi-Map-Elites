@@ -44,7 +44,7 @@ import MetaAgent.PlayerStats;
  * You can see more agents online at:
  * https://git.fossgalaxy.com/iggi/hanabi/tree/master/src/main/java/com/fossgalaxy/games/fireworks/ai
  */
-public class MetaAgent implements Agent {
+public class TriangulationMetaAgent implements Agent {
 	
 	public enum BehaviorCharacteristic{
 		COMMUNICATIVENESS, RISKAVERSION, IPP
@@ -87,7 +87,7 @@ public class MetaAgent implements Agent {
 	
 	
  	
-	public MetaAgent() {
+	public TriangulationMetaAgent() {
 		this.actionHistory = new HashMap<>();
 		this.playerStatsRecord = new HashMap<>();
 		totalmoves = 0;
@@ -193,8 +193,6 @@ public class MetaAgent implements Agent {
 		
 
 		GameState workingState = state.getCopy();
-		
-//		TODO: BUG FIX: There seems to be an instance where the agent records a hint as being given without having hints available
 		
 		List<HistoryEntry> lastMoves = getLastMoves(state);
 		int numMoves = lastMoves.size();
