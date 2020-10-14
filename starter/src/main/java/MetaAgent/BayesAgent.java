@@ -34,7 +34,8 @@ import MetaAgent.MatchupTables;
 import MetaAgent.PlayerStats;
 
 
-
+import org.apache.commons.collections4.map.MultiKeyMap;
+import org.apache.commons.collections4.keyvalue.MultiKey;
 /**
  * A sample agent for the learning track.
  * 
@@ -44,15 +45,19 @@ import MetaAgent.PlayerStats;
  * You can see more agents online at:
  * https://git.fossgalaxy.com/iggi/hanabi/tree/master/src/main/java/com/fossgalaxy/games/fireworks/ai
  */
-public class MetaAgent implements Agent {
+public class BayesAgent implements Agent {
 	
 	public enum BehaviorCharacteristic{
 		COMMUNICATIVENESS, RISKAVERSION, IPP
 	}
 
-	private Map<String, Map<Action, Integer>> actionHistory;
 	
-	private Map<String, PlayerStats> playerStatsRecord;
+	private Map<String, double[][]> beliefDistributions;
+	private Map<MultiKey<String>, Map<Action, Integer>> actionHistory;
+//	private Map<String, Map<Action, Integer>> actionHistory;
+	
+	private Map<MultiKey<String>, PlayerStats> playerStatsRecord;
+//	private Map<String, PlayerStats> playerStatsRecord;
 
 	private  ArrayList<Agent>  agents;
 	
@@ -87,7 +92,7 @@ public class MetaAgent implements Agent {
 	
 	
  	
-	public MetaAgent() {
+	public BayesAgent() {
 		this.actionHistory = new HashMap<>();
 		this.playerStatsRecord = new HashMap<>();
 		totalmoves = 0;
@@ -132,7 +137,9 @@ public class MetaAgent implements Agent {
 					playerStatsRecord.put(name, new PlayerStats(0.0, 0.0, 0.0, 0.0, 0.0, 0));
 				}
 			}
-		}	
+		}
+		
+		
 
 	}
 	
@@ -154,7 +161,7 @@ public class MetaAgent implements Agent {
 		System.out.println("Starting move with agent ID " + agentID);
 		
 		
-		
+//		
 		if (myTurnCount == 0) {
 			numPlayers = state.getPlayerCount();
 			numCards = state.getHandSize();
@@ -195,105 +202,108 @@ public class MetaAgent implements Agent {
 //		TODO: BUG FIX: There seems to be an instance where the agent records a hint as being given without having hints available
 		
 		List<HistoryEntry> lastMoves = getLastMoves(state);
+		
+		
+//		TODO: This should be abstracted into a method for updating the BCs from history
+		
+		
 		int numMoves = lastMoves.size();
 		//System.out.println("My ID is " + agentID + " There were " + numMoves + " moves since last state on my turn count " + myTurnCount);
-		if (myTurnCount !=0 ) { //skipping a possibly incomplete first round in order to not have to deal with edge cases
-			Collections.reverse(lastMoves);
-			for(HistoryEntry move:lastMoves) {
+//		if (myTurnCount !=0 ) { // NOTE: In original meta agent implementation, skipped a possibly incomplete first round in order to not have to deal with edge cases. Think this is not needed here
+		Collections.reverse(lastMoves);
+		for(HistoryEntry move:lastMoves) {
+			int activePlayerID = move.playerID;
+			if (activePlayerID!=agentID) {
+				// Update player specific information;
+				PlayerStats currentPlayerStats = playerStatsRecord.get(currentPlayers[activePlayerID]);
 				
-
-				int activePlayerID = move.playerID;
-				if (activePlayerID!=agentID) {
-					// Update player specific information;
-					PlayerStats currentPlayerStats = playerStatsRecord.get(currentPlayers[activePlayerID]);
+				
+				if (move.action instanceof TellColour) {
+					currentPlayerStats.numHints = currentPlayerStats.numHints+1;
 					
+					TellColour tc = (TellColour)move.action;
+					CardColour color = tc.colour;
+					int targetPlayerID = tc.player;
+					if (targetPlayerID != agentID) {
+						int cardIndex = 0;
+						for (Card card:playerHands[targetPlayerID]) {
+							if (card.colour == color) {
+								knowsColorMask[targetPlayerID][cardIndex] = true;
+							}
+							++cardIndex;
+						}
+					}
 					
-					if (move.action instanceof TellColour) {
-						currentPlayerStats.numHints = currentPlayerStats.numHints+1;
-						
-						TellColour tc = (TellColour)move.action;
-						CardColour color = tc.colour;
-						int targetPlayerID = tc.player;
-						if (targetPlayerID != agentID) {
-							int cardIndex = 0;
-							for (Card card:playerHands[targetPlayerID]) {
-								if (card.colour == color) {
-									knowsColorMask[targetPlayerID][cardIndex] = true;
-								}
-								++cardIndex;
-							}
-						}
-						
-					}
-					if (move.action instanceof TellValue) {
-						currentPlayerStats.numHints = currentPlayerStats.numHints+1;
-						
-						TellValue tv = (TellValue)move.action;
-						int rank = tv.value;
-						int targetPlayerID = tv.player;
-						if (targetPlayerID != agentID) {
-							int cardIndex = 0;
-							for (Card card:playerHands[targetPlayerID]) {
-								if (card.value == rank) {
-									knowsRankMask[targetPlayerID][cardIndex] = true;
-								}
-								++cardIndex;
-							}
-						}
-						
-					}
-					if (hintsAvailable>0) {
-						currentPlayerStats.numPossibleHints = currentPlayerStats.numPossibleHints+1;
-					}
-					if (move.action instanceof PlayCard) {
-						PlayCard play = (PlayCard)move.action;
-						currentPlayerStats.numPlays = currentPlayerStats.numPlays+1;
-						
-						
-						currentPlayerStats.totalPlayability = currentPlayerStats.totalPlayability + playabilityMask[activePlayerID][play.slot];
-						
-						
-						int informationPlay = 0;
-						if (knowsColorMask[activePlayerID][play.slot]) {
-							informationPlay +=1;
-						}
-						if (knowsRankMask[activePlayerID][play.slot]) {
-							informationPlay +=1;
-						}
-						currentPlayerStats.totalInformationPlays+=informationPlay;
-					}
-					currentPlayerStats.totalInteractions+=1;
-					//System.out.println("Total Interactions with player " + currentPlayers[activePlayerID] + " is "  + playerStatsRecord.get(currentPlayers[activePlayerID]).totalInteractions);
 				}
-
-				
-				
-				// Update general state information - that is: number of hints availabble after this move
+				if (move.action instanceof TellValue) {
+					currentPlayerStats.numHints = currentPlayerStats.numHints+1;
+					
+					TellValue tv = (TellValue)move.action;
+					int rank = tv.value;
+					int targetPlayerID = tv.player;
+					if (targetPlayerID != agentID) {
+						int cardIndex = 0;
+						for (Card card:playerHands[targetPlayerID]) {
+							if (card.value == rank) {
+								knowsRankMask[targetPlayerID][cardIndex] = true;
+							}
+							++cardIndex;
+						}
+					}
+					
+				}
+				if (hintsAvailable>0) {
+					currentPlayerStats.numPossibleHints = currentPlayerStats.numPossibleHints+1;
+				}
 				if (move.action instanceof PlayCard) {
-					PlayCard playAction = (PlayCard)move.action;
-					//System.out.println("Card slot " + playAction.slot);
-					//System.out.println("Active PLayer ID " + activePlayerID);
-
-					Card playedCard = playerHands[activePlayerID][playAction.slot];
-					//System.out.println("Played card was " + playerHands[activePlayerID][playAction.slot]);// + " color " + playerHands[activePlayerID][playAction.slot].colour + " value " + playerHands[activePlayerID][playAction.slot].value);
-					if (playedCard!=null && playedCard.value == 5) {
-						if (state.getTableValue(playedCard.colour)==5) {
-							++hintsAvailable;
-						}
-					}
+					PlayCard play = (PlayCard)move.action;
+					currentPlayerStats.numPlays = currentPlayerStats.numPlays+1;
 					
+					
+					currentPlayerStats.totalPlayability = currentPlayerStats.totalPlayability + playabilityMask[activePlayerID][play.slot];
+					
+					
+					int informationPlay = 0;
+					if (knowsColorMask[activePlayerID][play.slot]) {
+						informationPlay +=1;
+					}
+					if (knowsRankMask[activePlayerID][play.slot]) {
+						informationPlay +=1;
+					}
+					currentPlayerStats.totalInformationPlays+=informationPlay;
 				}
-				if (move.action instanceof DiscardCard) {
-					++hintsAvailable;
-				}
-				if (move.action instanceof TellColour || move.action instanceof TellValue) {
-					--hintsAvailable;
-				}
+				currentPlayerStats.totalInteractions+=1;
+				//System.out.println("Total Interactions with player " + currentPlayers[activePlayerID] + " is "  + playerStatsRecord.get(currentPlayers[activePlayerID]).totalInteractions);
 			}
+
+			
+			
+			// Update general state information - that is: number of hints availabble after this move
+			if (move.action instanceof PlayCard) {
+				PlayCard playAction = (PlayCard)move.action;
+				//System.out.println("Card slot " + playAction.slot);
+				//System.out.println("Active PLayer ID " + activePlayerID);
+
+				Card playedCard = playerHands[activePlayerID][playAction.slot];
+				//System.out.println("Played card was " + playerHands[activePlayerID][playAction.slot]);// + " color " + playerHands[activePlayerID][playAction.slot].colour + " value " + playerHands[activePlayerID][playAction.slot].value);
+				if (playedCard!=null && playedCard.value == 5) {
+					if (state.getTableValue(playedCard.colour)==5) {
+						++hintsAvailable;
+					}
+				}
+				
+			}
+			if (move.action instanceof DiscardCard) {
+				++hintsAvailable;
+			}
+			if (move.action instanceof TellColour || move.action instanceof TellValue) {
+				--hintsAvailable;
+			}
+		}
 			
 			
 		
-		}
+//		} // NOTE: Here finishes the IF block if we need to skip this in the first move.
 		
 		// Update what each player knows about their hand
 		for (int playerID = 0; playerID < numPlayers; ++playerID) {
@@ -330,7 +340,8 @@ public class MetaAgent implements Agent {
 //		}
 		
 		if (hintsAvailable != state.getInformation()) {
-			//System.out.println("-------- WARNING: hints were miscalculated ----- ");
+			System.out.println("-------- WARNING: hints were miscalculated ----- ");
+			System.out.println("-------- WARNING: hints were miscalculated ----- ");
 		}
         hintsAvailable = state.getInformation();
 		++myTurnCount;
@@ -357,6 +368,10 @@ public class MetaAgent implements Agent {
 		// calculate possible moves
         //List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
 
+		
+		
+		
+		
 		PlayerStats partnerStats = playerStatsRecord.get(currentPlayers[(agentID+1)%numPlayers]);
 		double communicativeness = partnerStats.getCommunicativeness();
 		double riskAversion = partnerStats.getRiskAversion();

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import com.fossgalaxy.games.fireworks.state.BasicState;
 import com.fossgalaxy.games.fireworks.state.GameState;
 
-public class HLEStateConverter {
+public class SpartaStateConverter {
 	
 	private String[] keys = {"discard_pile", "complete_card_knowledge", "current_player_offset", 
 							"num_players", "fireworks", "observed_hands", "card_knowledge", 
