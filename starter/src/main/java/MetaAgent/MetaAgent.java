@@ -266,7 +266,8 @@ public class MetaAgent implements Agent {
 					//System.out.println("Total Interactions with player " + currentPlayers[activePlayerID] + " is "  + playerStatsRecord.get(currentPlayers[activePlayerID]).totalInteractions);
 				}
 
-				
+				// assert currentPlayerStats.totalInformationPlays == playerStatsRecord.get(currentPlayers[activePlayerID]).totalInformationPlays
+				// If this assert fails we can do something like playerStatsRecord.put(currentPlayers[activePlayerID], currentPlayerStats.totalInformationPlays)
 				
 				// Update general state information - that is: number of hints availabble after this move
 				if (move.action instanceof PlayCard) {

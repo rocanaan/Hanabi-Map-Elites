@@ -100,7 +100,7 @@ public class BayesAdaptiveAgent implements Agent {
 	@Override
 	public Action doMove(int agentID, GameState state) {
 		// TODO Auto-generated method stub
-		String theirID;
+		String theirID; //TODO: get their ID
 		
 		updateHistory(); // new values for IPP, Comm, etc TODO Xianbo
 		// if (adaptationCondition(){
@@ -111,7 +111,7 @@ public class BayesAdaptiveAgent implements Agent {
 		String responseID = getResponse(); //almost done
 		Agent responsePolicy = myStrategyPool.get(responseID);
 		
-		Action action = responseStrategy.doMove(agentID, state);
+		Action action = responsePolicy.doMove(agentID, state);
 
 		return action;
 	}
@@ -130,6 +130,10 @@ public class BayesAdaptiveAgent implements Agent {
 			}
 			
 		}
+		
+	}
+	
+	void updateBeliefs(double d1, double d2) {
 		
 	}
 	

@@ -56,7 +56,8 @@ public class humanSpartaAgent implements Agent {
 		if (previousAction != null){
 			try (FileWriter file = new FileWriter(pathToActions + File.separator + "botaction " + new java.util.Date())) {
 				int actionAsInt = actionToInt(previousAction);
-				System.out.println("Wrote bot action" + actionAsInt);
+				System.out.println("Wrote bot action " + actionAsInt);
+				file.write(String.valueOf(actionAsInt));
 				file.close();
 			 } catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -66,8 +67,7 @@ public class humanSpartaAgent implements Agent {
 		else {
 			System.out.println("No action from partner to report");
 		}
-		
-		
+				
 		// Write state to JSON
 		JSONObject json = StateToSpartaConverter.toSpartaJSON(state, agentID);
 		

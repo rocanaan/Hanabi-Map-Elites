@@ -258,7 +258,7 @@ public class StateToSpartaConverter {
 				
 			}
 			
-			Map<Integer, List<Card>> possibleCards = DeckUtils.bindBlindCard( agentID, state.getHand((agentID + currentPlayer) % state.getPlayerCount()), state.getDeck().toList());
+			Map<Integer, List<Card>> possibleCards = DeckUtils.bindBlindCard( agentID, state.getHand((agentID + currentPlayer) % state.getPlayerCount()), deck);
 			
 			for (int slot: possibleCards.keySet()){
 				List<Card> cards = possibleCards.get(slot);
