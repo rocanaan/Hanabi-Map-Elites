@@ -75,6 +75,42 @@ public class StateToSpartaConverter {
 		
 		obj.put("predictions", predictions);
 		
+		// This is a stand-in for the cheatMyCards entry, which might need to be provided at the gamerunner level.
+		// For now, it just states that all my cards are 1r
+		JSONArray cheatMyCards = new JSONArray();
+		for (int i = 0; i<5 ; i++) {
+			cheatMyCards.add("1r");
+		}
+		obj.put("cheatMyCards", cheatMyCards);
+		
+		// The next two entries are also stand-ins which might need to be provided at the gamerunner level.
+		// For now, just gives id 49 .. 40 to all cards in the game
+		// There might be a problem at the end of the game if one of the players has 4 cards.
+		JSONArray cardIds = new JSONArray();
+		for (int i = 0; i<5 ; i++) {
+			cardIds.add(String.valueOf(49-i));
+		}
+		obj.put("cardIds", cardIds);
+		
+		JSONArray partnerCardIds = new JSONArray();
+		for (int i = 0; i<5 ; i++) {
+			partnerCardIds.add(String.valueOf(44-i));
+		}
+		obj.put("partnerCardIds", partnerCardIds);
+		
+		
+		// This is also a stand-in. For now, prints all actions of the game in reverse order as string
+		JSONArray moveHistory = new JSONArray();
+		int historySize = state.getActionHistory().size();
+		if (historySize>0) {
+			for (int i = 0; i<historySize-1;i++) {
+				System.out.println(i);
+				moveHistory.add(state.getActionHistory().get(historySize-(i+1)).action);
+			}
+		}
+		
+		obj.put("moveHistory", moveHistory);
+		
 		
 		return obj;
 

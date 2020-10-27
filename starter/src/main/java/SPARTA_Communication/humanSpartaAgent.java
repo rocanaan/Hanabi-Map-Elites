@@ -53,6 +53,12 @@ public class humanSpartaAgent implements Agent {
 		
 		Action previousAction = state.getActionHistory().get(state.getActionHistory().size()-1).action;
 		
+		
+		System.out.println("Hands");
+		System.out.println(state.getHand(0).getCard(1));
+		System.out.println(state.getHand(1).getCard(1));
+
+		
 		if (previousAction != null){
 			try (FileWriter file = new FileWriter(pathToActions + File.separator + "botaction " + new java.util.Date())) {
 				int actionAsInt = actionToInt(previousAction);
