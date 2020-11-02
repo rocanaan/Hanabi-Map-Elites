@@ -68,7 +68,7 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 1;
+		int numGames = 2;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
@@ -150,7 +150,7 @@ public class EvaluatePopulationFromFile {
 			}
 
 			// Serialize results
-			String outputFileName = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/EvaluateFromFile/ToG/" + numGames;
+			String outputFileName = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/EvaluateFromFile/ToG2/" + numGames;
 //					+ mode.toString();
 //			String outputFileName = "/Users/EUGENE/Documents/Hanabi/Agents/Reevaluation" + numGames + mode.toString();
 			String dateTime = Utils.Utils.getDateTimeString();

@@ -129,7 +129,7 @@ public class ConsolidatedMetaAgentEvaluation {
     public static StatsSummary runTestGames(String name, Agent agent) {
     	// the parameters for the test
         int numPlayers = 2;
-        int numGames = 5;
+        int numGames = 3;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 

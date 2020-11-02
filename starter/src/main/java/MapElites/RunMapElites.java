@@ -38,10 +38,10 @@ import javassist.compiler.ast.Pair;
  *
  */
 public class RunMapElites {
-	public static int G = 10000; //number of random individuals
-	public static int I = 1000000 - G; // number of mutations after initial random individuals
-	public static int d1 = 20; // number of niches in the first dimension
-	public static int d2 = 20; // number of niches in the second dimension
+	public static int G = 50000; //number of random individuals
+	public static int I = 300000 - G; // number of mutations after initial random individuals
+	public static int d1 = 5; // number of niches in the first dimension
+	public static int d2 = 5; // number of niches in the second dimension
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.1;
 	public static int numGames = 100; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
@@ -55,7 +55,7 @@ public class RunMapElites {
 	static int[][][] population = new int[d1][d2][chromosomeLength];
 
 	static String filePath = "/Users/rodrigocanaan/Dev/MapElitesResults/";
-	static String directory = "WorkflowTest/MapElites/2pFinal2/";
+	static String directory = "WorkflowTest/MapElites/2pFinal3/";
 
 
 	
@@ -392,6 +392,7 @@ public class RunMapElites {
 			updateMap(fitness,  niches.get(0), niches.get(1), chromosome);
 
 			if (individual % 1000 == 0) {
+				System.out.println(new java.util.Date());
     			System.out.println("Printing Map for initial iteration " + individual);
 				printParameters();
     			printMap();
@@ -485,6 +486,7 @@ public class RunMapElites {
 
 
 			if (individual % 5000 == 0 || individual == (I-1)) {
+				System.out.println(new java.util.Date());
     			System.out.println("Printing Map for mutation iteration " + individual);
 				printParameters();
     			printMap();

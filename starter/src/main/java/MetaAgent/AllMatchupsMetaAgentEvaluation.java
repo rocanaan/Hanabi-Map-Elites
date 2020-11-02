@@ -38,7 +38,7 @@ public class AllMatchupsMetaAgentEvaluation {
 	
 	public static Player[] buildPool() {
 		
-        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("2P3", 20, 20, false);
+        final ArrayList<Agent>  agents = AgentLoaderFromFile.makeAgentsFromFile("5by5", 20, 20, false);
         Player[] pool = new Player[agents.size()];
         int i = 0;
         for (Agent a:agents) {
@@ -86,15 +86,16 @@ public class AllMatchupsMetaAgentEvaluation {
         String results = "";    
         
   
+        int dim = 5;
         
-    	for(int i = 0; i<400; i++) {
+    	for(int i = 0; i<dim*dim; i++) {
     		
-    		int theirDim1 = i/20;
-    		int theirDim2 = i%20;
+    		int theirDim1 = i/dim;
+    		int theirDim2 = i%dim;
     		
-    		for (int j = 0; j<400; j++) {
-        		int myDim1 = j/20;
-        		int myDim2 = j%20;
+    		for (int j = 0; j<dim*dim; j++) {
+        		int myDim1 = j/dim;
+        		int myDim2 = j%dim;
         		
         		agent.setGivenDimensions(-1, -1, myDim1, myDim2);
         		
@@ -132,7 +133,7 @@ public class AllMatchupsMetaAgentEvaluation {
     public static StatsSummary runTestGames(String name, Agent agent) {
     	// the parameters for the st
         int numPlayers = 2;
-        int numGames = 20;
+        int numGames = 100;
         String agentName = "MetaAgent";
         Player[] pool = buildPool();
 
@@ -267,7 +268,7 @@ public class AllMatchupsMetaAgentEvaluation {
         // sort out player assignments
 		int numPlayers = others.size() + 1;
 		if(others.size() <= 0||others.get(0)== null) {
-		    throw new IllegalArgumentException("List of players are empty");
+		    throw new IllegalArgumentException("List of players is empty");
 		}
 		if(yourPos >= numPlayers) {
 		    throw new IllegalArgumentException("yourPos out of range");

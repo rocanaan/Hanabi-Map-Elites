@@ -105,7 +105,7 @@ public class StateToSpartaConverter {
 		if (historySize>0) {
 			for (int i = 0; i<historySize-1;i++) {
 				System.out.println(i);
-				moveHistory.add(state.getActionHistory().get(historySize-(i+1)).action);
+				moveHistory.add(String.valueOf(state.getActionHistory().get(historySize-(i+1)).action));
 			}
 		}
 		
