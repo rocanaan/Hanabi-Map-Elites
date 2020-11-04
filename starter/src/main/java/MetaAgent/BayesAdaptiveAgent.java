@@ -3,16 +3,21 @@ package MetaAgent;
 import java.io.BufferedReader;
 
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.configuration2.XMLConfiguration;
 
+import com.fossgalaxy.games.fireworks.GameRunner;
+import com.fossgalaxy.games.fireworks.GameStats;
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
@@ -28,6 +33,8 @@ import com.fossgalaxy.games.fireworks.state.actions.DiscardCard;
 import com.fossgalaxy.games.fireworks.state.actions.PlayCard;
 import com.fossgalaxy.games.fireworks.state.actions.TellColour;
 import com.fossgalaxy.games.fireworks.state.actions.TellValue;
+import com.fossgalaxy.stats.BasicStats;
+import com.fossgalaxy.stats.StatsSummary;
 
 import Evolution.Rulebase;
 import MetaAgent.HistogramAgent;
@@ -51,7 +58,7 @@ public class BayesAdaptiveAgent implements Agent {
 
 	// Precomputed strategies, matchup information and training partner names. These all relate to training partners
 	private HashMap<String, Agent> myStrategyPool;
-	private ArrayList<String> trainingPoolCandidates;
+	private Set<String> trainingPoolCandidates;
 	private MultiKeyMap<String, MatchupInformation> precomputedMatchupInfo;
 	
 	// These relate to evaluation partners, which are not known in advance
@@ -79,16 +86,21 @@ public class BayesAdaptiveAgent implements Agent {
 	
 	// Hyperparameters TODO: Decide whether these will be passed by constructor, read from a config file etc
 	private int turnsAdaptationThreshold = Integer.MAX_VALUE;
-	private int gamesAdaptationThreshold = 2;
-	private double assumedBehaviorVariance; // This is the knob that lets us determine by how much to update a given match-up's behavior information. In the general case, this could vary per match-up and depend on the threshold of games/turns. We are simplifying it with a single number.
+	private int gamesAdaptationThreshold = 10;
+	private double assumedBehaviorVariance = 0.1; // This is the knob that lets us determine by how much to update a given match-up's behavior information. In the general case, this could vary per match-up and depend on the threshold of games/turns. We are simplifying it with a single number.
 	
-	public BayesAdaptiveAgent(HashMap<String, Agent> myStrategyPool, ArrayList<String> trainingPoolCandidates,
+	public BayesAdaptiveAgent(HashMap<String, Agent> myStrategyPool, Set<String> trainingPoolCandidates,
 			MultiKeyMap<String, MatchupInformation> precomputedMatchupInfo) {
 		super();
 		this.myStrategyPool = myStrategyPool;
 		this.trainingPoolCandidates = trainingPoolCandidates;
 		this.precomputedMatchupInfo = precomputedMatchupInfo;
 		
+		beliefDistribution = new MultiKeyMap<String, Double>();
+		
+		rollingMatchupInfo = new HashMap<String, PlayerStats>();  // This is the information on the current match-up for a given partner.
+		rollingGamesWithPartner = new HashMap<String, Integer>();
+		rollingTurnsWithPartner = new HashMap<String, Integer>();	
 		
 //		evaluationMatchupInfo = new MultiKeyMap<String, PlayerStats>();
 	} //TODO: Write a function that initializes this class by generating all the precomputed object from our files
@@ -106,6 +118,7 @@ public class BayesAdaptiveAgent implements Agent {
 				if (!beliefDistribution.containsKey(name)) {
 					rollingGamesWithPartner.put(name, 0);
 					rollingTurnsWithPartner.put(name, 0);
+					rollingMatchupInfo.put(name, new PlayerStats(0, 0, 0, 0, 0, 0));
 					for (String trainingPartner:trainingPoolCandidates) {
 						MultiKey<String> key = new MultiKey<String>(name, trainingPartner);
 						beliefDistribution.put(key, 1.0/trainingPoolCandidates.size());
@@ -166,9 +179,17 @@ public class BayesAdaptiveAgent implements Agent {
 		currentResponseID = getResponse(theirID); //almost done
 		Agent responsePolicy = myStrategyPool.get(currentResponseID);
 		
-		Action action = responsePolicy.doMove(agentID, state);
-
-		return action;
+		try {
+			Action action = responsePolicy.doMove(agentID, state);
+			return action;
+		}
+		catch (NullPointerException e){
+			System.err.println("Null action returned");
+	        List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
+	        //choose a  xdom item from that list and return it
+	        int moveToMake = new Random().nextInt(possibleMoves.size());
+	        return possibleMoves.get(moveToMake);
+		}
 	}
 	
 	
@@ -283,7 +304,7 @@ public class BayesAdaptiveAgent implements Agent {
 	        List<HistoryEntry> lastMoves = getLastMoves(state);
 	        int numMoves = lastMoves.size();
 	        //System.out.println("My ID is " + agentID + " There were " + numMoves + " moves since last state on my turn count " + myTurnCount);
-	        if (myTurnCount !=-10 ) { //check if needed, skipping a possibly incomplete first round in order to not have to deal with edge cases
+	        if (myTurnCount >0 ) { //check if needed, skipping a possibly incomplete first round in order to not have to deal with edge cases
 	            Collections.reverse(lastMoves);
 	            for(HistoryEntry move:lastMoves) {
 	                
@@ -538,6 +559,77 @@ public class BayesAdaptiveAgent implements Agent {
 	        return state.getTableValue(card.colour) + 1 == card.value;
 	    }
 	
+	    
+	    // A small main function to play the Bayes agent using the same training pool and strategy pool
+	    public static void main(String[] args) throws IOException {
+	    	
+	    	String fileName = "5by5";
+			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(fileName, false, true);
+			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromFile(fileName, false, true);
+			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromFile(fileName, false, true);
+
+			Set<String> trainingPoolCandidates = strategyPool.keySet();
+			MultiKeyMap<String, MatchupInformation> MUs = PrecomputeMatchupInfo.precomputeMatchups(strategyPool, trainingPool, 2, 200);
+			
+			FileWriter myWriter = null;
+			
+			
+	
+			System.out.println("Finished precomputing matchups");
+			
+			BayesAdaptiveAgent ba = new BayesAdaptiveAgent(strategyPool, trainingPoolCandidates, MUs);
+			
+			int numGames = 1000;
+			int numPlayers = 2;
+	
+			HashMap<String, StatsSummary> results = new HashMap<String, StatsSummary>();
+			HashMap<String, ArrayList<Integer>> detailedResults = new HashMap<String, ArrayList<Integer>>();
+			for (String theirID : trainingPoolCandidates) {
+				StatsSummary statsSummary = new BasicStats();
+				
+				ArrayList<Integer> gameScores = new ArrayList<Integer>();
+
+	               
+		        // run the test games
+		        for (int gameCount=0; gameCount<numGames; gameCount++) {
+		        	
+		            GameRunner runner = new GameRunner("test-game", numPlayers);
+		            
+		            runner.addNamedPlayer("Bayes", new AgentPlayer("Bates", ba));
+		            
+		            Agent evaluationPartner = evaluationPool.get(theirID);
+		            for (int nextPlayer = 1; nextPlayer< numPlayers; nextPlayer++);{
+		            	runner.addNamedPlayer(theirID, new AgentPlayer(theirID, evaluationPartner));
+		            }
+		            Random random = new Random();
+		    		long seed = random.nextLong();
+		           
+		    		
+		    		System.out.println(String.format("Starting to play game %d with %s", gameCount, theirID));
+		            GameStats stats = runner.playGame(seed);
+		            System.out.println("Finished game");
+		            statsSummary.add(stats.score);
+		            gameScores.add(stats.score);
+		            System.out.println(String.format("Played game %d with %s, score %d", gameCount, theirID, stats.score));
+		            
+		        }
+		        
+		        results.put(theirID,statsSummary);
+		        detailedResults.put(theirID,gameScores);
+		        
+		        System.out.println(String.format("Playing Bayes with %s got average score %f" , theirID, statsSummary.getMean()));
+
+			}
+			System.out.println("=-=-=-=-Printing Final Results=-=-=-=-=-=-");
+			for (String theirID:results.keySet()) {
+				StatsSummary MU = results.get(theirID);
+		        System.out.println(String.format("Playing Bayes with %s got average score %f" , theirID, MU.getMean()));
+		        for (int s: detailedResults.get(theirID)) {
+		        	System.out.print(s + " ");
+		        }
+	        	System.out.println("");
+			}
+	    }
 	
 	
 		

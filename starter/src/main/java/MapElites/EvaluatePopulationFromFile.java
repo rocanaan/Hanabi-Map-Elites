@@ -59,16 +59,16 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "2P3";
+		String fileName = "5by5";
 //		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/5p/population999999";
 //		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName2 = "2P3";
-		int sizeDim1 = 20;
-		int sizeDim2 = 20;
+		String fileName2 = "5by5";
+		int sizeDim1 = 5;
+		int sizeDim2 = 5;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 2;
+		int numGames = 1000;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
@@ -424,9 +424,17 @@ public class EvaluatePopulationFromFile {
 
 			// Print averages
 			System.out.println("Printing averages");
+			double generalistScore = 0;
+			int generalistD1 = -1;
+			int generalistD2 = -1;
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j < sizeDim2; j++) {
 					System.out.print(averageAdHocScore[i][j] + " ");
+					if (averageAdHocScore[i][j] > generalistScore) {
+						generalistScore = averageAdHocScore[i][j];
+						generalistD1 = i;
+						generalistD2 = j;
+					}
 				}
 				System.out.println("");
 			}
@@ -466,6 +474,46 @@ public class EvaluatePopulationFromFile {
 						int dim1 = dim1BestPair[i][j];
 						int dim2 = dim2BestPair[i][j];
 						score = matchupTable[i][j][dim1][dim2];
+						sum += score;
+						count += 1;
+					}
+					System.out.print(score + " ");
+				}
+				System.out.println("");
+			}
+			System.out.println((sum / count));
+			System.out.println("Replaying matchups based on best pair");
+			System.out.println("In this population:");
+			sum = 0;
+			count = 0;
+			for (int i = 0; i < sizeDim1; i++) {
+				for (int j = 0; j < sizeDim2; j++) {
+					AgentPlayer us = agentPlayers.get(j + i*sizeDim1);
+					double score = 0;
+					if (validMask[i][j] > 0) {
+						int dim1 = dim1BestPair[i][j];
+						int dim2 = dim2BestPair[i][j];
+						AgentPlayer them = agentPlayers.get(dim2 + dim1*sizeDim1);
+						score =  Utils.Utils.getMean(NewTestSuite.ConstantNumberPlayersTest(numPlayers, numGames, us, them, new Random()));
+						sum += score;
+						count += 1;
+					}
+					System.out.print(score + " ");
+				}
+				System.out.println("");
+			}
+			System.out.println((sum / count));
+			System.out.println("Replaying matchups based on generalist");
+			System.out.println("In this population:");
+			sum = 0;
+			count = 0;
+			for (int i = 0; i < sizeDim1; i++) {
+				for (int j = 0; j < sizeDim2; j++) {
+					AgentPlayer us = agentPlayers.get(generalistD2 + generalistD1*sizeDim1);
+					double score = 0;
+					if (validMask[i][j] > 0) {
+						AgentPlayer them = agentPlayers.get(j + i*sizeDim1);
+						score =  Utils.Utils.getMean(NewTestSuite.ConstantNumberPlayersTest(numPlayers, numGames, us, them, new Random()));
 						sum += score;
 						count += 1;
 					}
