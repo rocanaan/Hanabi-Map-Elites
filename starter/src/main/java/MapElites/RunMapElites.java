@@ -170,23 +170,85 @@ public class RunMapElites {
 	
 	
 	
-	public static void printChromosomes() {
-		for (int i = 0; i<d1; i++) {
-			for(int j = 0; j<d2; j++) {
-				System.out.print("Chromosome in niche " + i + "," + j +  " : {");
-				for (int k=0; k< chromosomeLength;k++) {
-					if (k != (chromosomeLength-1)) {
-						System.out.print(population[i][j][k] + ",");
-					}
-					else {
-						System.out.print(population[i][j][k]);
-					}
-				}
-				System.out.println("} with fitness " + map[i][j]);
-			}
+    public static void printChromosomes() {
+        int counter = 0;
+        for (int i = 0; i<d1; i++) {
+            for(int j = 0; j<d2; j++) {
+                System.out.print("Chromosome in niche " + i + "," + j +  " : {");
+                for (int k=0; k< chromosomeLength;k++) {
+                    
+                    
+                    if (k != (chromosomeLength-1)) {
+                        System.out.print(population[i][j][k] + ",");
+                    }
+                    else {
+                        System.out.print(population[i][j][k]);
+                    }
+                }
+                System.out.println("} with fitness " + map[i][j]);
+                
+                counter+=1;
+                     
+                JSONObject obj = new JSONObject();
+                obj.put("Iteration", counter);
+                JSONObject obj2 = new JSONObject();
+                obj.put("Map Dimensions", "{"+d1+","+d2+"}");
+                
+                JSONObject popinfo = new JSONObject();
+                
+                JSONObject popcontent = new JSONObject();
+                popcontent.put("Communicativeness_index",i);
+                popcontent.put("IPP_index",j);
+                popcontent.put("Name","["+i+","+j+"]");
+                popcontent.put("Fitness",map[i][j]);
+                
+                
+                int sum = 0;
+                String chromosome = "";
+                for (int k=0; k< chromosomeLength;k++) {
+                    sum+=population[i][j][k];
+                }
+                boolean valid;
+                if (sum>0){
+                    valid = true;
+                }
+                else {
+                    valid = false;
+                }
+                
+                popcontent.put("valid",valid);
+                popcontent.put("Chromosome",Arrays.toString(population[i][j]));
+                popinfo.put("populations",popcontent);
+                
+                JSONObject output = new JSONObject();
+                output.put("info",obj);
+                output.put("population",popcontent);
 
-		}
-	}
+
+                try {
+                    
+                    // Constructs a FileWriter given a file name, using the platform's default charset
+                    file = new FileWriter("population_"+counter+".json");
+                    file.write(output.toJSONString());
+         
+                } catch (IOException e) {
+                    e.printStackTrace();
+         
+                } finally {
+         
+                    try {
+                        file.flush();
+                        file.close();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
+        
+    }
 	
 	public static boolean sanityCheck(double fitness) { //TODO: Threshold should be a parameter
 		double threshold = 3;
