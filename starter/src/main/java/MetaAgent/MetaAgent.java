@@ -375,9 +375,9 @@ public class MetaAgent implements Agent {
 			}
 			//TODO: Currently, does not generalize to other numbers of players
 
-			String file = "2P2";
-
-		    agents = AgentLoaderFromFile.makeAgentsFromFile(file, 20, 20, false);
+			//String file = "2P2";
+            String file = "population";
+		    agents = AgentLoaderFromJson.makeAgentsFromFile(file, 20, 20, false);//instead of loading from File
 		    
 
 		}
