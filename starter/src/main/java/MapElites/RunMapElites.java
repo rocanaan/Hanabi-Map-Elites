@@ -1,6 +1,7 @@
 package MapElites;
 
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 import java.util.function.Function;
+
+import org.json.simple.JSONObject;
 
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
 import com.fossgalaxy.games.fireworks.ai.HistogramAgent;
@@ -169,7 +172,6 @@ public class RunMapElites {
 	}
 	
 	
-	
     public static void printChromosomes() {
         int counter = 0;
         for (int i = 0; i<d1; i++) {
@@ -224,6 +226,7 @@ public class RunMapElites {
                 output.put("info",obj);
                 output.put("population",popcontent);
 
+            	FileWriter file = null;
 
                 try {
                     

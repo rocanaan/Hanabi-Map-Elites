@@ -60,6 +60,15 @@ public class PrecomputeMatchupInfo {
 		return precomputedMUs;
 	}
 	
+	public static void writePrecomputedMatchupsToJSON(MultiKeyMap<String, MatchupInformation> precomputeMatchups) {
+		//XIANBO to do: output it to JSON
+	}
+	
+	public static MultiKeyMap<String, MatchupInformation> readPrecomputedMatchupsFromJSON (String filename) {
+		return null;
+		//XIANBO to do: output it to JSON
+	}
+	
 	// This function is replicated in other parts of the codebase with small variations. TODO Consolidate.
 	public static StatsSummary runTestGames(Agent us, String ourID, Agent them, String theirID, int numPlayers, int numGames, long seed) {
     	// the parameters for the st
