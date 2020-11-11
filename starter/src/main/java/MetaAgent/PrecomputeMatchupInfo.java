@@ -36,12 +36,12 @@ public class PrecomputeMatchupInfo {
 			
 			ReportAgent us = new ReportAgent(ourAgents.get(ourID));
 			for (String theirID: theirAgents.keySet()) {
-				Agent them = theirAgents.get(theirID);
+				ReportAgent them = new ReportAgent(theirAgents.get(theirID));
 				
 				StatsSummary stats = runTestGames(us, ourID, them, theirID, numPlayers, numGames);
 				
-				double comm = us.getCommunicativeness();
-				double ipp = us.getInformationPlays();
+				double comm = them.getCommunicativeness();
+				double ipp = them.getInformationPlays();
 				
 				Map<String,Double> estimatedBCValues = new HashMap<String,Double>();
 				estimatedBCValues.put("communicativeness", comm);
@@ -80,7 +80,7 @@ public class PrecomputeMatchupInfo {
             
             runner.addNamedPlayer(ourID, new AgentPlayer(ourID, us));
             for (int nextPlayer = 1; nextPlayer< numPlayers; nextPlayer++);{
-            	runner.addNamedPlayer(ourID, new AgentPlayer(ourID, us));
+            	runner.addNamedPlayer(theirID, new AgentPlayer(theirID, them));
             }
             
            
