@@ -65,28 +65,39 @@ public class ReportAgent implements Agent{
     
     @Override
     public Action doMove(int agentID, GameState state) {
-    		Action action = agent.doMove(agentID, state);
-        
-        
-    		
-//        System.out.println(action.getClass().getName());
-        if (action instanceof PlayCard) {
-        		updatePlayability(state, agentID, (PlayCard)action);
-
-        }
-        updateHints(state, action);
-        if (action instanceof DiscardCard) {
-        	DiscardCard dAction = (DiscardCard)action;
-        	totalDiscardSlot += (double)dAction.slot/((double)state.getHandSize()-1);
-        	countDiscards++;
-        }
-        
-        if (recordPlays) {
-        		stateActionArchive.add(new StateActionPair(state,action, agentID));
-        }
-        
-        
-        return action;
+    	Action action = null;
+    	try {
+	    	action = agent.doMove(agentID, state);
+	        
+	        
+	    		
+	//        System.out.println(action.getClass().getName());
+	        if (action instanceof PlayCard) {
+	        		updatePlayability(state, agentID, (PlayCard)action);
+	
+	        }
+	        updateHints(state, action);
+	        if (action instanceof DiscardCard) {
+	        	DiscardCard dAction = (DiscardCard)action;
+	        	totalDiscardSlot += (double)dAction.slot/((double)state.getHandSize()-1);
+	        	countDiscards++;
+	        }
+	        
+	        if (recordPlays) {
+	        		stateActionArchive.add(new StateActionPair(state,action, agentID));
+	        }
+	        
+	        
+	        return action;
+    	}
+    	catch (Exception e) {
+    		System.out.println("Exception " + e + " while attempting to do move");
+    		System.out.println(action);
+    		System.out.println(state);
+    		e.printStackTrace();
+    		System.exit(1);
+    		return null;
+    	}
     }
     
     public ArrayList<StateActionPair> getStateActionArchive(){
@@ -160,5 +171,5 @@ public class ReportAgent implements Agent{
     	countDiscards = 0;
         stateActionArchive = null;
     }
-   
+       
 }

@@ -1,5 +1,6 @@
 package com.fossgalaxy.games.fireworks.ai;
 
+import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
 import com.fossgalaxy.games.fireworks.ai.rule.ProductionRuleAgent;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import com.fossgalaxy.games.fireworks.state.GameState;
@@ -9,6 +10,7 @@ import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 public class HistogramAgent extends ProductionRuleAgent implements Serializable{
@@ -31,17 +33,33 @@ public class HistogramAgent extends ProductionRuleAgent implements Serializable{
         aID = agentID;
         int index = 0;
         for (Rule rule : rules) {
-            if (rule.canFire(agentID, state)) {
-                Action selected = rule.execute(agentID, state);
-                histogram.set(index, histogram.get(index)+1);
-                return selected;
-            }
-            else{
-                index++;
-            }
+        	try {
+	            if (rule.canFire(agentID, state)) {
+	                Action selected = rule.execute(agentID, state);
+	                histogram.set(index, histogram.get(index)+1);
+	                return selected;
+	            }
+        	}
+        	catch (Exception e) {
+        		System.err.println("Exception " + e + " when executing rule " + rule);
+        		e.printStackTrace();
+        	}
+            index++;
         }
         histogram.set(index,histogram.get(index)+1 );
-        return doDefaultBehaviour(agentID, state);
+        try {
+        	Action backup = doDefaultBehaviour(agentID, state);
+        	if (backup != null){
+        		return backup;
+        	}
+        }
+        catch (Exception e) {
+        	System.err.println("Exception " + e + " when trying to do backup action");
+        }
+        List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
+        //choose a random item from that list and return it
+        int moveToMake = new Random().nextInt(possibleMoves.size());
+        return possibleMoves.get(moveToMake);
     }
     
     public void printHistogram(){

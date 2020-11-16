@@ -117,16 +117,18 @@ public class TellUnambiguous3 extends AbstractTellRule{
 					int playableValueCollisions = 0;
 					int unplayableValueCollisions = 0;
 						for (int collisionTest = 0; collisionTest < state.getHandSize(); collisionTest++) {
-							if (collisionTest == candidateSlot) {
-								continue;
-							}
-							if (hand.getKnownValue(collisionTest) == null &&  hand.getCard(collisionTest).value == hand.getCard(candidateSlot).value) {
-								// Value collision detected
-								if (playableMask[collisionTest] == 1) {
-									playableValueCollisions++;
+							if (hand.getCard(collisionTest)!=null) {
+								if (collisionTest == candidateSlot) {
+									continue;
 								}
-								else {
-									unplayableValueCollisions++;
+								if (hand.getKnownValue(collisionTest) == null &&  hand.getCard(collisionTest).value == hand.getCard(candidateSlot).value) {
+									// Value collision detected
+									if (playableMask[collisionTest] == 1) {
+										playableValueCollisions++;
+									}
+									else {
+										unplayableValueCollisions++;
+									}
 								}
 							}
 						}
