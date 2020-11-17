@@ -89,8 +89,8 @@ public class BayesAdaptiveAgent implements Agent {
 	
 	// Hyperparameters TODO: Decide whether these will be passed by constructor, read from a config file etc
 	private int turnsAdaptationThreshold = Integer.MAX_VALUE;
-	private int gamesAdaptationThreshold = Integer.MAX_VALUE;
-	private double assumedBehaviorVariance = 0.05; // This is the knob that lets us determine by how much to update a given match-up's behavior information. In the general case, this could vary per match-up and depend on the threshold of games/turns. We are simplifying it with a single number.
+	private int gamesAdaptationThreshold = 10;
+	private double assumedBehaviorVariance = 0.1; // This is the knob that lets us determine by how much to update a given match-up's behavior information. In the general case, this could vary per match-up and depend on the threshold of games/turns. We are simplifying it with a single number.
 	
 	public BufferedWriter agentLogWriter;
 	public BufferedWriter responseLogWriter;
@@ -384,37 +384,11 @@ public class BayesAdaptiveAgent implements Agent {
 	                    
 	                    if (move.action instanceof TellColour) {
 	                        currentPlayerStats.numHints = currentPlayerStats.numHints+1;
-	                        currentPlayerStats.numPossibleHints = currentPlayerStats.numPossibleHints+1;
-	                        TellColour tc = (TellColour)move.action;
-	                        CardColour color = tc.colour;
-	                        int targetPlayerID = tc.player;
-	                        if (targetPlayerID != agentID) {
-	                            int cardIndex = 0;
-	                            for (Card card:playerHands[targetPlayerID]) {
-	                                if (card.colour == color) {
-	                                    knowsColorMask[targetPlayerID][cardIndex] = true;
-	                                }
-	                                ++cardIndex;
-	                            }
-	                        }
-	                        
+	                        currentPlayerStats.numPossibleHints = currentPlayerStats.numPossibleHints+1;  
 	                    }
 	                    else if (move.action instanceof TellValue) {
 	                        currentPlayerStats.numHints = currentPlayerStats.numHints+1;
-	                        currentPlayerStats.numPossibleHints = currentPlayerStats.numPossibleHints+1;
-	                        TellValue tv = (TellValue)move.action;
-	                        int rank = tv.value;
-	                        int targetPlayerID = tv.player;
-	                        if (targetPlayerID != agentID) {
-	                            int cardIndex = 0;
-	                            for (Card card:playerHands[targetPlayerID]) {
-	                                if (card.value == rank) {
-	                                    knowsRankMask[targetPlayerID][cardIndex] = true;
-	                                }
-	                                ++cardIndex;
-	                            }
-	                        }
-	                        
+	                        currentPlayerStats.numPossibleHints = currentPlayerStats.numPossibleHints+1;   
 	                    }
 	                    else if (hintsAvailable>0) {
 	                        currentPlayerStats.numPossibleHints = currentPlayerStats.numPossibleHints+1;
@@ -422,8 +396,6 @@ public class BayesAdaptiveAgent implements Agent {
 	                    if (move.action instanceof PlayCard) {
 	                        PlayCard play = (PlayCard)move.action;
 	                        currentPlayerStats.numPlays = currentPlayerStats.numPlays+1;
-	                        
-	                        
 	                        currentPlayerStats.totalPlayability = currentPlayerStats.totalPlayability + playabilityMask[activePlayerID][play.slot];
 	                        
 	                        
@@ -438,7 +410,7 @@ public class BayesAdaptiveAgent implements Agent {
 	                    }
 	                    currentPlayerStats.totalInteractions+=1;
 	                    //System.out.println("Total Interactions with player " + currentPlayers[activePlayerID] + " is "  + playerStatsRecord.get(currentPlayers[activePlayerID]).totalInteractions);
-	                }
+	                } // end if
 
 	                
 	                
@@ -460,8 +432,36 @@ public class BayesAdaptiveAgent implements Agent {
 	                if (move.action instanceof DiscardCard) {
 	                    ++hintsAvailable;
 	                }
-	                if (move.action instanceof TellColour || move.action instanceof TellValue) {
-	                    --hintsAvailable;
+	                if (move.action instanceof TellColour){
+	                	TellColour tc = (TellColour)move.action;
+                        CardColour color = tc.colour;
+                        int targetPlayerID = tc.player;
+                        if (targetPlayerID != agentID) {
+                            int cardIndex = 0;
+                            for (Card card:playerHands[targetPlayerID]) {
+                                if (card.colour == color) {
+                                    knowsColorMask[targetPlayerID][cardIndex] = true;
+                                }
+                                ++cardIndex;
+                            }
+                        }
+	                	--hintsAvailable;
+                        
+	                }
+	                if (move.action instanceof TellValue) {
+	                	TellValue tv = (TellValue)move.action;
+                        int rank = tv.value;
+                        int targetPlayerID = tv.player;
+                        if (targetPlayerID != agentID) {
+                            int cardIndex = 0;
+                            for (Card card:playerHands[targetPlayerID]) {
+                                if (card.value == rank) {
+                                    knowsRankMask[targetPlayerID][cardIndex] = true;
+                                }
+                                ++cardIndex;
+                            }
+                        }
+	                	--hintsAvailable;
 	                }
 	            }
 	            
@@ -649,7 +649,7 @@ public class BayesAdaptiveAgent implements Agent {
 //	    		TODO: read from the JSON specified in the path
 //	   		}
 							
-			int numTrainingGames = 1000;
+			int numTrainingGames = 10;
 			MultiKeyMap<String, MatchupInformation> MUs = PrecomputeMatchupInfo.precomputeMatchups(strategyPool, trainingPool, numPlayers, numTrainingGames);
 			
 			
@@ -671,7 +671,7 @@ public class BayesAdaptiveAgent implements Agent {
 			
 			BayesAdaptiveAgent ba = new BayesAdaptiveAgent(strategyPool, trainingPoolCandidates, MUs, "throwawayLogs" + File.separator + date+ "bayesLogger");
 			
-			int numEvaluationGames = 1000;
+			int numEvaluationGames = 100;
 	
 			HashMap<String, StatsSummary> results = new HashMap<String, StatsSummary>();
 			HashMap<String, ArrayList<Integer>> detailedResults = new HashMap<String, ArrayList<Integer>>();
