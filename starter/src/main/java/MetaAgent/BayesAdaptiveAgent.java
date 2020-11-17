@@ -88,9 +88,9 @@ public class BayesAdaptiveAgent implements Agent {
     private boolean [][] knowsRankMask;
 	
 	// Hyperparameters TODO: Decide whether these will be passed by constructor, read from a config file etc
-	private int turnsAdaptationThreshold = Integer.MAX_VALUE;
-	private int gamesAdaptationThreshold = 10;
-	private double assumedBehaviorVariance = 0.1; // This is the knob that lets us determine by how much to update a given match-up's behavior information. In the general case, this could vary per match-up and depend on the threshold of games/turns. We are simplifying it with a single number.
+	private int turnsAdaptationThreshold;
+	private int gamesAdaptationThreshold;
+	private double assumedBehaviorVariance; // This is the knob that lets us determine by how much to update a given match-up's behavior information. In the general case, this could vary per match-up and depend on the threshold of games/turns. We are simplifying it with a single number.
 	
 	public BufferedWriter agentLogWriter;
 	public BufferedWriter responseLogWriter;
@@ -99,11 +99,15 @@ public class BayesAdaptiveAgent implements Agent {
 
 	
 	public BayesAdaptiveAgent(HashMap<String, Agent> myStrategyPool, Set<String> trainingPoolCandidates,
-			MultiKeyMap<String, MatchupInformation> precomputedMatchupInfo, String logPath ) {
+			MultiKeyMap<String, MatchupInformation> precomputedMatchupInfo, String logPath, int turnsAdaptationThreshold, int gamesAdaptationThreshold, double assumedBehaviorVariance ) {
 		super();
 		this.myStrategyPool = myStrategyPool;
 		this.trainingPoolCandidates = trainingPoolCandidates;
 		this.precomputedMatchupInfo = precomputedMatchupInfo;
+		this.turnsAdaptationThreshold = turnsAdaptationThreshold;
+		this.gamesAdaptationThreshold = gamesAdaptationThreshold;
+		this.assumedBehaviorVariance = assumedBehaviorVariance;
+
 		
 		beliefDistribution = new MultiKeyMap<String, Double>();
 		
@@ -120,7 +124,11 @@ public class BayesAdaptiveAgent implements Agent {
 			System.err.println("Failed to open Bayes agent internal log files");
 			e.printStackTrace();
 		}
-		writeLog(String.format("Starting agent with turns = %d games = %d variance = %f", turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance),agentLogWriter);
+		String preamble = String.format("Starting agent with turns = %d games = %d variance = %f\n", turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance);
+		writeLog(preamble,agentLogWriter);
+		writeLog(preamble,responseLogWriter);
+		writeLog(preamble,beliefLogWriter);
+
 //		evaluationMatchupInfo = new MultiKeyMap<String, PlayerStats>();
 	} //TODO: Write a function that initializes this class by generating all the precomputed object from our files
 
@@ -628,7 +636,17 @@ public class BayesAdaptiveAgent implements Agent {
 	
 	    
 	    // A small main function to play the Bayes agent using the same training pool and strategy pool
-	    public static void main(String[] args) throws IOException {
+	    public static void main(String[] args){
+			String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
+			
+			// Experiment parameters
+			int numTrainingGames = 10;
+			int numEvaluationGames = 50;
+			// Agent parameters
+			int turnsAdaptationThreshold = Integer.MAX_VALUE;
+			int gamesAdaptationThreshold = 1;
+			double assumedBehaviorVariance = 0.1;
+
 	    	
 	    	String chromosomeFile = "5by5";
 			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true);
@@ -649,14 +667,18 @@ public class BayesAdaptiveAgent implements Agent {
 //	    		TODO: read from the JSON specified in the path
 //	   		}
 							
-			int numTrainingGames = 10;
 			MultiKeyMap<String, MatchupInformation> MUs = PrecomputeMatchupInfo.precomputeMatchups(strategyPool, trainingPool, numPlayers, numTrainingGames);
 			
-			
-			String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
 			String matchupInfoFile = "throwawayLogs" + File.separator +  date+ "MatchupInfo";
 			
-			BufferedWriter writer = new BufferedWriter(new FileWriter(matchupInfoFile, true));
+			BufferedWriter writer = null;
+			try {
+				writer = new BufferedWriter(new FileWriter(matchupInfoFile, true));
+				writer.append(String.format("Training games = %d\n", numTrainingGames));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 	
 			System.out.println("Finished precomputing matchups");
 			// TODO: For Xianbo: replace the next 4 lines where you print to the file with outputting a JSON
@@ -665,14 +687,17 @@ public class BayesAdaptiveAgent implements Agent {
 				
 			for (MultiKey key: MUs.keySet()) {
 				MatchupInformation MU = MUs.get(key);
-				writer.append(String.format(" %s,%s %f %f %f\n", key.getKey(0), key.getKey(1), MU.EstimatedBCValues.get("communicativeness"), MU.EstimatedBCValues.get("IPP"), MU.scoreMean ) );
+				writeLog(String.format(" %s,%s %f %f %f\n", key.getKey(0), key.getKey(1), MU.EstimatedBCValues.get("communicativeness"), MU.EstimatedBCValues.get("IPP"), MU.scoreMean ), writer );
 			}
-			writer.close();			
+			try {
+				writer.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}			
 			
-			BayesAdaptiveAgent ba = new BayesAdaptiveAgent(strategyPool, trainingPoolCandidates, MUs, "throwawayLogs" + File.separator + date+ "bayesLogger");
-			
-			int numEvaluationGames = 100;
-	
+			BayesAdaptiveAgent ba = new BayesAdaptiveAgent(strategyPool, trainingPoolCandidates, MUs, "throwawayLogs" + File.separator + date+ "bayesLogger", turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance );
+				
 			HashMap<String, StatsSummary> results = new HashMap<String, StatsSummary>();
 			HashMap<String, ArrayList<Integer>> detailedResults = new HashMap<String, ArrayList<Integer>>();
 			for (String theirID : trainingPoolCandidates) {
@@ -720,18 +745,24 @@ public class BayesAdaptiveAgent implements Agent {
 				System.err.println("Failed to open Bayes agent internal log file");
 				e.printStackTrace();
 			}
+			writeLog(String.format("Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
+					numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance), resultsWriter);
 			System.out.println("=-=-=-=-Printing Final Results=-=-=-=-=-=-");
 			String individualGameScores = "";
+			double average = 0;
 			for (String theirID:results.keySet()) {
 				StatsSummary MU = results.get(theirID);
 		        System.out.println(String.format("Playing Bayes with %s got average score %f" , theirID, MU.getMean()));
 		        writeLog(String.format("Playing Bayes with %s got average score %f\n" , theirID, MU.getMean()), resultsWriter);
+		        average+=MU.getMean();
 		        for (int s: detailedResults.get(theirID)) {
 		        	individualGameScores += (s + " ");
 		        }
 	        	individualGameScores += "\n";
 			}
 			System.out.println(individualGameScores);
+			System.out.println(String.valueOf(average/results.keySet().size()));
+			writeLog(String.valueOf(average/results.keySet().size()),resultsWriter);
 	    }
 	
 	private static void writeLog(String log, String error, BufferedWriter writer) {
