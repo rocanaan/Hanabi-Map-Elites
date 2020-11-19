@@ -142,7 +142,9 @@ public class BayesAdaptiveAgent implements Agent {
 		
 		for (String name:currentPlayers) {
 			if (name != "Bayes") {
+				boolean first = false;
 				if (!rollingGamesWithPartner.containsKey(name)) {
+					first = true;
 					rollingGamesWithPartner.put(name, 0);
 					rollingTurnsWithPartner.put(name, 0);
 					rollingMatchupInfo.put(name, new PlayerStats(0, 0, 0, 0, 0, 0));
@@ -155,6 +157,12 @@ public class BayesAdaptiveAgent implements Agent {
 					rollingGamesWithPartner.put(name, rollingGamesWithPartner.get(name)+1); //TODO: This assumes each agent identifier is unique and would not generalize for multiplayer games where more than one player has the same identifier
 				}
 				currentResponseID = getResponse(name);
+				
+				if (first) {
+					writeLog(name + " response: " + currentResponseID +"\n",responseLogWriter);
+					writeLog("Response: " + currentResponseID +"\n","Failed writing to agent logger when starting new game",agentLogWriter);
+					writeLog("Response: " + currentResponseID +"\n","Failed writing to agent logger when starting new game",beliefLogWriter);
+				}
 				
 				try {
 					agentLogWriter.append("Game number " + rollingGamesWithPartner.get(name)+ " with agent " + name +"\n");
@@ -219,6 +227,10 @@ public class BayesAdaptiveAgent implements Agent {
 			rollingGamesWithPartner.put(theirID, 0);
 			rollingTurnsWithPartner.put(theirID, 0);
 			currentResponseID = getResponse(theirID); 
+			
+			writeLog(theirID + " response: " + currentResponseID +"\n",responseLogWriter);
+			writeLog("Response: " + currentResponseID +"\n","Failed writing to agent logger when starting new game",agentLogWriter);
+			writeLog("Response: " + currentResponseID +"\n","Failed writing to agent logger when starting new game",beliefLogWriter);
 		}
 			
 			
@@ -262,8 +274,7 @@ public class BayesAdaptiveAgent implements Agent {
 			}
 			
 		}
-		writeLog(theirID + " " + bestExpectedResponse +"\n",responseLogWriter);
-		writeLog("Response: " + bestExpectedResponse +"\n","Failed writing to agent logger when starting new game",agentLogWriter);
+		
 		
 		return bestExpectedResponse;
 		
@@ -640,8 +651,8 @@ public class BayesAdaptiveAgent implements Agent {
 			String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
 			
 			// Experiment parameters
-			int numTrainingGames = 10;
-			int numEvaluationGames = 50;
+			int numTrainingGames = 5;
+			int numEvaluationGames = 10;
 			// Agent parameters
 			int turnsAdaptationThreshold = Integer.MAX_VALUE;
 			int gamesAdaptationThreshold = 1;
@@ -747,6 +758,8 @@ public class BayesAdaptiveAgent implements Agent {
 			}
 			writeLog(String.format("Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
 					numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance), resultsWriter);
+			System.out.println(String.format("Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
+					numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance));
 			System.out.println("=-=-=-=-Printing Final Results=-=-=-=-=-=-");
 			String individualGameScores = "";
 			double average = 0;

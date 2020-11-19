@@ -1,1 +1,1 @@
-{"info":{"Iteration":12,"Map Dimensions":"{5,5}"},"population":{"valid":true,"IPP_index":1,"Communicativeness_index":2,"Chromosome":"[2, 5, 71, 21, 4, 2, 60, 70, 29, 25, 89, 104, 78, 54, 53]","Name":"[2,1]","Fitness":6.06}}
+{"info":{"Iteration":12,"Map Dimensions":"{5,5}"},"population":{"valid":true,"IPP_index":1,"Communicativeness_index":2,"Chromosome":"[0, 0, 0, 7, 15, 0, 18, 72, 88, 0, 7, 7, 0, 15, 3]","Name":"[2,1]","Fitness":6.0}}

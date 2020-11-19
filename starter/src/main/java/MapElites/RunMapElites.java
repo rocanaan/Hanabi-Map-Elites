@@ -41,13 +41,13 @@ import javassist.compiler.ast.Pair;
  *
  */
 public class RunMapElites {
-	public static int G = 10000; //number of random individuals
-	public static int I =  50000 - G; // number of mutations after initial random individuals
+	public static int G = 20000; //number of random individuals
+	public static int I =  300000 - G; // number of mutations after initial random individuals
 	public static int d1 = 5; // number of niches in the first dimension
 	public static int d2 = 5; // number of niches in the second dimension
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.1;
-	public static int numGames = 100; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
+	public static int numGames = 2; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
 	static int minNumPlayers = 2;
 	static int maxNumPlayers = 2;
