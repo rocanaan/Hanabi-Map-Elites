@@ -651,11 +651,11 @@ public class BayesAdaptiveAgent implements Agent {
 			String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
 			
 			// Experiment parameters
-			int numTrainingGames = 5;
-			int numEvaluationGames = 10;
+			int numTrainingGames = 50;
+			int numEvaluationGames = 5;
 			// Agent parameters
 			int turnsAdaptationThreshold = Integer.MAX_VALUE;
-			int gamesAdaptationThreshold = 1;
+			int gamesAdaptationThreshold = Integer.MAX_VALUE;
 			double assumedBehaviorVariance = 0.1;
 
 	    	
@@ -695,11 +695,19 @@ public class BayesAdaptiveAgent implements Agent {
 			// TODO: For Xianbo: replace the next 4 lines where you print to the file with outputting a JSON
 			
 
-				
+			String overview = "";
+			String detailed = "Detailed Scores\n";
 			for (MultiKey key: MUs.keySet()) {
 				MatchupInformation MU = MUs.get(key);
-				writeLog(String.format(" %s,%s %f %f %f\n", key.getKey(0), key.getKey(1), MU.EstimatedBCValues.get("communicativeness"), MU.EstimatedBCValues.get("IPP"), MU.scoreMean ), writer );
+				overview+= String.format("%s,%s: %f %f %f\n", key.getKey(0), key.getKey(1), MU.EstimatedBCValues.get("communicativeness"), MU.EstimatedBCValues.get("IPP"), MU.scoreMean);
+				detailed+= String.format("%s %s:",  key.getKey(0), key.getKey(1));
+				for (Double score:MU.gameScores) {
+					detailed+=(String.format(" %f",score));
+				}
+				detailed+="\n";
 			}
+			writeLog(overview,writer);
+			writeLog(detailed,writer);
 			try {
 				writer.close();
 			} catch (IOException e1) {

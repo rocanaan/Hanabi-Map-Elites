@@ -1,6 +1,7 @@
 package MetaAgent;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +34,15 @@ public class PrecomputeMatchupInfo {
 		
 		MultiKeyMap<String, MatchupInformation> precomputedMUs = new MultiKeyMap<String, MatchupInformation> ();
 		
+		long seed = new Random().nextLong();
+		
 		for (String ourID: ourAgents.keySet()) {
 			
 			ReportAgent us = new ReportAgent(ourAgents.get(ourID));
 			for (String theirID: theirAgents.keySet()) {
 				ReportAgent them = new ReportAgent(theirAgents.get(theirID));
 				
-				StatsSummary stats = runTestGames(us, ourID, them, theirID, numPlayers, numGames);
+				DetailedStats stats = runTestGames(us, ourID, them, theirID, numPlayers, numGames,seed);
 				
 				double comm = them.getCommunicativeness();
 				double ipp = them.getInformationPlays();
@@ -47,9 +50,10 @@ public class PrecomputeMatchupInfo {
 				Map<String,Double> estimatedBCValues = new HashMap<String,Double>();
 				estimatedBCValues.put("communicativeness", comm);
 				estimatedBCValues.put("IPP", ipp);
+				ArrayList<Double> gameScores = stats.getGameScores();
 
 				
-				MatchupInformation matchup = new MatchupInformation(ourID, theirID, estimatedBCValues, null, stats.getMean(), 0, numGames);
+				MatchupInformation matchup = new MatchupInformation(ourID, theirID, estimatedBCValues, null, stats.getMean(), 0, numGames, gameScores);
 				precomputedMUs.put(ourID,theirID , matchup);
 				us.resetStats();
 			}
@@ -71,9 +75,9 @@ public class PrecomputeMatchupInfo {
 	}
 	
 	// This function is replicated in other parts of the codebase with small variations. TODO Consolidate.
-	public static StatsSummary runTestGames(Agent us, String ourID, Agent them, String theirID, int numPlayers, int numGames, long seed) {
+	public static DetailedStats runTestGames(Agent us, String ourID, Agent them, String theirID, int numPlayers, int numGames, long seed) {
     	// the parameters for the st
-        StatsSummary statsSummary = new BasicStats();
+        DetailedStats statsSummary = new DetailedStats();
                
         // run the test games
         for (int gameCount=0; gameCount<numGames; gameCount++) {
@@ -86,6 +90,7 @@ public class PrecomputeMatchupInfo {
             
            
             GameStats stats = runner.playGame(seed);
+            seed = new Random(seed).nextLong();
             statsSummary.add(stats.score);
             
         }
@@ -93,7 +98,7 @@ public class PrecomputeMatchupInfo {
         return statsSummary;
     }
 	
-	public static StatsSummary runTestGames(Agent us, String ourID, Agent them, String theirID, int numPlayers, int numGames) {
+	public static DetailedStats runTestGames(Agent us, String ourID, Agent them, String theirID, int numPlayers, int numGames) {
     	// the parameters for the st
 		
 		Random random = new Random();

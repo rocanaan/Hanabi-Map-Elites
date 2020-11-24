@@ -1,11 +1,12 @@
 package MetaAgent;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class MatchupInformation {
 	
 	public MatchupInformation(String myID, String partnerID, Map<String, Double> estimatedBCValues, Map<String, Double> estimatedBCStd,
-			double scoreMean, double scoreStd, int numGamesPlayed) {
+			double scoreMean, double scoreStd, int numGamesPlayed, Collection<Double> gameScores) {
 		super();
 		this.myID = myID;
 		this.partnerID = partnerID;
@@ -14,6 +15,7 @@ public class MatchupInformation {
 		this.scoreMean = scoreMean;
 		this.scoreStd = scoreStd;
 		this.numGamesPlayed = numGamesPlayed;
+		this.gameScores = gameScores;
 	}
 
 	String myID;
@@ -31,6 +33,7 @@ public class MatchupInformation {
 	double scoreStd;
 	
 	int numGamesPlayed;
+	Collection<Double> gameScores;
 	
 	
 }
