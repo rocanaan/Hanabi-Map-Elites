@@ -651,15 +651,15 @@ public class BayesAdaptiveAgent implements Agent {
 			String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
 			
 			// Experiment parameters
-			int numTrainingGames = 50;
-			int numEvaluationGames = 5;
+			int numTrainingGames = 100; //400 in the paper
+			int numEvaluationGames = 200;
 			// Agent parameters
 			int turnsAdaptationThreshold = Integer.MAX_VALUE;
 			int gamesAdaptationThreshold = Integer.MAX_VALUE;
 			double assumedBehaviorVariance = 0.1;
 
 	    	
-	    	String chromosomeFile = "5by5";
+	    	String chromosomeFile = "2P";
 			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true);
 			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true);
 			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true);
@@ -719,7 +719,10 @@ public class BayesAdaptiveAgent implements Agent {
 				
 			HashMap<String, StatsSummary> results = new HashMap<String, StatsSummary>();
 			HashMap<String, ArrayList<Integer>> detailedResults = new HashMap<String, ArrayList<Integer>>();
+            Random random = new Random();
+            long seed = random.nextLong();
 			for (String theirID : trainingPoolCandidates) {
+				random = new Random(seed);
 				StatsSummary statsSummary = new BasicStats();
 				
 				ArrayList<Integer> gameScores = new ArrayList<Integer>();
@@ -736,12 +739,10 @@ public class BayesAdaptiveAgent implements Agent {
 		            for (int nextPlayer = 1; nextPlayer< numPlayers; nextPlayer++);{
 		            	runner.addNamedPlayer("test"+theirID, new AgentPlayer(theirID, evaluationPartner));
 		            }
-		            Random random = new Random();
-		    		long seed = random.nextLong();
 		           
 		    		
 		    		System.out.println(String.format("Starting to play game %d with %s", gameCount, theirID));
-		            GameStats stats = runner.playGame(seed);
+		            GameStats stats = runner.playGame(random.nextLong());
 		            System.out.println("Finished game");
 		            statsSummary.add(stats.score);
 		            gameScores.add(stats.score);
