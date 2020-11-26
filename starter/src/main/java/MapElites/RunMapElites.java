@@ -409,6 +409,18 @@ public class RunMapElites {
 		
 		double[][] map = new double[d1][d2];
 		
+		/* TODO: XIANBO
+		 * 
+		 * create a new boolean parameter startFromJSON
+		 * 
+		 * if !startFromJSON: do the code below labeled Evaluate G random individuals
+		 * 
+		 * If startFromJSON: skip it, take a JSON parameter load the fitness from the JSON population niches into map[niche1][niche2] = fitness
+		 * And load the chromosmes from the JSON into population[niche1][niche2] = candidateChromosome;
+		 * 
+		 */	
+		
+		
 		// Evaluate G random individuals
 		for (int individual = 0; individual<G; individual++) {
 			// Make agent from random chromosome
