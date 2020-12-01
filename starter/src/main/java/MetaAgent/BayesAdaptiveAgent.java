@@ -663,16 +663,18 @@ public class BayesAdaptiveAgent implements Agent {
 			
 			// Experiment parameters
 			int numTrainingGames = 50; //400 in the paper
-			int numEvaluationGames = 200;
+			int numEvaluationGames = 10;
+			int numEvalRepetitions = 10;
 			// Agent parameters
 			int turnsAdaptationThreshold = Integer.MAX_VALUE;
-			int gamesAdaptationThreshold = Integer.MAX_VALUE;
+			int gamesAdaptationThreshold = 1;
 			double assumedBehaviorVariance = 0.1;
 			boolean usePrecomputed = true;
-			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "CanonicalMatchupInfo" + File.separator + "2P3_MUs"; 
-			String experimentName = "noAdaptation400";
+//			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "CanonicalMatchupInfo" + File.separator + "2P_MUs"; 
+			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "5by5tests" + File.separator + "20201130185201MatchupInfo"; 
+			String experimentName = "5by5tests" + File.separator + "multiruntest"; 
 	    	
-	    	String chromosomeFile = "2P3";
+	    	String chromosomeFile = "5by5";
 			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true);
 			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
 			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true);
@@ -711,8 +713,8 @@ public class BayesAdaptiveAgent implements Agent {
 				    	   lineIndex++;
 				    	   String[] tokens = line.split(" ");
 				    	   try {
-					    	   String theirID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[0]));
-					    	   String ourID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[1]));
+					    	   String ourID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[0]));
+					    	   String theirID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[1]));
 
 	
 					    	   double theirComm = Double.valueOf(tokens[1]);
@@ -720,7 +722,7 @@ public class BayesAdaptiveAgent implements Agent {
 					    	   
 					    	   Map<String,Double> estimatedBCValues = new HashMap<String,Double>();
 					    	   estimatedBCValues.put("communicativeness", theirComm);
-								estimatedBCValues.put("IPP", theirIPP);
+					    	   estimatedBCValues.put("IPP", theirIPP);
 					    	   
 					    	   double matchupScore = Double.valueOf(tokens[3]);
 	
@@ -799,76 +801,82 @@ public class BayesAdaptiveAgent implements Agent {
 				}	
 			}
 			
-			BayesAdaptiveAgent ba = new BayesAdaptiveAgent(strategyPool, trainingPoolCandidates, MUs, experimentName + File.separator + date+ "bayesLogger", turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance );
-				
-			HashMap<String, StatsSummary> results = new HashMap<String, StatsSummary>();
-			HashMap<String, ArrayList<Integer>> detailedResults = new HashMap<String, ArrayList<Integer>>();
-            Random random = new Random();
-            long seed = random.nextLong();
-			for (String theirID : trainingPoolCandidates) {
-				random = new Random(seed);
-				StatsSummary statsSummary = new BasicStats();
-				
-				ArrayList<Integer> gameScores = new ArrayList<Integer>();
-
-	               
-		        // run the test games
-		        for (int gameCount=0; gameCount<numEvaluationGames; gameCount++) {
-		        	
-		            GameRunner runner = new GameRunner("test-game", numPlayers);
-		            
-		            runner.addNamedPlayer("Bayes", new AgentPlayer("Bayes", ba));
-		            
-		            Agent evaluationPartner = evaluationPool.get(theirID);
-		            for (int nextPlayer = 1; nextPlayer< numPlayers; nextPlayer++);{
-		            	runner.addNamedPlayer("test"+theirID, new AgentPlayer(theirID, evaluationPartner));
-		            }
-		           
-		    		
-		    		System.out.println(String.format("Starting to play game %d with %s", gameCount, theirID));
-		            GameStats stats = runner.playGame(random.nextLong());
-		            System.out.println("Finished game");
-		            statsSummary.add(stats.score);
-		            gameScores.add(stats.score);
-		            System.out.println(String.format("Played game %d with %s, score %d", gameCount, theirID, stats.score));
-		            
-		        }
-		        
-		        results.put(theirID,statsSummary);
-		        detailedResults.put(theirID,gameScores);
-		        
-		        System.out.println(String.format("Playing Bayes with %s got average score %f" , theirID, statsSummary.getMean()));
-
+			double overallAverage = 0;
+			for (int i=0; i<numEvalRepetitions;i++) {
+				BayesAdaptiveAgent ba = new BayesAdaptiveAgent(strategyPool, trainingPoolCandidates, MUs, experimentName + File.separator + date+ "bayesLogger", turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance );
+					
+				HashMap<String, StatsSummary> results = new HashMap<String, StatsSummary>();
+				HashMap<String, ArrayList<Integer>> detailedResults = new HashMap<String, ArrayList<Integer>>();
+	            Random random = new Random();
+	            long seed = random.nextLong();
+				for (String theirID : trainingPoolCandidates) {
+					random = new Random(seed);
+					StatsSummary statsSummary = new BasicStats();
+					
+					ArrayList<Integer> gameScores = new ArrayList<Integer>();
+	
+		               
+			        // run the test games
+			        for (int gameCount=0; gameCount<numEvaluationGames; gameCount++) {
+			        	
+			            GameRunner runner = new GameRunner("test-game", numPlayers);
+			            
+			            runner.addNamedPlayer("Bayes", new AgentPlayer("Bayes", ba));
+			            
+			            Agent evaluationPartner = evaluationPool.get(theirID);
+			            for (int nextPlayer = 1; nextPlayer< numPlayers; nextPlayer++);{
+			            	runner.addNamedPlayer("test"+theirID, new AgentPlayer(theirID, evaluationPartner));
+			            }
+			           
+			    		
+			    		System.out.println(String.format("Starting to play game %d with %s", gameCount, theirID));
+			            GameStats stats = runner.playGame(random.nextLong());
+			            System.out.println("Finished game");
+			            statsSummary.add(stats.score);
+			            gameScores.add(stats.score);
+			            System.out.println(String.format("Played game %d with %s, score %d", gameCount, theirID, stats.score));
+			            
+			        }
+			        
+			        results.put(theirID,statsSummary);
+			        detailedResults.put(theirID,gameScores);
+			        
+			        System.out.println(String.format("Playing Bayes with %s got average score %f" , theirID, statsSummary.getMean()));
+	
+				}
+	//			ba.agentLogWriter.close();
+				BufferedWriter resultsWriter = null;
+				try {
+					resultsWriter = new BufferedWriter(new FileWriter(experimentName + File.separator +  date+ "Results_" + String.valueOf(i), true));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					System.err.println("Failed to open Bayes agent internal log file");
+					e.printStackTrace();
+				}
+				writeLog(String.format("Chromosomes: %s Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
+						chromosomeFile, numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance), resultsWriter);
+				System.out.println(String.format("Chromosomes: %s Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
+						chromosomeFile, numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance));
+				System.out.println("=-=-=-=-Printing Final Results=-=-=-=-=-=-");
+				String individualGameScores = "";
+				double runAverage = 0;
+				for (String theirID:results.keySet()) {
+					StatsSummary MU = results.get(theirID);
+			        System.out.println(String.format("Playing Bayes with %s got average score %f" , theirID, MU.getMean()));
+			        writeLog(String.format("Playing Bayes with %s got average score %f\n" , theirID, MU.getMean()), resultsWriter);
+			        runAverage+=MU.getMean();
+			        for (int s: detailedResults.get(theirID)) {
+			        	individualGameScores += (s + " ");
+			        }
+		        	individualGameScores += "\n";
+				}
+	//			System.out.println(individualGameScores);
+				runAverage = runAverage/results.keySet().size();
+				overallAverage += (runAverage/numEvalRepetitions);
+				System.out.println(String.valueOf(runAverage));
+				writeLog(String.valueOf(runAverage),resultsWriter);
 			}
-//			ba.agentLogWriter.close();
-			BufferedWriter resultsWriter = null;
-			try {
-				resultsWriter = new BufferedWriter(new FileWriter(experimentName + File.separator +  date+ "Results", true));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.err.println("Failed to open Bayes agent internal log file");
-				e.printStackTrace();
-			}
-			writeLog(String.format("Chromosomes: %s Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
-					chromosomeFile, numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance), resultsWriter);
-			System.out.println(String.format("Chromosomes: %s Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
-					chromosomeFile, numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance));
-			System.out.println("=-=-=-=-Printing Final Results=-=-=-=-=-=-");
-			String individualGameScores = "";
-			double average = 0;
-			for (String theirID:results.keySet()) {
-				StatsSummary MU = results.get(theirID);
-		        System.out.println(String.format("Playing Bayes with %s got average score %f" , theirID, MU.getMean()));
-		        writeLog(String.format("Playing Bayes with %s got average score %f\n" , theirID, MU.getMean()), resultsWriter);
-		        average+=MU.getMean();
-		        for (int s: detailedResults.get(theirID)) {
-		        	individualGameScores += (s + " ");
-		        }
-	        	individualGameScores += "\n";
-			}
-//			System.out.println(individualGameScores);
-			System.out.println(String.valueOf(average/results.keySet().size()));
-			writeLog(String.valueOf(average/results.keySet().size()),resultsWriter);
+			System.out.println(String.format("Overall average is %f", overallAverage));
 	    }
 	
 	private static void writeLog(String log, String error, BufferedWriter writer) {
