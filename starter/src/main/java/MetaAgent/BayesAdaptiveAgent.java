@@ -663,23 +663,28 @@ public class BayesAdaptiveAgent implements Agent {
 			
 			// Experiment parameters
 			int numTrainingGames = 50; //400 in the paper
-			int numEvaluationGames = 10;
-			int numEvalRepetitions = 10;
+			int numEvaluationGames = 2;
+			int numEvalRepetitions = 5;
 			// Agent parameters
 			int turnsAdaptationThreshold = Integer.MAX_VALUE;
 			int gamesAdaptationThreshold = 1;
 			double assumedBehaviorVariance = 0.1;
 			boolean usePrecomputed = true;
-//			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "CanonicalMatchupInfo" + File.separator + "2P_MUs"; 
-			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "5by5tests" + File.separator + "20201130185201MatchupInfo"; 
-			String experimentName = "5by5tests" + File.separator + "multiruntest"; 
+			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "CanonicalMatchupInfo" + File.separator + "2P_MUs"; 
+//			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "5by5tests" + File.separator + "20201130185201MatchupInfo"; 
+			String experimentName = "mock" + File.separator + "bayes2P_eval2P3"; 
 	    	
-	    	String chromosomeFile = "5by5";
-			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true);
-			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
-			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromFile(chromosomeFile, false, true);
+	    	String strategyChromosomeFile = "2P";
+	    	String trainingChromosomeFile = strategyChromosomeFile;
+	    	String evaluationChromosomeFile = "2P3";
+
+			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(strategyChromosomeFile, false, true);
+			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromFile(trainingChromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
+			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromFile(evaluationChromosomeFile, false, true);
 
 			Set<String> trainingPoolCandidates = strategyPool.keySet();
+			Set<String> evaluationPoolCandidates = evaluationPool.keySet();
+
 			int numPlayers = 2;
 			
 //			TODO: Xianbo: if there is no specified path to load precomputed information, play games and output json else read from the JSON
@@ -764,7 +769,7 @@ public class BayesAdaptiveAgent implements Agent {
 				BufferedWriter matchupWriter = null;
 				try {
 					matchupWriter = new BufferedWriter(new FileWriter(matchupInfoFile, true));
-					matchupWriter.append(String.format("Training games = %d chromosome file = %s\n", numTrainingGames,chromosomeFile));
+					matchupWriter.append(String.format("Training games = %d chromosome file = %s\n", numTrainingGames,strategyChromosomeFile));
 					matchupWriter.flush();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
@@ -809,7 +814,7 @@ public class BayesAdaptiveAgent implements Agent {
 				HashMap<String, ArrayList<Integer>> detailedResults = new HashMap<String, ArrayList<Integer>>();
 	            Random random = new Random();
 	            long seed = random.nextLong();
-				for (String theirID : trainingPoolCandidates) {
+				for (String theirID : evaluationPoolCandidates) {
 					random = new Random(seed);
 					StatsSummary statsSummary = new BasicStats();
 					
@@ -853,10 +858,10 @@ public class BayesAdaptiveAgent implements Agent {
 					System.err.println("Failed to open Bayes agent internal log file");
 					e.printStackTrace();
 				}
-				writeLog(String.format("Chromosomes: %s Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
-						chromosomeFile, numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance), resultsWriter);
-				System.out.println(String.format("Chromosomes: %s Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
-						chromosomeFile, numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance));
+				writeLog(String.format("Strategy and Training: %s Evaluation: %s Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
+						strategyChromosomeFile, evaluationChromosomeFile, numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance), resultsWriter);
+				System.out.println(String.format("Strategy and Training: %s Evaluation: %s Training games: %d Evaluation games: %d Turn adaptation: %d Game adaptation: %d Assumed variance: %f\n", 
+						strategyChromosomeFile, evaluationChromosomeFile, numTrainingGames, numEvaluationGames, turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance));
 				System.out.println("=-=-=-=-Printing Final Results=-=-=-=-=-=-");
 				String individualGameScores = "";
 				double runAverage = 0;
