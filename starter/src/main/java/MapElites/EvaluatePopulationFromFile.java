@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
@@ -59,16 +60,16 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "5by5";
+		String fileName = "2P";
 //		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/5p/population999999";
 //		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName2 = "5by5";
-		int sizeDim1 = 5;
-		int sizeDim2 = 5;
+		String fileName2 = "2P";
+		int sizeDim1 = 20;
+		int sizeDim2 = 20;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 400;
+		int numGames = 2;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
@@ -407,6 +408,7 @@ public class EvaluatePopulationFromFile {
 
 			}
 
+
 			System.out.println("Score by distance");
 			PostSimulationAnalyses.CalculateActionSimilarity.printHistogram(matchupTable, validMask, sizeDim1, sizeDim2,
 					1);
@@ -482,6 +484,7 @@ public class EvaluatePopulationFromFile {
 				System.out.println("");
 			}
 			System.out.println((sum / count));
+			
 			System.out.println("Replaying matchups based on best pair");
 			System.out.println("In this population:");
 			sum = 0;
@@ -503,6 +506,8 @@ public class EvaluatePopulationFromFile {
 				System.out.println("");
 			}
 			System.out.println((sum / count));
+			
+
 			System.out.println("Replaying matchups based on generalist");
 			System.out.println("In this population:");
 			sum = 0;

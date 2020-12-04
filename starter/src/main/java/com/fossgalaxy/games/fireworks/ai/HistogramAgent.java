@@ -17,6 +17,7 @@ public class HistogramAgent extends ProductionRuleAgent implements Serializable{
     public ArrayList<Integer> histogram;
     int aID;
     protected List<Rule> rules;
+    private boolean verbose = false;
     
     public HistogramAgent(ProductionRuleAgent pra){
         histogram = new ArrayList<Integer>();
@@ -41,8 +42,10 @@ public class HistogramAgent extends ProductionRuleAgent implements Serializable{
 	            }
         	}
         	catch (Exception e) {
-        		System.err.println("Exception " + e + " when executing rule " + rule);
-        		e.printStackTrace();
+        		if (verbose) {
+	        		System.err.println("Exception " + e + " when executing rule " + rule);
+	        		e.printStackTrace();
+        		}
         	}
             index++;
         }
@@ -54,7 +57,9 @@ public class HistogramAgent extends ProductionRuleAgent implements Serializable{
         	}
         }
         catch (Exception e) {
-        	System.err.println("Exception " + e + " when trying to do backup action");
+        	if (verbose) {
+        		System.err.println("Exception " + e + " when trying to do backup action");
+        	}
         }
         List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(agentID, state));
         //choose a random item from that list and return it

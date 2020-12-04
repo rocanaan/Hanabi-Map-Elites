@@ -663,20 +663,20 @@ public class BayesAdaptiveAgent implements Agent {
 			
 			// Experiment parameters
 			int numTrainingGames = 50; //400 in the paper
-			int numEvaluationGames = 2;
-			int numEvalRepetitions = 5;
+			int numEvaluationGames = 10;
+			int numEvalRepetitions = 25;
 			// Agent parameters
 			int turnsAdaptationThreshold = Integer.MAX_VALUE;
-			int gamesAdaptationThreshold = 1;
+			int gamesAdaptationThreshold = Integer.MAX_VALUE;
 			double assumedBehaviorVariance = 0.1;
 			boolean usePrecomputed = true;
-			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "CanonicalMatchupInfo" + File.separator + "2P_MUs"; 
+			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "CanonicalMatchupInfo" + File.separator + "2P3_MUs"; 
 //			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "5by5tests" + File.separator + "20201130185201MatchupInfo"; 
-			String experimentName = "mock" + File.separator + "bayes2P_eval2P3"; 
+			String experimentName = "400multirun" + File.separator + "generalist2P3_eval2P2"; 
 	    	
-	    	String strategyChromosomeFile = "2P";
+	    	String strategyChromosomeFile = "2P3";
 	    	String trainingChromosomeFile = strategyChromosomeFile;
-	    	String evaluationChromosomeFile = "2P3";
+	    	String evaluationChromosomeFile = "2P2";
 
 			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(strategyChromosomeFile, false, true);
 			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromFile(trainingChromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
