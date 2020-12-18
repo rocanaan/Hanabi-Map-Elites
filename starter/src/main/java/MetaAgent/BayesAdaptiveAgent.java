@@ -672,11 +672,11 @@ public class BayesAdaptiveAgent implements Agent {
 			boolean usePrecomputed = true;
 			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "CanonicalMatchupInfo" + File.separator + "2P3_MUs"; 
 //			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "5by5tests" + File.separator + "20201130185201MatchupInfo"; 
-			String experimentName = "400multirun" + File.separator + "generalist2P3_eval2P2"; 
+			String experimentName = "400multirun" + File.separator + "2P3Generalist"; 
 	    	
 	    	String strategyChromosomeFile = "2P3";
 	    	String trainingChromosomeFile = strategyChromosomeFile;
-	    	String evaluationChromosomeFile = "2P2";
+	    	String evaluationChromosomeFile = "2P3";
 
 			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(strategyChromosomeFile, false, true);
 			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromFile(trainingChromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
