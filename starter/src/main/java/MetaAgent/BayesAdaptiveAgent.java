@@ -100,7 +100,7 @@ public class BayesAdaptiveAgent implements Agent {
 
 	
 	public BayesAdaptiveAgent(HashMap<String, Agent> myStrategyPool, Set<String> trainingPoolCandidates,
-			MultiKeyMap<String, MatchupInformation> precomputedMatchupInfo, String logPath, int turnsAdaptationThreshold, int gamesAdaptationThreshold, double assumedBehaviorVariance ) {
+			MultiKeyMap<String, MatchupInformation> precomputedMatchupInfo, String logPath, String postfix, int turnsAdaptationThreshold, int gamesAdaptationThreshold, double assumedBehaviorVariance ) {
 		super();
 		this.myStrategyPool = myStrategyPool;
 		this.trainingPoolCandidates = trainingPoolCandidates;
@@ -117,15 +117,15 @@ public class BayesAdaptiveAgent implements Agent {
 		rollingTurnsWithPartner = new HashMap<String, Integer>();	
 		
 		try {
-			agentLogWriter = new BufferedWriter(new FileWriter(logPath + "Full", true));
-			responseLogWriter = new BufferedWriter(new FileWriter(logPath + "Responses", true));
-			beliefLogWriter = new BufferedWriter(new FileWriter(logPath + "Beliefs", true));
+			agentLogWriter = new BufferedWriter(new FileWriter(logPath + "Full" + postfix, true));
+			responseLogWriter = new BufferedWriter(new FileWriter(logPath + "Responses " + postfix, true));
+			beliefLogWriter = new BufferedWriter(new FileWriter(logPath + "Beliefs" + postfix, true));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.err.println("Failed to open Bayes agent internal log files");
 			e.printStackTrace();
 		}
-		String preamble = String.format("Starting agent with turns = %d games = %d variance = %f\n", turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance);
+		String preamble = String.format("Test Starting agent with turns = %d games = %d variance = %f\n", turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance);
 		writeLog(preamble,agentLogWriter);
 		writeLog(preamble,responseLogWriter);
 		writeLog(preamble,beliefLogWriter);
@@ -162,8 +162,10 @@ public class BayesAdaptiveAgent implements Agent {
 				if (first) {
 					writeLog(name + " initial response: " + currentResponseID +"\n",responseLogWriter);
 					writeLog("Response: " + currentResponseID +"\n","Failed writing to agent logger when starting new game",agentLogWriter);
+					writeLog("First game with " + name + "\n",beliefLogWriter);
 					writeLog("Response: " + currentResponseID +"\n","Failed writing to agent logger when starting new game",beliefLogWriter);
 				}
+				writeLog("First game with " + name + "\n",beliefLogWriter);
 				
 				// Logging initial responses for every game takes a lot of space TODO: Encapsulate, create flag
 //				try {
@@ -233,7 +235,7 @@ public class BayesAdaptiveAgent implements Agent {
 			// Logging responses every game takes a lot of space. TODO: find a better solution
 			writeLog(theirID + " response: " + currentResponseID +"\n",responseLogWriter);
 //			writeLog("Response: " + currentResponseID +"\n","Failed writing to agent logger when starting new game",agentLogWriter);
-//			writeLog("Response: " + currentResponseID +"\n","Failed writing to agent logger when starting new game",beliefLogWriter);
+			writeLog("Response: " + currentResponseID +"\n","Failed writing to agent logger when starting new game",beliefLogWriter);
 		}
 			
 			
@@ -289,8 +291,8 @@ public class BayesAdaptiveAgent implements Agent {
 		double epsilon = 0.001;
 		
 		// Too much space. TODO
-//		writeLog("-=-=-=-=-= Starting Probability Update -==-=-=-=\n",agentLogWriter);
-//		writeLog(theirID + "\n",beliefLogWriter);
+		writeLog("-=-=-=-=-= Starting Probability Update -==-=-=-=\n",agentLogWriter);
+		writeLog("New belief update with " + theirID + "\n",beliefLogWriter);
 		
 		double totalProbability = 0;
 		double observedD1 = rollingMatchupInfo.get(theirID).getCommunicativeness();
@@ -308,7 +310,7 @@ public class BayesAdaptiveAgent implements Agent {
 
 			
 			NormalDistribution n = new NormalDistribution(0,assumedBehaviorVariance);
-//			writeLog("Old belief is " + beliefDistribution.get(theirID,possiblePartner) + "\n",agentLogWriter);
+			writeLog("Old belief for " + possiblePartner + " is " + beliefDistribution.get(theirID,possiblePartner) + "\n",beliefLogWriter);
 			
 			double p1 = n.density(diff1);
 			double p2 = n.density(diff2);
@@ -336,7 +338,7 @@ public class BayesAdaptiveAgent implements Agent {
 		}
 		// Too much space. TODO
 
-//		writeLog("total probability is " + totalProbability,agentLogWriter);
+		writeLog("total probability is " + totalProbability,agentLogWriter);
 		
 		//Normalizing all beliefs at the end
 		for (String possiblePartner:trainingPoolCandidates) {
@@ -344,7 +346,7 @@ public class BayesAdaptiveAgent implements Agent {
 			// Too much space. TODO
 
 //			writeLog(String.format("Final belief for (%s %s) is  %f\n", theirID, possiblePartner, beliefDistribution.get(theirID, possiblePartner)), agentLogWriter);
-//			writeLog(String.format("%s %s %f\n", theirID, possiblePartner, beliefDistribution.get(theirID, possiblePartner)), beliefLogWriter);
+			writeLog(String.format("%s %s %f\n", theirID, possiblePartner, beliefDistribution.get(theirID, possiblePartner)), beliefLogWriter);
 		}
 	}
 		
@@ -662,26 +664,38 @@ public class BayesAdaptiveAgent implements Agent {
 			String date = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
 			
 			// Experiment parameters
-			int numTrainingGames = 50; //400 in the paper
+			int numTrainingGames = 400; //400 in the paper
 			int numEvaluationGames = 10;
-			int numEvalRepetitions = 25;
+			int numEvalRepetitions = 200;
 			// Agent parameters
 			int turnsAdaptationThreshold = Integer.MAX_VALUE;
-			int gamesAdaptationThreshold = Integer.MAX_VALUE;
+			int gamesAdaptationThreshold = 1;
 			double assumedBehaviorVariance = 0.1;
 			boolean usePrecomputed = true;
-			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "CanonicalMatchupInfo" + File.separator + "2P3_MUs"; 
+			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "FinalTOG5by5" + File.separator + "Bayes3Matchups"; 
 //			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "5by5tests" + File.separator + "20201130185201MatchupInfo"; 
-			String experimentName = "400multirun" + File.separator + "2P3Generalist"; 
+			String experimentName = "FinalTOG5by5" + File.separator + "T3E2"; 
 	    	
-	    	String strategyChromosomeFile = "2P3";
+
+
+	    	
+//	    	If reading from plain text chromosome files
+//	    	String strategyChromosomeFile = "2P3";
+//	    	String trainingChromosomeFile = strategyChromosomeFile;
+//	    	String evaluationChromosomeFile = "2P3";
+//			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(strategyChromosomeFile, false, true);
+//			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromFile(trainingChromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
+//			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromFile(evaluationChromosomeFile, false, true);
+
+//	  		If reading from JSON iteration files  
+	    	String strategyChromosomeFile = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/MapElites/5by5final3/iteration999999.json";
 	    	String trainingChromosomeFile = strategyChromosomeFile;
-	    	String evaluationChromosomeFile = "2P3";
-
-			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromFile(strategyChromosomeFile, false, true);
-			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromFile(trainingChromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
-			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromFile(evaluationChromosomeFile, false, true);
-
+	    	String evaluationChromosomeFile = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/MapElites/5by5final2/iteration999999.json";
+			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromJSON(strategyChromosomeFile, false, true);
+			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromJSON(trainingChromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
+			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromJSON(evaluationChromosomeFile, false, true);
+				    	
+	    	
 			Set<String> trainingPoolCandidates = strategyPool.keySet();
 			Set<String> evaluationPoolCandidates = evaluationPool.keySet();
 
@@ -716,20 +730,31 @@ public class BayesAdaptiveAgent implements Agent {
 				       else {
 				    	   System.out.println("Reading line " + String.valueOf(lineIndex) + " " + line);
 				    	   lineIndex++;
-				    	   String[] tokens = line.split(" ");
+//				    	   String[] tokens = line.split(" "); //old way
 				    	   try {
-					    	   String ourID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[0]));
-					    	   String theirID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[1]));
-
-	
-					    	   double theirComm = Double.valueOf(tokens[1]);
-					    	   double theirIPP = Double.valueOf(tokens[2]);
+				    		   String playerIDs = line.split(":")[0].strip();
+				    		   String matchupMetrics = line.split(":")[1].strip();
+				    		   String ourID = playerIDs.split(";")[0];     
+				    		   String theirID = playerIDs.split(";")[1];   // Old versions of the precomputing script use a colon instead of semicolon here
+				    		   
+				    		   
+				    		   double theirComm = Double.valueOf(matchupMetrics.split(" ")[0]);
+					    	   double theirIPP = Double.valueOf(matchupMetrics.split(" ")[1]);
+				    		   
+//					    	   String ourID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[0]));  //old way
+//					    	   String theirID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[1]));  //old way
+//
+//	
+//					    	   double theirComm = Double.valueOf(tokens[1]);
+//					    	   double theirIPP = Double.valueOf(tokens[2]);
 					    	   
 					    	   Map<String,Double> estimatedBCValues = new HashMap<String,Double>();
 					    	   estimatedBCValues.put("communicativeness", theirComm);
 					    	   estimatedBCValues.put("IPP", theirIPP);
 					    	   
-					    	   double matchupScore = Double.valueOf(tokens[3]);
+					    	   double matchupScore = Double.valueOf(matchupMetrics.split(" ")[2]);;
+					    	   
+//					    	   double matchupScore = Double.valueOf(tokens[3]); //old way
 	
 					    	   MatchupInformation matchup = new MatchupInformation(ourID, theirID, estimatedBCValues, null, matchupScore, 0, 0, null);
 					    	   
@@ -787,9 +812,11 @@ public class BayesAdaptiveAgent implements Agent {
 	//			String overview = "";
 	//			String detailed = "Detailed Scores\n";
 				for (MultiKey key: MUs.keySet()) {
+					System.out.println(key.getKey(0));
+					System.out.println(key.getKey(1));
 					MatchupInformation MU = MUs.get(key);
-					writeLog(String.format("%s,%s: %f %f %f\n", key.getKey(0), key.getKey(1), MU.EstimatedBCValues.get("communicativeness"), MU.EstimatedBCValues.get("IPP"), MU.scoreMean),matchupWriter);
-					System.out.println(String.format("%s,%s: %f %f %f\n", key.getKey(0), key.getKey(1), MU.EstimatedBCValues.get("communicativeness"), MU.EstimatedBCValues.get("IPP"), MU.scoreMean));
+					writeLog(String.format("%s;%s: %f %f %f\n", key.getKey(0), key.getKey(1), MU.EstimatedBCValues.get("communicativeness"), MU.EstimatedBCValues.get("IPP"), MU.scoreMean),matchupWriter);
+					System.out.println(String.format("%s;%s: %f %f %f\n", key.getKey(0), key.getKey(1), MU.EstimatedBCValues.get("communicativeness"), MU.EstimatedBCValues.get("IPP"), MU.scoreMean));
 					//				detailed+= String.format("%s %s:",  key.getKey(0), key.getKey(1));
 	//				for (Double score:MU.gameScores) {
 	//					detailed+=(String.format(" %f",score));
@@ -808,7 +835,7 @@ public class BayesAdaptiveAgent implements Agent {
 			
 			double overallAverage = 0;
 			for (int i=0; i<numEvalRepetitions;i++) {
-				BayesAdaptiveAgent ba = new BayesAdaptiveAgent(strategyPool, trainingPoolCandidates, MUs, experimentName + File.separator + date+ "bayesLogger", turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance );
+				BayesAdaptiveAgent ba = new BayesAdaptiveAgent(strategyPool, trainingPoolCandidates, MUs, experimentName + File.separator + date+ "bayesLogger", String.valueOf(i),turnsAdaptationThreshold, gamesAdaptationThreshold, assumedBehaviorVariance );
 					
 				HashMap<String, StatsSummary> results = new HashMap<String, StatsSummary>();
 				HashMap<String, ArrayList<Integer>> detailedResults = new HashMap<String, ArrayList<Integer>>();

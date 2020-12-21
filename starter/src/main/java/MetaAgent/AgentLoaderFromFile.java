@@ -2,10 +2,17 @@ package MetaAgent;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.rule.Rule;
@@ -13,6 +20,66 @@ import com.fossgalaxy.games.fireworks.ai.rule.Rule;
 import Evolution.Rulebase;
 
 public class AgentLoaderFromFile {
+	
+	
+//	TODO: RunMapElites outputs chromosome as string rather than JSONArray. When this is fixed there, needs to be fixed here.
+	public static HashMap<String,Agent> makeAgentMapFromJSON(String fileName, boolean rulebaseStandard, boolean ignoreEmpty){
+        HashMap<String,Agent> agents = new HashMap<String,Agent>();
+        Rulebase rb = new Rulebase(rulebaseStandard);
+        
+       
+        JSONParser jsonParser = new JSONParser();
+        
+        try (FileReader reader = new FileReader(fileName)){
+        	
+        	 JSONObject iterationSummary = (JSONObject) jsonParser.parse(reader);
+        	 System.out.println(iterationSummary);
+
+        	 
+        	 JSONArray population = (JSONArray) iterationSummary.get("population");
+        	 
+        	 for (Object obj: population) {
+        		 JSONObject individual = (JSONObject) obj;
+        		 boolean valid = (boolean) individual.get("valid");
+        		 if (valid) {
+        			 String name = (String) individual.get("Name");
+        			 System.out.println(name);
+        			 String genes =  (String) individual.get("Chromosome");
+        			 System.out.println(genes);
+        			 String[] tokens = genes.replaceAll("\\p{P}","").split(" ");
+        			 int[] chromosome = new int[tokens.length];
+        			 for(int i=0; i<tokens.length; i++) {
+        				 chromosome[i] = Integer.valueOf(tokens[i]);
+        			 }
+        			 
+        			 agents.put(name,rb.makeAgent(chromosome));
+        		 }
+        	 }
+        	 
+        	 if (agents.keySet().isEmpty()) {
+        		 System.err.println("Empty map of agents after reading JSON " + fileName);
+        		 System.exit(-1);
+        	 }
+        	 
+
+            
+        	
+        } catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(-1);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(-1);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(-1);
+		}
+        return agents;
+	}
 	
 	public static HashMap<String,Agent> makeAgentMapFromFile(String fileName, boolean rulebaseStandard, boolean ignoreEmpty){
 		fileName = System.getProperty("user.dir")+File.separator+fileName;

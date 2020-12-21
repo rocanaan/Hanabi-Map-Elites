@@ -60,22 +60,22 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "2P3";
+		String fileName = "ToGChromosomes3";
 //		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/5p/population999999";
 //		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName2 = "2P3";
-		int sizeDim1 = 20;
-		int sizeDim2 = 20;
+		String fileName2 = fileName;
+		int sizeDim1 = 5;
+		int sizeDim2 = 5;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 1000;
+		int numGames = 400;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 		// TODO: This should bb extracted
 		
-		Mode mode  = Mode.SIMPLE;
+		Mode mode  = Mode.INTRAPOPULATION;
 		
 
 
