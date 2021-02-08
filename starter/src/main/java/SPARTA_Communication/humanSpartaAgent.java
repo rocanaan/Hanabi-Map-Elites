@@ -122,7 +122,7 @@ public class humanSpartaAgent implements Agent {
 				System.out.println("Waiting for human SPARTA action, current state is:");
 				System.out.println(json.toJSONString());
 				try {
-					TimeUnit.SECONDS.sleep(10);
+					TimeUnit.MILLISECONDS.sleep(50);;
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

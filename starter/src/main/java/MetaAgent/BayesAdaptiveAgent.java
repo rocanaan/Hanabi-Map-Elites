@@ -37,6 +37,7 @@ import com.fossgalaxy.games.fireworks.state.actions.DiscardCard;
 import com.fossgalaxy.games.fireworks.state.actions.PlayCard;
 import com.fossgalaxy.games.fireworks.state.actions.TellColour;
 import com.fossgalaxy.games.fireworks.state.actions.TellValue;
+import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 import com.fossgalaxy.stats.BasicStats;
 import com.fossgalaxy.stats.StatsSummary;
 
@@ -98,6 +99,9 @@ public class BayesAdaptiveAgent implements Agent {
 	public BufferedWriter beliefLogWriter;
 
 
+	
+	//TODO: XIANBO: Create a new constructor that can also receive a belief distribution as an instance of MultiKeyMap<String, Double> and rolling matchup info as an instance of MultiKeyMap<String, MatchupInformation>
+	//TODO: XIANBO: Create a new method that's publicly accessible to output belief distribution and rollingMatchupInfo to file
 	
 	public BayesAdaptiveAgent(HashMap<String, Agent> myStrategyPool, Set<String> trainingPoolCandidates,
 			MultiKeyMap<String, MatchupInformation> precomputedMatchupInfo, String logPath, String postfix, int turnsAdaptationThreshold, int gamesAdaptationThreshold, double assumedBehaviorVariance ) {
@@ -658,6 +662,15 @@ public class BayesAdaptiveAgent implements Agent {
 	        return state.getTableValue(card.colour) + 1 == card.value;
 	    }
 	
+	    public static HashMap<String,Agent> getGauntlet(){
+	    	HashMap<String, Agent> gauntlet = new HashMap<String,Agent>();
+			String[] gauntletNames = {"RuleBasedIGGI", "RuleBasedInternal","RuleBasedOuter","SampleLegalRandom","RuleBasedVanDeBergh","RuleBasedFlawed","RuleBasedPiers"};
+	    	for (String name : gauntletNames) {
+	    		Agent a = AgentUtils.buildAgent(name);
+	    		gauntlet.put(name, a);
+	    	}
+	    	return gauntlet;
+	    }
 	    
 	    // A small main function to play the Bayes agent using the same training pool and strategy pool
 	    public static void main(String[] args){
@@ -669,12 +682,12 @@ public class BayesAdaptiveAgent implements Agent {
 			int numEvalRepetitions = 200;
 			// Agent parameters
 			int turnsAdaptationThreshold = Integer.MAX_VALUE;
-			int gamesAdaptationThreshold = 1;
+			int gamesAdaptationThreshold = Integer.MAX_VALUE;
 			double assumedBehaviorVariance = 0.1;
-			boolean usePrecomputed = true;
+			boolean usePrecomputed = false;
 			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "FinalTOG5by5" + File.separator + "Bayes3Matchups"; 
 //			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "5by5tests" + File.separator + "20201130185201MatchupInfo"; 
-			String experimentName = "FinalTOG5by5" + File.separator + "T3E2"; 
+			String experimentName = "FinalTOG5by5" + File.separator + "GauntletGeneralistE3"; 
 	    	
 
 
@@ -690,12 +703,16 @@ public class BayesAdaptiveAgent implements Agent {
 //	  		If reading from JSON iteration files  
 	    	String strategyChromosomeFile = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/MapElites/5by5final3/iteration999999.json";
 	    	String trainingChromosomeFile = strategyChromosomeFile;
-	    	String evaluationChromosomeFile = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/MapElites/5by5final2/iteration999999.json";
+	    	String evaluationChromosomeFile = "/Users/rodrigocanaan/Dev/MapElitesResults/WorkflowTest/MapElites/5by5final3/iteration999999.json";
 			HashMap<String, Agent> strategyPool = AgentLoaderFromFile.makeAgentMapFromJSON(strategyChromosomeFile, false, true);
 			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromJSON(trainingChromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
 			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromJSON(evaluationChromosomeFile, false, true);
-				    	
-	    	
+			
+			strategyPool = getGauntlet();
+			trainingPool = getGauntlet();
+//			evaluationPool = getGauntlet();
+			
+			
 			Set<String> trainingPoolCandidates = strategyPool.keySet();
 			Set<String> evaluationPoolCandidates = evaluationPool.keySet();
 
@@ -712,83 +729,16 @@ public class BayesAdaptiveAgent implements Agent {
 //	    		TODO: read from the JSON specified in the path
 //	   		}
 			
-			MultiKeyMap<String, MatchupInformation> MUs = new MultiKeyMap<String, MatchupInformation>();
+			MultiKeyMap<String, MatchupInformation> MUs = null;
 			
 			
 			// A very messy parser for the matchup file. TODO: Output the matchups in JSON instead, write a converter from current format to JSON for compatibiliy
 			if (usePrecomputed) {
-				System.out.println("Reading Matchups from file " + precomputedMatchupFile);
-				try (BufferedReader br = new BufferedReader(new FileReader(precomputedMatchupFile))) {
-				    String line;
-				    int lineIndex=0;
-				    while ((line = br.readLine()) != null) {
-				       if (lineIndex==0) {
-				    	   System.out.println("Read initial line");
-				    	   lineIndex++;
-				    	   continue;
-				       }
-				       else {
-				    	   System.out.println("Reading line " + String.valueOf(lineIndex) + " " + line);
-				    	   lineIndex++;
-//				    	   String[] tokens = line.split(" "); //old way
-				    	   try {
-				    		   String playerIDs = line.split(":")[0].strip();
-				    		   String matchupMetrics = line.split(":")[1].strip();
-				    		   String ourID = playerIDs.split(";")[0];     
-				    		   String theirID = playerIDs.split(";")[1];   // Old versions of the precomputing script use a colon instead of semicolon here
-				    		   
-				    		   
-				    		   double theirComm = Double.valueOf(matchupMetrics.split(" ")[0]);
-					    	   double theirIPP = Double.valueOf(matchupMetrics.split(" ")[1]);
-				    		   
-//					    	   String ourID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[0]));  //old way
-//					    	   String theirID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[1]));  //old way
-//
-//	
-//					    	   double theirComm = Double.valueOf(tokens[1]);
-//					    	   double theirIPP = Double.valueOf(tokens[2]);
-					    	   
-					    	   Map<String,Double> estimatedBCValues = new HashMap<String,Double>();
-					    	   estimatedBCValues.put("communicativeness", theirComm);
-					    	   estimatedBCValues.put("IPP", theirIPP);
-					    	   
-					    	   double matchupScore = Double.valueOf(matchupMetrics.split(" ")[2]);;
-					    	   
-//					    	   double matchupScore = Double.valueOf(tokens[3]); //old way
-	
-					    	   MatchupInformation matchup = new MatchupInformation(ourID, theirID, estimatedBCValues, null, matchupScore, 0, 0, null);
-					    	   
-					    	   MUs.put(ourID,theirID,matchup);
-					    	   
-					    	   matchup = MUs.get(ourID,theirID);
-					    	   
-					    	   System.out.println(String.format("Read matchup: Our ID %s their ID %s %f %f %f", 
-					    			   ourID,theirID, matchup.EstimatedBCValues.get("communicativeness"),matchup.EstimatedBCValues.get("IPP"),matchup.scoreMean  ));
-				    	   }
-				    	   catch (NumberFormatException e) {
-				    		   System.err.println("Error reading precomputed matchup values");
-				    		   e.printStackTrace();
-				    		   System.exit(1);
-				    	   }
-				       }
-				    }
-				    System.out.println("Finished reading matchups");
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					System.err.println(String.format("File %s not found", precomputedMatchupFile));
-					e.printStackTrace();
-		    		 System.exit(1);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-		    		System.exit(1);
-
-				}
+				MUs = parsePrecomputedMUFile(precomputedMatchupFile); 
 			}
 			
 			else {
-				
-	
+				// TODO: This block has too many responsibilities: actually precomputing the matchups with the provided method and logging a bunch of stuff
 				String matchupInfoFile = experimentName + File.separator +  date+ "MatchupInfo";
 				
 				BufferedWriter matchupWriter = null;
@@ -925,6 +875,79 @@ public class BayesAdaptiveAgent implements Agent {
 	
 	private static void writeLog(String log, BufferedWriter writer) {
 		writeLog(log, "", writer);
+	}
+	
+	// A very messy parser for the matchup file. TODO: Output the matchups in JSON instead, write a converter from current format to JSON for compatibiliy
+	public static MultiKeyMap<String, MatchupInformation> parsePrecomputedMUFile(String precomputedMatchupFile){
+		MultiKeyMap<String, MatchupInformation> MUs = new MultiKeyMap<String, MatchupInformation>();
+		System.out.println("Reading Matchups from file " + precomputedMatchupFile);
+		try (BufferedReader br = new BufferedReader(new FileReader(precomputedMatchupFile))) {
+		    String line;
+		    int lineIndex=0;
+		    while ((line = br.readLine()) != null) {
+		       if (lineIndex==0) {
+		    	   System.out.println("Read initial line");
+		    	   lineIndex++;
+		    	   continue;
+		       }
+		       else {
+		    	   System.out.println("Reading line " + String.valueOf(lineIndex) + " " + line);
+		    	   lineIndex++;
+//		    	   String[] tokens = line.split(" "); //old way
+		    	   try {
+		    		   String playerIDs = line.split(":")[0].strip();
+		    		   String matchupMetrics = line.split(":")[1].strip();
+		    		   String ourID = playerIDs.split(";")[0];     
+		    		   String theirID = playerIDs.split(";")[1];   // Old versions of the precomputing script use a colon instead of semicolon here
+		    		   
+		    		   
+		    		   double theirComm = Double.valueOf(matchupMetrics.split(" ")[0]);
+			    	   double theirIPP = Double.valueOf(matchupMetrics.split(" ")[1]);
+		    		   
+//			    	   String ourID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[0]));  //old way
+//			    	   String theirID =  String.valueOf(Integer.valueOf(tokens[0].split(",|:")[1]));  //old way
+//
+//
+//			    	   double theirComm = Double.valueOf(tokens[1]);
+//			    	   double theirIPP = Double.valueOf(tokens[2]);
+			    	   
+			    	   Map<String,Double> estimatedBCValues = new HashMap<String,Double>();
+			    	   estimatedBCValues.put("communicativeness", theirComm);
+			    	   estimatedBCValues.put("IPP", theirIPP);
+			    	   
+			    	   double matchupScore = Double.valueOf(matchupMetrics.split(" ")[2]);;
+			    	   
+//			    	   double matchupScore = Double.valueOf(tokens[3]); //old way
+
+			    	   MatchupInformation matchup = new MatchupInformation(ourID, theirID, estimatedBCValues, null, matchupScore, 0, 0, null);
+			    	   
+			    	   MUs.put(ourID,theirID,matchup);
+			    	   
+			    	   matchup = MUs.get(ourID,theirID);
+			    	   
+			    	   System.out.println(String.format("Read matchup: Our ID %s their ID %s %f %f %f", 
+			    			   ourID,theirID, matchup.EstimatedBCValues.get("communicativeness"),matchup.EstimatedBCValues.get("IPP"),matchup.scoreMean  ));
+		    	   }
+		    	   catch (NumberFormatException e) {
+		    		   System.err.println("Error reading precomputed matchup values");
+		    		   e.printStackTrace();
+		    		   System.exit(1);
+		    	   }
+		       }
+		    }
+		    System.out.println("Finished reading matchups");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.err.println(String.format("File %s not found", precomputedMatchupFile));
+			e.printStackTrace();
+    		 System.exit(1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+    		System.exit(1);
+
+		}
+		return MUs;
 	}
 		
 }
