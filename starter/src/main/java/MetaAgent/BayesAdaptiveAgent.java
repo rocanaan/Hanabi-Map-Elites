@@ -718,7 +718,7 @@ public class BayesAdaptiveAgent implements Agent {
 
 			int numPlayers = 2;
 			
-//			TODO: Xianbo: if there is no specified path to load precomputed information, play games and output json else read from the JSON
+//			TODO: if there is no specified path to load precomputed information, play games and output json else read from the JSON
 //			String precomputedPath = "";
 //			if (precomputedPath == "") {
 //				int numTrainingGames = 100;
@@ -756,7 +756,7 @@ public class BayesAdaptiveAgent implements Agent {
 				MUs = PrecomputeMatchupInfo.precomputeMatchups(strategyPool, trainingPool, numPlayers, numTrainingGames);
 	
 				System.out.println("Finished precomputing matchups");
-				// TODO: For Xianbo: replace the next 4 lines where you print to the file with outputting a JSON
+				// TODO: replace the next 4 lines where you print to the file with outputting a JSON
 				
 	
 	//			String overview = "";
