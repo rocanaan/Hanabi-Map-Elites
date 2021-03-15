@@ -69,7 +69,7 @@ public class EvaluatePopulationFromFile {
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 400;
+		int numGames = 1000;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
@@ -290,6 +290,33 @@ public class EvaluatePopulationFromFile {
 			System.out.println(maxScore);
 			System.out.println((int) (bestPlayer / sizeDim1));
 			System.out.println(bestPlayer % sizeDim1);
+			
+			
+			for (int i = 0; i < sizeDim2; i++) {
+				for (int j = 0; j < sizeDim1; j++) {
+					if (validMask[i][j] ==0) {
+						System.out.print("0,");
+					}
+					else {
+						int playerID = j + sizeDim1 * i;
+						Vector<Double> individualResults = new Vector<Double>();
+						Map<Integer, Vector<Double>> playerResults = populationResults.get(playerID);
+						// String playerName = population.get(playerID).toString();
+						for (int gameSize = minNumPlayers; gameSize <= maxNumPlayers; gameSize++) {
+							Vector<Double> matchResults = playerResults.get(gameSize);
+							for (double result : matchResults) {
+								individualResults.add(result);
+							}
+						}
+						double mean = Utils.Utils.getMean(individualResults);
+						System.out.print(mean + ",");
+					}
+				
+				}
+			}
+			System.out.println("");
+			
+			
 		}
 
 		else if (mode == Mode.INTRAPOPULATION) { // TODO: This should actually be m ranging from i to size, and n from j

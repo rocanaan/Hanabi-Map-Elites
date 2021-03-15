@@ -33,7 +33,7 @@ public class HumanControlledAgent implements Agent {
         //print current game state
         showGameState(playerID, gameState);
         
-        showHistory(playerID,gameState);
+//        showHistory(playerID,gameState);
 
         //get all legal moves as a list
         List<Action> possibleMoves = new ArrayList<>(Utils.generateActions(playerID, gameState));
@@ -67,6 +67,7 @@ public class HumanControlledAgent implements Agent {
         int moveToMake = reader.nextInt();
         assert moveToMake >= 0 && moveToMake < possibleMoves.size() : "Invalid move";
 
+        System.out.println("Player " + playerID + " took move " + possibleMoves.get(moveToMake));
         return possibleMoves.get(moveToMake);
     }
 
@@ -111,7 +112,29 @@ public class HumanControlledAgent implements Agent {
                     }
                     System.out.println(colors + " | " + values);
                 } else {
-                    System.out.println(aCard.colour + " " + aCard.value);
+                	 CardColour[] pColor = hand.getPossibleColours(j);
+                     String colors = "";
+                     for (CardColour cc : pColor) {
+                         colors += cc + " ";
+                     }
+                     if (hand.getKnownColour(j) == null) {
+                    	 colors += " FALSE ";
+                     }
+                     else {
+                    	 colors += " TRUE ";
+                     }
+                     int[] pValue = hand.getPossibleValues(j);
+                     String values = "";
+                     for (int cv : pValue) {
+                         values += cv + " ";
+                     }
+                     if (hand.getKnownValue(j) == null) {
+                    	 values += " FALSE ";
+                     }
+                     else {
+                    	 values += " TRUE ";
+                     }
+                    System.out.println(aCard.colour + " " + aCard.value + " | " + colors + " | " + values);
                 }
             }
         }

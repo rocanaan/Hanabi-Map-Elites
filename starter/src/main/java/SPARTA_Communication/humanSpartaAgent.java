@@ -195,6 +195,9 @@ public class humanSpartaAgent implements Agent {
 		 String pathToStates = "/Users/rodrigocanaan/Dev/SpartaIntegrationTest/states";
 		 String pathToActions = "/Users/rodrigocanaan/Dev/SpartaIntegrationTest/actions";
 		 
+//		 String pathToStates = "/Users/rodrigocanaan/Dev/HanabiUIs/Arshiya_SPARTA/MockDirectoryStructure/SESSIONS/Session000001/Games/Game1/actions";
+//		 String pathToActions = "/Users/rodrigocanaan/Dev/HanabiUIs/Arshiya_SPARTA/MockDirectoryStructure/SESSIONS/Session000001/Games/Game1/states";
+	 
 		 Agent spartaHuman = new humanSpartaAgent(pathToStates, pathToActions);
 	     runner.addPlayer(new AgentPlayer("spartaHuman", spartaHuman));
 	     Agent rb = AgentUtils.buildAgent(agentName);

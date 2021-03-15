@@ -99,7 +99,48 @@ public class BayesAdaptiveAgent implements Agent {
 	public BufferedWriter beliefLogWriter;
 
 
+	public void setPartnerHistory(HashMap<String, Integer> games, HashMap<String, Integer> turns, HashMap<String, PlayerStats> MUs) {
+		this.rollingGamesWithPartner = games;
+		this.rollingTurnsWithPartner = turns;
+		this.rollingMatchupInfo = MUs;
+	}
 	
+	public void setBeliefDistribution(MultiKeyMap<String, Double> beliefDistribution) {
+		this.beliefDistribution = beliefDistribution;
+	}
+	
+	private static void giveOracleInformation(String theirID, Set<String> trainingPool, BayesAdaptiveAgent ba) {
+		// TODO Auto-generated method stub
+		String testID = "test"+theirID;
+		
+		//Rolling games, turns, matchup information history
+		HashMap<String, Integer> games = new HashMap<String, Integer> ();
+		games.put(testID, 0);
+		HashMap<String, Integer> turns = new HashMap<String, Integer> ();
+		turns.put(testID, 0);
+		HashMap<String, PlayerStats> MUs = new HashMap<String, PlayerStats>();
+		MUs.put(testID, new PlayerStats(0, 0, 0, 0, 0, 0));
+
+		
+		// Beliefs
+		MultiKeyMap<String, Double> beliefs = new MultiKeyMap<String, Double>();
+		
+		
+		for (String partner: trainingPool) {
+			if (partner.equals(theirID)) {
+				beliefs.put(testID, partner, 1.0);
+				System.out.println("Found!");
+			}
+			else {
+				beliefs.put(testID, partner, 0.0);
+			}
+		}
+		
+		ba.setPartnerHistory(games,turns,MUs);
+		ba.setBeliefDistribution(beliefs);
+		
+		
+	}
 	//TODO: XIANBO: Create a new constructor that can also receive a belief distribution as an instance of MultiKeyMap<String, Double> and rolling matchup info as an instance of MultiKeyMap<String, MatchupInformation>
 	//TODO: XIANBO: Create a new method that's publicly accessible to output belief distribution and rollingMatchupInfo to file
 	
@@ -145,6 +186,7 @@ public class BayesAdaptiveAgent implements Agent {
 		myTurnCount = 0;
 		hintsAvailable = 8;
 		
+		// TODO: Check what happens it Bayes plays with Bayes
 		for (String name:currentPlayers) {
 			if (name != "Bayes") {
 				boolean first = false;
@@ -684,10 +726,11 @@ public class BayesAdaptiveAgent implements Agent {
 			int turnsAdaptationThreshold = Integer.MAX_VALUE;
 			int gamesAdaptationThreshold = Integer.MAX_VALUE;
 			double assumedBehaviorVariance = 0.1;
-			boolean usePrecomputed = false;
+			boolean usePrecomputed = true;
+			boolean oracle = true;
 			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "FinalTOG5by5" + File.separator + "Bayes3Matchups"; 
 //			String precomputedMatchupFile =  System.getProperty("user.dir")+ File.separator + "5by5tests" + File.separator + "20201130185201MatchupInfo"; 
-			String experimentName = "FinalTOG5by5" + File.separator + "GauntletGeneralistE3"; 
+			String experimentName = "FinalTOG5by5" + File.separator + "Oracle3"; 
 	    	
 
 
@@ -708,8 +751,8 @@ public class BayesAdaptiveAgent implements Agent {
 			HashMap<String, Agent> trainingPool = AgentLoaderFromFile.makeAgentMapFromJSON(trainingChromosomeFile, false, true); //TODO: If precomputed, training pool has to be the set of partner agents in the matchup file
 			HashMap<String, Agent> evaluationPool = AgentLoaderFromFile.makeAgentMapFromJSON(evaluationChromosomeFile, false, true);
 			
-			strategyPool = getGauntlet();
-			trainingPool = getGauntlet();
+//			strategyPool = getGauntlet();
+//			trainingPool = getGauntlet();
 //			evaluationPool = getGauntlet();
 			
 			
@@ -797,6 +840,9 @@ public class BayesAdaptiveAgent implements Agent {
 					
 					ArrayList<Integer> gameScores = new ArrayList<Integer>();
 	
+					if (oracle) {
+						giveOracleInformation(theirID,trainingPoolCandidates, ba);
+					}
 		               
 			        // run the test games
 			        for (int gameCount=0; gameCount<numEvaluationGames; gameCount++) {
@@ -861,6 +907,8 @@ public class BayesAdaptiveAgent implements Agent {
 			System.out.println(String.format("Overall average is %f", overallAverage));
 	    }
 	
+
+
 	private static void writeLog(String log, String error, BufferedWriter writer) {
 		try {
 			writer.append(log);
