@@ -8,7 +8,8 @@ public class PlayerStats {
 	public double numHints;
 	public double numPossibleHints;
 	public int totalInteractions;
-	public PlayerStats(double numPlays, double totalPlayability, double totalInformationPlays, double numHints, double numPossibleHints, int totalInteractions) {
+	public int numGames;
+	public PlayerStats(double numPlays, double totalPlayability, double totalInformationPlays, double numHints, double numPossibleHints, int totalInteractions, int numGames) {
 		super();
 		this.numPlays = numPlays;
 		this.totalPlayability = totalPlayability;
@@ -16,6 +17,7 @@ public class PlayerStats {
 		this.numHints = numHints;
 		this.numPossibleHints = numPossibleHints;
 		this.totalInteractions = totalInteractions;
+		this.numGames = numGames;
 	}
 		
 	public double getCommunicativeness(){

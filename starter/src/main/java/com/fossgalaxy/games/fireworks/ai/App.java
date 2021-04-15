@@ -25,9 +25,9 @@ public class App
         int numPlayers = 2;
         int numGames = 1;
         //String agentName = "SampleAgent";
-        String agentName = "HumanControlledAgent";
-        String otherAgentName = "HumanControlledAgent";
-        String modelName = "HumanControlledAgent";
+        String agentName = "RuleBasedPiers";
+        String otherAgentName = "RuleBasedPiers";
+        String modelName = "RuleBasedPiers";
 
         Random random = new Random();
         StatsSummary statsSummary = new BasicStats();
@@ -54,9 +54,9 @@ public class App
             for (int j=1; j<numPlayers; j++) {
                 // the player class keeps track of our state for us...
                 
-//                Agent mctsAgent = new MCTSPredictor(agents);
+                Agent mctsAgent = new MCTSPredictor(agents);
                 
-                player = new AgentPlayer(otherAgentName, a2);
+                player = new AgentPlayer(otherAgentName, mctsAgent);
                 runner.addPlayer(player);
             }
 
