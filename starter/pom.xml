@@ -20,7 +20,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
     <!--Hanabi framework. Use 0.2.4 for Meta-Agent experiments, 0.2.1 for evolution and MAP-Elites experiments-->
