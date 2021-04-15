@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
-import java.util.concurrent.TimeUnit;
 
 import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
@@ -60,16 +59,16 @@ public class EvaluatePopulationFromFile {
 	public static void main(String[] args) {
 		boolean rulebaseStandard = false;
 		Rulebase rb = new Rulebase(rulebaseStandard);
-		String fileName = "ToGChromosomes3";
+		String fileName = "5by5";
 //		String fileName = "/Users/rodrigocanaan/Dev/MapElitesResults/5p/population999999";
 //		String fileName = "/Users/rodrigocanaan/Dev/HanabiResults/Fixed/ChromosomesRun1M";
-		String fileName2 = fileName;
+		String fileName2 = "5by5";
 		int sizeDim1 = 5;
 		int sizeDim2 = 5;
 		int numPlayers = 2;
 		int minNumPlayers = numPlayers;
 		int maxNumPlayers = numPlayers;
-		int numGames = 1000;
+		int numGames = 400;
 		boolean usePrecomputedResults = false; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
 //		int numGames = 1000;
 //		boolean usePrecomputedResults = true; //If true, will read precomputed results from result file. If false, will load agents from agents file and compute.
@@ -213,74 +212,63 @@ public class EvaluatePopulationFromFile {
 			double minSD = 9999;
 			int countNotNull = 0;
 
-			int[][] validMask = getValidMaskFromFile(fileName, sizeDim1, sizeDim2);
-
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j < sizeDim2; j++) {
 					int playerID = j + sizeDim1 * i;
 					System.out.println("Summary for player " + i + "," + j);
-					if (validMask[i][j] == 0) {
-						System.out.println("   Player " + i + "," + j + " is invalid. ");
+					Vector<Double> individualResults = new Vector<Double>();
+					Map<Integer, Vector<Double>> playerResults = populationResults.get(playerID);
+					// String playerName = population.get(playerID).toString();
+					for (int gameSize = minNumPlayers; gameSize <= maxNumPlayers; gameSize++) {
+						double sum = 0;
+						int n = 0;
+						Vector<Double> matchResults = playerResults.get(gameSize);
+						for (double result : matchResults) {
+							individualResults.add(result);
+							sum += result;
+							n++;
+						}
+						if (n != 0) {
+							System.out.println("   Player " + i + "," + j + " has a mean score of " + sum / n
+									+ " in games of size " + gameSize);
+						}
 					}
-					else
-					{
+					double mean = Utils.Utils.getMean(individualResults);
+					if (mean > 0) {
 						countNotNull++;
-						Vector<Double> individualResults = new Vector<Double>();
-						Map<Integer, Vector<Double>> playerResults = populationResults.get(playerID);
-						// String playerName = population.get(playerID).toString();
-						for (int gameSize = minNumPlayers; gameSize <= maxNumPlayers; gameSize++) {
-							double sum = 0;
-							int n = 0;
-							Vector<Double> matchResults = playerResults.get(gameSize);
-							for (double result : matchResults) {
-								individualResults.add(result);
-								sum += result;
-								n++;
-							}
-							if (n != 0) {
-								System.out.println("   Player " + i + "," + j + " has a mean score of " + sum / n
-										+ " in games of size " + gameSize);
-							}
-						}
-						double mean = Utils.Utils.getMean(individualResults);
-						System.out.println("Player " + i + "," + j + "'s mean score: " + mean);
-						double SD = Utils.Utils.getStandardDeviation(individualResults);
-						if (SD > maxSD) {
-							maxSD = SD;
-						}
-						if (SD < minSD) {
-							minSD = SD;
-						}
-						averageSD += SD;
-						System.out.println("SD: " + SD + " SEM: " + SD / Math.sqrt(individualResults.size()));
-						//
-						if (mean > maxScore) {
-							maxScore = mean;
-							bestPlayer = playerID;
-						}
-						System.out.println("");
 					}
+					System.out.println("Player " + i + "," + j + "'s mean score: " + mean);
+					double SD = Utils.Utils.getStandardDeviation(individualResults);
+					if (SD > maxSD) {
+						maxSD = SD;
+					}
+					if (SD < minSD) {
+						minSD = SD;
+					}
+					averageSD += SD;
+					System.out.println("SD: " + SD + " SEM: " + SD / Math.sqrt(individualResults.size()));
+					//
+					if (mean > maxScore) {
+						maxScore = mean;
+						bestPlayer = playerID;
+					}
+					System.out.println("");
 				}
 			}
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j < sizeDim2; j++) {
-					if (validMask[i][j] ==0) {
-						System.out.print("X ");
-					}
-					else {
-						int playerID = j + sizeDim1 * i;
-						Vector<Double> individualResults = new Vector<Double>();
-						Map<Integer, Vector<Double>> playerResults = populationResults.get(playerID);
-						// String playerName = population.get(playerID).toString();
-						for (int gameSize = minNumPlayers; gameSize <= maxNumPlayers; gameSize++) {
-							Vector<Double> matchResults = playerResults.get(gameSize);
-							for (double result : matchResults) {
-								individualResults.add(result);
-							}
+					int playerID = j + sizeDim1 * i;
+					Vector<Double> individualResults = new Vector<Double>();
+					Map<Integer, Vector<Double>> playerResults = populationResults.get(playerID);
+					// String playerName = population.get(playerID).toString();
+					for (int gameSize = minNumPlayers; gameSize <= maxNumPlayers; gameSize++) {
+						Vector<Double> matchResults = playerResults.get(gameSize);
+						for (double result : matchResults) {
+							individualResults.add(result);
 						}
-						double mean = Utils.Utils.getMean(individualResults);
-						System.out.print(mean + " ");
 					}
+					double mean = Utils.Utils.getMean(individualResults);
+					System.out.print(mean + " ");
 				}
 				System.out.println("");
 			}
@@ -290,33 +278,6 @@ public class EvaluatePopulationFromFile {
 			System.out.println(maxScore);
 			System.out.println((int) (bestPlayer / sizeDim1));
 			System.out.println(bestPlayer % sizeDim1);
-			
-			
-			for (int i = 0; i < sizeDim2; i++) {
-				for (int j = 0; j < sizeDim1; j++) {
-					if (validMask[i][j] ==0) {
-						System.out.print("0,");
-					}
-					else {
-						int playerID = j + sizeDim1 * i;
-						Vector<Double> individualResults = new Vector<Double>();
-						Map<Integer, Vector<Double>> playerResults = populationResults.get(playerID);
-						// String playerName = population.get(playerID).toString();
-						for (int gameSize = minNumPlayers; gameSize <= maxNumPlayers; gameSize++) {
-							Vector<Double> matchResults = playerResults.get(gameSize);
-							for (double result : matchResults) {
-								individualResults.add(result);
-							}
-						}
-						double mean = Utils.Utils.getMean(individualResults);
-						System.out.print(mean + ",");
-					}
-				
-				}
-			}
-			System.out.println("");
-			
-			
 		}
 
 		else if (mode == Mode.INTRAPOPULATION) { // TODO: This should actually be m ranging from i to size, and n from j
@@ -328,10 +289,8 @@ public class EvaluatePopulationFromFile {
 			// zero)
 
 			double[][] selfPlayTable = new double[sizeDim1][sizeDim2];
-			int[][] validMask = getValidMaskFromFile(fileName, sizeDim1, sizeDim2);
-//
-//			int[][] validMask = new int[sizeDim1][sizeDim2];
-//
+			int[][] validMask = new int[sizeDim1][sizeDim2];
+
 			for (int i = 0; i < sizeDim1; i++) {
 				for (int j = 0; j < sizeDim2; j++) {
 					int index = getMatchupIndex(i, j, i, j, sizeDim1, sizeDim2);
@@ -343,6 +302,12 @@ public class EvaluatePopulationFromFile {
 					}
 					double score = Utils.Utils.getMean(scores);
 					selfPlayTable[i][j] = score;
+					if (score == 0) {
+						validMask[i][j] = 0;
+					} else {
+						validMask[i][j] = 1;
+					}
+
 				}
 
 			}
@@ -442,7 +407,6 @@ public class EvaluatePopulationFromFile {
 
 			}
 
-
 			System.out.println("Score by distance");
 			PostSimulationAnalyses.CalculateActionSimilarity.printHistogram(matchupTable, validMask, sizeDim1, sizeDim2,
 					1);
@@ -518,7 +482,6 @@ public class EvaluatePopulationFromFile {
 				System.out.println("");
 			}
 			System.out.println((sum / count));
-			
 			System.out.println("Replaying matchups based on best pair");
 			System.out.println("In this population:");
 			sum = 0;
@@ -540,8 +503,6 @@ public class EvaluatePopulationFromFile {
 				System.out.println("");
 			}
 			System.out.println((sum / count));
-			
-
 			System.out.println("Replaying matchups based on generalist");
 			System.out.println("In this population:");
 			sum = 0;
@@ -891,54 +852,5 @@ public class EvaluatePopulationFromFile {
 		if (other == 0)
 			return false;
 		return 100 * other / (ascii + other) > 95;
-	}
-	
-	private static int[][] getValidMaskFromFile(String fileName, int sizeDim1, int sizeDim2) {
-		// TODO Auto-generated method stub
-		int[][] validMask = new int[sizeDim1][sizeDim2];
-		
-		try {
-			String thisLine;
-
-			BufferedReader br = new BufferedReader(new FileReader(fileName));
-			int index = 0;
-			while ((thisLine = br.readLine()) != null) {
-				int i = index/sizeDim1;
-				int j = index%sizeDim2;
-				thisLine = thisLine.replaceAll(" ", "");
-				thisLine = thisLine.replaceAll("\t", "");
-				String[] c = thisLine.split(",");
-				int[] chromosome = new int[c.length];
-				boolean valid  = false;
-				for (int g = 0; g < c.length; g++) {
-					int gene = Integer.parseInt(c[g]);
-					if (gene !=0){
-						valid  = true;
-					}
-				}
-				if (valid) {
-					validMask[i][j] = 1;
-					
-				}				
-				else {
-					validMask[i][j] = 0;
-				}
-				index++;
-			}
-			br.close();
-		//		return true;
-		} catch (Exception e) {
-			System.err.println(e);
-		//		return false;
-		}
-		System.out.println("Printing valid mask");
-		for (int i = 0; i < sizeDim1; i++) {
-			for (int j = 0; j< sizeDim2 ; j++) {
-				System.out.print(validMask[i][j]);
-				System.out.print(" ");
-			}
-			System.out.println("");
-		}
-		return validMask;
 	}
 }

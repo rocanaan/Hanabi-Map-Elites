@@ -11,7 +11,6 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.function.Function;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.fossgalaxy.games.fireworks.ai.AgentPlayer;
@@ -48,7 +47,7 @@ public class RunMapElites {
 	public static int d2 = 5; // number of niches in the second dimension
 	public static double mutationRate = 0.1;
 	public static double crossoverRate = 0.1;
-	public static int numGames = 50; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
+	public static int numGames = 100; // Number of games per agent per game size. There are 4 different game sizes, so this number is actually 4 times higher
 	public static boolean mirror = true; // If true, will run in mirror mode. If false, will run in mixed mode, which is takes around 7 times as long
 	static int minNumPlayers = 2;
 	static int maxNumPlayers = 2;
@@ -59,7 +58,7 @@ public class RunMapElites {
 	static int[][][] population = new int[d1][d2][chromosomeLength];
 
 	static String filePath = "/Users/rodrigocanaan/Dev/MapElitesResults/";
-	static String directory = "WorkflowTest/MapElites/5by5final3/";
+	static String directory = "WorkflowTest/MapElites/5by5_2/";
 
 
 	
@@ -173,71 +172,6 @@ public class RunMapElites {
 	}
 	
 	
-	
-	
-	public static void populationToJSON(String fileName, int iteration) {
-        int counter = 0;
-        JSONObject outputJSON = new JSONObject();
-        JSONObject infoJSON = new JSONObject();
-        infoJSON.put("Iteration", counter);
-        infoJSON.put("Map Dimensions", "{"+d1+","+d2+"}");
-        outputJSON.put("info",infoJSON);
-        JSONArray populationJSON = new JSONArray();
-        for (int i = 0; i<d1; i++) {
-            for(int j = 0; j<d2; j++) {
-                JSONObject individualJSON = new JSONObject();
-                individualJSON.put("Communicativeness_index",i);
-                individualJSON.put("IPP_index",j);
-                individualJSON.put("Name","["+i+","+j+"]");
-                individualJSON.put("Fitness",map[i][j]);
-                
-                
-                int sum = 0;
-                String chromosome = "";
-                for (int k=0; k< chromosomeLength;k++) {
-                    sum+=population[i][j][k];
-                }
-                boolean valid;
-                if (sum>0){
-                    valid = true;
-                }
-                else {
-                    valid = false;
-                }
-                
-                individualJSON.put("valid",valid);
-                individualJSON.put("Chromosome",Arrays.toString(population[i][j]));
-                populationJSON.add(individualJSON);	
-            }
-        }
-        outputJSON.put("population",populationJSON);
-        FileWriter file = null;
-
-        try {
-            
-            // Constructs a FileWriter given a file name, using the platform's default charset
-            file = new FileWriter(fileName);
-            file.write(outputJSON.toJSONString());
- 
-        } catch (IOException e) {
-            e.printStackTrace();
- 
-        } finally {
- 
-            try {
-                file.flush();
-                file.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        
-    }
-	
-	
-	
-	
     public static void printChromosomes() {
         int counter = 0;
         for (int i = 0; i<d1; i++) {
@@ -257,18 +191,18 @@ public class RunMapElites {
                 
                 counter+=1;
                      
-//                JSONObject obj = new JSONObject();
-//                obj.put("Iteration", counter);
-//                JSONObject obj2 = new JSONObject();
-//                obj.put("Map Dimensions", "{"+d1+","+d2+"}");
+                JSONObject obj = new JSONObject();
+                obj.put("Iteration", counter);
+                JSONObject obj2 = new JSONObject();
+                obj.put("Map Dimensions", "{"+d1+","+d2+"}");
                 
-//                JSONObject popinfo = new JSONObject();
-//                
-//                JSONObject popcontent = new JSONObject();
-//                popcontent.put("Communicativeness_index",i);
-//                popcontent.put("IPP_index",j);
-//                popcontent.put("Name","["+i+","+j+"]");
-//                popcontent.put("Fitness",map[i][j]);
+                JSONObject popinfo = new JSONObject();
+                
+                JSONObject popcontent = new JSONObject();
+                popcontent.put("Communicativeness_index",i);
+                popcontent.put("IPP_index",j);
+                popcontent.put("Name","["+i+","+j+"]");
+                popcontent.put("Fitness",map[i][j]);
                 
                 
                 int sum = 0;
@@ -284,35 +218,35 @@ public class RunMapElites {
                     valid = false;
                 }
                 
-//                popcontent.put("valid",valid);
-//                popcontent.put("Chromosome",Arrays.toString(population[i][j]));
-//                popinfo.put("populations",popcontent);
-//                
-//                JSONObject output = new JSONObject();
-//                output.put("info",obj);
-//                output.put("population",popcontent);
-//
-//            	FileWriter file = null;
-//
-//                try {
-//                    
-//                    // Constructs a FileWriter given a file name, using the platform's default charset
-//                    file = new FileWriter("population_"+counter+".json");
-//                    file.write(output.toJSONString());
-//         
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//         
-//                } finally {
-//         
-//                    try {
-//                        file.flush();
-//                        file.close();
-//                    } catch (IOException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
-//                }
+                popcontent.put("valid",valid);
+                popcontent.put("Chromosome",Arrays.toString(population[i][j]));
+                popinfo.put("populations",popcontent);
+                
+                JSONObject output = new JSONObject();
+                output.put("info",obj);
+                output.put("population",popcontent);
+
+            	FileWriter file = null;
+
+                try {
+                    
+                    // Constructs a FileWriter given a file name, using the platform's default charset
+                    file = new FileWriter("population_"+counter+".json");
+                    file.write(output.toJSONString());
+         
+                } catch (IOException e) {
+                    e.printStackTrace();
+         
+                } finally {
+         
+                    try {
+                        file.flush();
+                        file.close();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
             }
 
         }
@@ -539,22 +473,23 @@ public class RunMapElites {
     			System.out.println("Printing Map for initial iteration " + individual);
 				printParameters();
     			printMap();
-	    		populationToJSON(filePath+directory+"iteration"+String.valueOf(individual)+".json", individual);
-	 			printChromosomes();
+ 			printChromosomes();
  			// XIANBO TODO: populationToJSON(individual) note: make individualID start from zero and add parameter "iteration" which takes the value being passed as parameter
     			AvgMaxNumGood s = getStats(12);
     			stats.add(s);
     			printStats(stats);
-	     		System.out.println("");
+     		System.out.println("");
     			if (!sanityCheck(s.max)) {
     				numFailsSanityCheck +=1;
     			}
-	       		System.out.println("Number of batches that failed sanity check =  " + numFailsSanityCheck );
-	       		
-	       		String mapFileName = filePath+directory+"map"+individual;
-	       		String populationFileName = filePath+directory+"population"+individual; 
-	       		System.out.println("attempting to serialize");
-	       		serialize(map, mapFileName,population,populationFileName);
+       		System.out.println("Number of batches that failed sanity check =  " + numFailsSanityCheck );
+       		
+       		String mapFileName = filePath+directory+"map"+individual;
+       		String populationFileName = filePath+directory+"population"+individual; 		
+       		serialize(map, mapFileName,population,populationFileName);
+       		
+       		
+       		
 			}
 
         
@@ -633,7 +568,6 @@ public class RunMapElites {
     			System.out.println("Printing Map for mutation iteration " + individual);
 				printParameters();
     			printMap();
-        		populationToJSON(filePath+directory+"iteration"+String.valueOf(individual+G)+".json", individual+G);
     			printChromosomes();
      			// XIANBO TODO: populationToJSON(individual+G) note: make individualID start from zero and add parameter "iteration" which takes the value being passed as parameter
     			AvgMaxNumGood s = getStats(12);

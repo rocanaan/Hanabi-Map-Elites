@@ -76,8 +76,10 @@ public class humanSpartaAgent implements Agent {
 				
 		// Write state to JSON
 		JSONObject json = StateToSpartaConverter.toSpartaJSON(state, agentID);
+		System.out.println(pathToStates + File.separator + "state " + new java.util.Date());
 		
 		 try (FileWriter file = new FileWriter(pathToStates + File.separator + "state " + new java.util.Date())) {
+			 
 			 file.write(json.toJSONString());
 			 System.out.println("Wrote state file");
 			 file.close();
@@ -192,12 +194,10 @@ public class humanSpartaAgent implements Agent {
 		 GameRunner runner = new GameRunner("test-game", numPlayers);
 		 
 		 
-		 String pathToStates = "/Users/rodrigocanaan/Dev/SpartaIntegrationTest/states";
-		 String pathToActions = "/Users/rodrigocanaan/Dev/SpartaIntegrationTest/actions";
-		 
-//		 String pathToStates = "/Users/rodrigocanaan/Dev/HanabiUIs/Arshiya_SPARTA/MockDirectoryStructure/SESSIONS/Session000001/Games/Game1/actions";
-//		 String pathToActions = "/Users/rodrigocanaan/Dev/HanabiUIs/Arshiya_SPARTA/MockDirectoryStructure/SESSIONS/Session000001/Games/Game1/states";
-	 
+//		 String pathToStates = "/Users/rodrigocanaan/Dev/SpartaIntegrationTest/states";
+//		 String pathToActions = "/Users/rodrigocanaan/Dev/SpartaIntegrationTest/actions";
+		 String pathToStates = "SpartaIntegrationTest/states";
+		 String pathToActions = "SpartaIntegrationTest/actions";
 		 Agent spartaHuman = new humanSpartaAgent(pathToStates, pathToActions);
 	     runner.addPlayer(new AgentPlayer("spartaHuman", spartaHuman));
 	     Agent rb = AgentUtils.buildAgent(agentName);

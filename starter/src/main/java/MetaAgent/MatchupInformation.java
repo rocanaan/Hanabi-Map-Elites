@@ -24,13 +24,13 @@ public class MatchupInformation {
 //	Map<String,Double> RealBCValues; // one entry of this map looks like {"Communicativeness", 0.5}
 //	Map<String,Double> RealBCStd;
 	
-	Map<String,Double> EstimatedBCValues;
-	Map<String,Double> EstimatedBCStd;
+	public Map<String,Double> EstimatedBCValues;
+	public Map<String,Double> EstimatedBCStd;
 	
 	
 	
-	double scoreMean;
-	double scoreStd;
+	public double scoreMean;
+	public double scoreStd;
 	
 	int numGamesPlayed;
 	Collection<Double> gameScores;
